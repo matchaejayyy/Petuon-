@@ -1,3 +1,4 @@
+//the router for the components
 
 export default function App() {
   return (
