@@ -265,7 +265,7 @@ const ToDoList = () => {
     return(
         <>  
             <WhiteContainer>
-               <TodoListComponent/>
+              <TodoListComponent/>
             </WhiteContainer>
             <Sidebar/> 
         </>
