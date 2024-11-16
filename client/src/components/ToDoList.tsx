@@ -178,7 +178,7 @@ const TodoListComponent: React.FC = () => {
 
     return (
         <>  
-        <h1 className="text-[2rem] font-serif font-bold tracking-normal mb-4 ml-8 mt-7" > To Do List </h1>
+        <h1 className="text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7" > To Do List </h1>
             <div className="ml-40 overflow-auto h-96">
                 
                 <div>
