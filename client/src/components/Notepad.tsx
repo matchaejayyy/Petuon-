@@ -127,15 +127,15 @@ const Notes: React.FC = () => {
     return (
         <>
             <WhiteContainer>
-                <h1 className="text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7"> My Notes</h1>
+                <h1 className=" text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7"> My Notes</h1>
 
                 {/* Filter Buttons */}
-                <div className="flex space-x-2 mb-0 my-3 ml-8">
-                    <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#657F83] text-white" : "bg-gray-200"}`}>All</button>
-                    <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "bg-[#657F83] text-white" : "bg-gray-200"}`}>Today</button>
-                    <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "bg-[#657F83] text-white" : "bg-gray-200"}`}>Yesterday</button>
-                    <button onClick={() => setFilter("This Week")} className={`px-4 py-2 rounded-md ${filter === "This Week" ? "bg-[#657F83] text-white" : "bg-gray-200"}`}>This Week</button>
-                    <button onClick={() => setFilter("This Month")} className={`px-4 py-2 rounded-md ${filter === "This Month" ? "bg-[#657F83] text-white" : "bg-gray-200"}`}>This Month</button>
+                <div className="font-serif font-bold text-[#354F52] flex space-x-2 mb-0 my-3 ml-8 ">
+                    <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>All</button>
+                    <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "font-serif font-bold bg-[#657F83] text-white " : "bg-none"}`}>Today</button>
+                    <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>Yesterday</button>
+                    <button onClick={() => setFilter("This Week")} className={`px-4 py-2 rounded-md ${filter === "This Week" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>This Week</button>
+                    <button onClick={() => setFilter("This Month")} className={`px-4 py-2 rounded-md ${filter === "This Month" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>This Month</button>
                 </div>
 
                 {/* Notes Editor or Full Note View */}
