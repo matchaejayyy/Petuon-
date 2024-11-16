@@ -5,12 +5,12 @@ import logo from "../assets/logo.png";
 import background from '../assets/BG.png';
 
 const Sidebar: React.FC = () => {
-    // Get the current location to highlight the active link
+    // Ginakuha ang location (kung diin ka na nga page) gamit ang useLocation para sa highlight sa sidebar
     const location = useLocation(); 
 
-    // Check if the current path matches the provided path
+    // Muni nga function nagacheck kung pareho bala ang current nga path sa ginaklik nga link
     const isActive = (path: string) => {
-        return location.pathname === path;
+        return location.pathname === path;  // Kung ang path pareho sa current nga page, nagabalik siya sang true
     };
 
     return (
