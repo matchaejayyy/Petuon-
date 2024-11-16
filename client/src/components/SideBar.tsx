@@ -1,16 +1,16 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom"; 
-import { LayoutDashboard, WalletCards, CalendarRange, NotebookPen, ListTodo } from "lucide-react"; 
-import logo from "../assets/logo.png";  
+import { Link, useLocation } from "react-router-dom";
+import { LayoutDashboard, WalletCards, CalendarRange, NotebookPen, ListTodo } from "lucide-react";
+import logo from "../assets/logo.png";
 import background from '../assets/BG.png';
 
 const Sidebar: React.FC = () => {
-    // Ginakuha ang location (kung diin ka na nga page) gamit ang useLocation para sa highlight sa sidebar
-    const location = useLocation();  // Ang location hook naga-hatag sang current nga path sang page
+    // Get the current location to highlight the active link
+    const location = useLocation(); 
 
-    // Muni nga function nagacheck kung pareho bala ang current nga path sa ginaklik nga link
+    // Check if the current path matches the provided path
     const isActive = (path: string) => {
-        return location.pathname === path;  // Kung ang path pareho sa current nga page, nagabalik siya sang true
+        return location.pathname === path;
     };
 
     return (
@@ -26,31 +26,31 @@ const Sidebar: React.FC = () => {
                 <Link 
                     to="/"  
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/") ? "bg-white" : ""}`}>
-                    <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 text-white pr-1 ${isActive("/") ? "text-[#719191]" : ""}`} />
+                    <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
 
                 <Link 
                     to="/Flashcard"
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/Flashcard") ? "bg-white" : ""}`}>
-                    <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 text-white ${isActive("/Flashcard") ? "text-[#719191]" : ""}`} />
+                    <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Flashcard") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
 
                 <Link 
                     to="/Calendar" 
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/Calendar") ? "bg-white" : ""}`}>
-                    <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 text-white ${isActive("/Calendar") ? "text-[#719191]" : ""}`} />
+                    <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
                 
                 <Link 
                     to="/Notepad"  
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/Notepad") ? "bg-white" : ""}`}>
-                    <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 text-white ${isActive("/Notepad") ? "text-[#719191]" : ""}`} />
+                    <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Notepad") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
                 
                 <Link 
                     to="/ToDoList" 
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/ToDoList") ? "bg-white" : ""}`}>
-                    <ListTodo size={32} className={`group-hover:text-[#719191] duration-300 text-white ${isActive("/ToDoList") ? "text-[#719191]" : ""}`} />
+                    <ListTodo size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/ToDoList") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
             </div>
         </div>
