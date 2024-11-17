@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
-import { PlusCircle, FilePen, Trash2 } from "lucide-react";
+import {FilePen, Trash2, FilePlus } from "lucide-react";
 import WhiteContainer from "./WhiteContainer";
 import SideBar from "./SideBar";
 import "react-quill/dist/quill.snow.css";
@@ -159,7 +159,7 @@ const Notes: React.FC = () => {
                         <ReactQuill value={currentNote} onChange={handleEditorChange} theme="snow" />
                         <div className="mt-4 flex justify-between">
                             <button onClick={cancelEdit} className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500">Cancel</button>
-                            <button onClick={saveNote} className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">
+                            <button onClick={saveNote} className="px-4 py-2 bg-[#354F52] text-white rounded-md hover:bg-blue-700">
                                 {editingNote ? "Save Changes" : "Save Note"}
                             </button>
                         </div>  
@@ -177,40 +177,39 @@ const Notes: React.FC = () => {
                     /* Notes List */
                     <div className="mt-6 px-3">
                     <div className="overflow-x-auto">
-                        <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-5 w-max">
+                        <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-1 w-max">
                             {/* New Note Button */}
                             <div
-                                className="p-6 border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2"
+                                className="p-6 border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2 ,"
                                 onClick={() => setCreatingNewNote(true)}
                                 style={{ 
-                                    width: "15rem", // Set consistent width
-                                    minHeight: "15.6rem", // Set consistent height
+                                    width: "16rem", // Set consistent width
+                                    minHeight: "16rem", // Set consistent height
                                     backgroundColor: "#F9F9F9" 
                                 }}
-                            >
-                                <PlusCircle size={40} className="mb-2 text-gray-600" />
-                                <span className="text-lg font-medium">Create New Note</span>
-                            </div>
-                
+                                //add icon
+                                >
+                                <FilePlus size={90}  className="mb-2 text-[#354F52]" />  
+                            </div>                  
                             {/* Render Notes */}
                             {filteredNotes.length === 0 ? (
-                                <div className="col-span-full text-center mt-4 ml-5">
-                                    <p className="text-lg text-gray-500">No notes available.</p>
+                                <div className="text-center mt-4 ml-5">
+                                    <p className="text-2xl font-serif font-bold text-gray-500">No notes available.</p>
                                 </div>
                             ) : (
                                 filteredNotes.map((note) => (
                                     <div
                                         key={note.id}
-                                        className="p-0 border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer ml-5 mb-2"
+                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer ml-5 mb-2"
                                         style={{ 
-                                            width: "15rem", // Set consistent width
-                                            minHeight: "15.6rem", // Set consistent height
+                                            width: "16rem", // Set consistent width
+                                            minHeight: "16rem", // Set consistent height
                                             backgroundColor: note.color 
                                         }}
                                         onClick={() => handleNoteClick(note)}
                                     >
                                         <h4 className="font-serif text-xs text-black-500 ml-3 mt-3">{note.createdDate}</h4>
-                                        <h3 className="uppercase font-serif font-bold text-lg mb-1 ml-3">{note.title.slice(0, 14)}</h3>
+                                        <h3 className="uppercase font-serif font-bold text-lg mb-1 ml-3 ">{note.title.slice(0, 14)}</h3>
                                         <hr className="border-t-2 border-black w-full mb-2" />
                                         <p className="text-gray-700 ml-3">{note.content.slice(0, 20)}...</p>
                                         <p className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{note.createdTime}</p>
@@ -224,7 +223,7 @@ const Notes: React.FC = () => {
                                 ))
                             )}
                         </div>
-                    </div>
+                    </div>  
                 </div>
                 )}
             </WhiteContainer>
