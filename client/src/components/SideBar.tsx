@@ -5,12 +5,12 @@ import logo from "../assets/logo.png";
 import background from '../assets/BG.png';
 
 const Sidebar: React.FC = () => {
-    // Get the current location to highlight the active link
+    // Ginakuha ang location (kung diin ka na nga page) gamit ang useLocation para sa highlight sa sidebar
     const location = useLocation(); 
 
-    // Check if the current path matches the provided path
+    // Muni nga function nagacheck kung pareho bala ang current nga path sa ginaklik nga link
     const isActive = (path: string) => {
-        return location.pathname === path;
+        return location.pathname === path;  // Kung ang path pareho sa current nga page, nagabalik siya sang true
     };
 
     return (
@@ -25,31 +25,31 @@ const Sidebar: React.FC = () => {
             <div className="flex flex-col items-start space-y-5 fixed top-40 left-4">
                 <Link 
                     to="/"  
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/") ? "bg-white" : ""}`}>
+                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>
                     <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
 
                 <Link 
                     to="/Flashcard"
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/Flashcard") ? "bg-white" : ""}`}>
+                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Flashcard") ? "bg-[#F6F6F6]" : ""}`}>
                     <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Flashcard") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
 
                 <Link 
                     to="/Calendar" 
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/Calendar") ? "bg-white" : ""}`}>
+                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Calendar") ? "bg-[#F6F6F6]" : ""}`}>
                     <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
                 
                 <Link 
                     to="/Notepad"  
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/Notepad") ? "bg-white" : ""}`}>
+                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Notepad") ? "bg-[#F6F6F6]" : ""}`}>
                     <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Notepad") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
                 
                 <Link 
                     to="/ToDoList" 
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-white transition-colors duration-300 ${isActive("/ToDoList") ? "bg-white" : ""}`}>
+                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/ToDoList") ? "bg-[#F6F6F6]" : ""}`}>
                     <ListTodo size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/ToDoList") ? "text-[#719191]" : "text-white"}`} />
                 </Link>
             </div>
