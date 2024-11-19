@@ -26,10 +26,7 @@ const LoginPage: React.FC<Props> = () => {
   } = useForm<LoginFormsInputs>({ resolver: yupResolver(validation) });
 
   const handleLogin = (form: LoginFormsInputs) => {
-    // Retrieve all registered users from localStorage
     const users = JSON.parse(localStorage.getItem("users") || "[]");
-
-    // Check if the entered credentials match a user
     const userExists = users.find(
       (user: LoginFormsInputs) =>
         user.userName === form.userName && user.password === form.password
@@ -37,7 +34,9 @@ const LoginPage: React.FC<Props> = () => {
 
     if (userExists) {
       localStorage.setItem("isLoggedIn", "true");
-      navigate("/"); // Redirect to the dashboard
+      alert("Login successful! Redirecting to dashboard...");
+      navigate("/dashboard"); // Redirect to the dashboard
+      window.location.reload(); // This will force a page refresh after navigation
     } else {
       alert("Invalid username or password");
     }
@@ -47,22 +46,25 @@ const LoginPage: React.FC<Props> = () => {
     <section
       className="h-screen flex items-center justify-center"
       style={{
-          backgroundImage: `url(${LoginBG})`, 
+        backgroundImage: `url(${LoginBG})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
-    >      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
+    >
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0 bg-customGray">
           <div className="p-8 space-y-6 md:space-y-8 sm:p-10">
-          <h2 className="text-4xl font-bold text-white">Welcome!</h2>
-          <p className="text-left font-light text-white mb-5">Ready to learn smarter? Set up your account and unlock a world of study support!</p>
+            <h2 className="text-4xl font-bold text-white">Welcome!</h2>
+            <p className="text-left font-light text-white mb-5">
+              Ready to learn smarter? Log in to access your dashboard!
+            </p>
             <form
               className="space-y-4 md:space-y-6"
               onSubmit={handleSubmit(handleLogin)}
             >
               <div>
                 <label
-                  htmlFor="email"
+                  htmlFor="username"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Username
@@ -70,14 +72,12 @@ const LoginPage: React.FC<Props> = () => {
                 <input
                   type="text"
                   id="username"
-                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Username"
                   {...register("userName")}
                 />
-                {errors.userName ? (
+                {errors.userName && (
                   <p className="text-white">{errors.userName.message}</p>
-                ) : (
-                  ""
                 )}
               </div>
               <div>
@@ -91,13 +91,11 @@ const LoginPage: React.FC<Props> = () => {
                   type="password"
                   id="password"
                   placeholder="••••••••"
-                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
+                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   {...register("password")}
                 />
-                {errors.password ? (
+                {errors.password && (
                   <p className="text-white">{errors.password.message}</p>
-                ) : (
-                  ""
                 )}
               </div>
               <div className="flex items-center justify-between">
@@ -108,26 +106,25 @@ const LoginPage: React.FC<Props> = () => {
                   Forgot password?
                 </a>
               </div>
-              <div className ="flex justify-center items-center">
-              <button
-                type="submit"
-                className="bg-[#719191] justify-center  hover:bg-gray-700 text-white font-bold py-2 px-8 rounded-3xl"
-              >
-                Log in
-              </button>
+              <div className="flex justify-center items-center">
+                <button
+                  type="submit"
+                  className="bg-[#719191] justify-center hover:bg-gray-700 text-white font-bold py-2 px-8 rounded-3xl"
+                >
+                  Log in
+                </button>
               </div>
               <div className="flex justify-center items-center">
-              <p className="text-sm font-light text-white">
-                Don’t have an account yet?{" "}
-                <Link
+                <p className="text-sm font-light text-white">
+                  Don’t have an account yet?{" "}
+                  <Link
                     to="/register"
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                >
+                  >
                     Sign up
-                </Link>
-            </p>
+                  </Link>
+                </p>
               </div>
-              
             </form>
           </div>
         </div>
@@ -136,4 +133,4 @@ const LoginPage: React.FC<Props> = () => {
   );
 };
 
-export default LoginPage;  
+export default LoginPage;
