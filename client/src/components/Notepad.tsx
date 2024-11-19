@@ -28,8 +28,11 @@ const Notes: React.FC = () => {
     const saveNote = () => {
         if (currentNote.trim() === "" || currentTitle.trim() === "") return;
     
-        const strippedNoteContent = currentNote.replace(/<\/?p>/g, '').trim();  // ang .trim() para kuhaon ang mga space sa unahan kag likod sang character
-    
+        // Remove <h1>, <h2>, <h3>, and <p> tags (mga header)
+        const strippedNoteContent = currentNote
+            .replace(/<\/?(h1|h2|h3|p)>/g, '')  // This will remove <h1>, <h2>, <h3>, and <p> tags
+            .trim();  // Remove leading/trailing spaces
+        
         const newNote = {
             id: Date.now(),
             title: currentTitle,
@@ -40,7 +43,7 @@ const Notes: React.FC = () => {
             timestamp: new Date().getTime(),
         };
     
-        const updatedNotes = editingNote !== null 
+        const updatedNotes = editingNote !== null
             ? notes.map((note) => note.id === editingNote ? newNote : note)
             : [newNote, ...notes];
     
@@ -51,6 +54,7 @@ const Notes: React.FC = () => {
         setEditingNote(null);
         setCreatingNewNote(false);
     };
+    
 
     // Function para mag-edit sang note
     const editNote = (id: number) => {
