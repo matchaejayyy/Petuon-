@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import WhiteContainer from "./WhiteContainer"
 import Sidebar from "./SideBar";
-import { useState, ChangeEvent, FormEvent } from "react"
+import { useState, ChangeEvent, FormEvent, useRef} from "react"
 
 type ToDoList = { // Container for the each task element that it contains
     text: string
@@ -10,7 +10,7 @@ type ToDoList = { // Container for the each task element that it contains
     completed: boolean
 }
 
-const TodoListComponent: React.FC = () => {
+const ToDoListComponent: React.FC = () => {
     const [tasks, setTasks] = useState<ToDoList[]>([]); // stores tasks within the Array
     const [tasksBackup, setTasksBackup] = useState<ToDoList[]>([]); // a preserved version of the task use in the filter functionaility
     const [task, setTask] = useState<string>(""); // creates tasks
@@ -24,6 +24,13 @@ const TodoListComponent: React.FC = () => {
 
     const [editTime, setEditTime] = useState<string>("");
     const [editDate, setEditDate] = useState<string>("");
+
+
+    const [displayTime, setdisplayTime] = useState<string>("")
+    const [editDisplayTime, seteditDisplayTime] = useState<string>("")
+    
+    const [isEditing, setIsEditing] = useState(false);
+    const lastTaskRef = useRef<HTMLLIElement | null>(null);
 
     function taskDateTime(){ // returns a new Date with the set condition
         if (date === "mm/dd/yyyy" &&  time === "--:-- --" ) { // if date and time are empty 
@@ -57,13 +64,14 @@ const TodoListComponent: React.FC = () => {
         }
 
         // stores the new task in an array.
-        if (filterType == "default") {
+        // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
+        if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
             setTasks([...tasks, // "... tasks" copies the element from the array and stores it previously
                         newTask  
                     ]);
          } 
 
-         
+        
         // stores the new task in a backup array.
         setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
             newTask
@@ -73,16 +81,24 @@ const TodoListComponent: React.FC = () => {
         setDate("mm/dd/yyyy")  // resets the value of the Date
         setTime("--:-- --") // resets the value of the Time
         console.log(tasks)
+
+        if (lastTaskRef.current) {
+            lastTaskRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "end", 
+            });
+        }
     }
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
-        console.log(new Date(e.target.value).toISOString().split("T")[0])
+
         setDate(e.target.value) 
     } 
 
     const handleTimeChange = (e:ChangeEvent<HTMLInputElement>) => {
         setTime(e.target.value) // stores the value of the time set\
-        console.log(e.target.value)
+        const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        setdisplayTime(displaytime)
     }
 
     const handleTextChange = (e:ChangeEvent<HTMLInputElement>) => {
@@ -96,6 +112,7 @@ const TodoListComponent: React.FC = () => {
     }
 
     function deleteTask(index: number){
+        setIsEditing(false)
         setTasks(tasks.filter((_, i) => i !== index));
         setTasksBackup(tasksBackup.filter((_, i) => i !== index))
         cancelEditing()
@@ -135,7 +152,7 @@ const TodoListComponent: React.FC = () => {
     const startEditing = (index:number, text: string, date_time: Date) => {
         setEditIndex(index)
         setEditText(text)
-       
+        setIsEditing(true)
         if (date_time.toTimeString().slice(0, 5) === "08:00" && date_time.toISOString().split("T")[0] === "1970-01-01"){
             setEditTime("--:-- --")
         } else {
@@ -158,6 +175,7 @@ const TodoListComponent: React.FC = () => {
     }
 
     function saveEditing(index: number) {
+        setIsEditing(false)
         setTasks(tasks.map((task, i) =>
             i === index ? {...task, text: editText, dueAt: editTaskDateTime()} : task
            
@@ -166,92 +184,170 @@ const TodoListComponent: React.FC = () => {
             i === index ? {...task, text: editText, dueAt: editTaskDateTime()} : task
         ));
         cancelEditing()
+
+        if (editText.trim() === "") {
+            setTasks(tasks.filter((_, i) => i !== index));
+            setTasksBackup(tasksBackup.filter((_, i) => i !== index))
+        }
     }
 
     const handleTimeEditChange = (e:ChangeEvent<HTMLInputElement>) => {
         setEditTime(e.target.value)
+        const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+        seteditDisplayTime(displaytime)
+        console.log(editDisplayTime)
     }
 
     const handleDateEditChange = (e:ChangeEvent<HTMLInputElement>) => {
         setEditDate(e.target.value)
     }
 
+
+
     return (
         <>  
-            <div className="ml-40 overflow-auto h-96">
+            <div className="bg-[#657F83] ml-10 mt-[2.5rem] pb-[35rem] rounded-[1.5rem] w-[81.5rem]">
                 <div>
-                    <div>
-                        <button onClick={() => filteredTasks("default")}>Default</button>
-                        <button  onClick={() => filteredTasks("noDate")}>No Date</button>
-                        <button  onClick={() => filteredTasks("near")}>Near</button>
-                        <button  onClick={() => filteredTasks("later")}>Later</button>
-                        <button onClick={() => filteredTasks("pastDue")}>Past Due</button>
+                    <div className="fixed top-[9rem] ml-5">
+                        <label className="bg-[#2C2C2C] rounded-[0.6rem] pl-2 pr-2 pt-1 pb-1.5 text-white ">Sort</label>
+                        
+                        <button className={`rounded-[0.7rem] pl-2 pr-2 pt-0.5 pb-1 text-757575 ml-2 hover:bg-[#FF5349] hover:text-white font-inter text-[#757575] ${filterType === "default" ? "bg-[#FF5349] text-white" : "bg-white "}`}
+                        onClick={() => filteredTasks("default")}>
+                            Default
+                        </button>
+                        <button  className={` rounded-[0.7rem] pl-2 pr-2 pt-0.5 pb-1 text-757575 ml-2 hover:bg-[#FF5349] hover:text-white font-inter text-[#757575] ${filterType === "noDate" ? "bg-[#FF5349] text-white" : "bg-white"}`}
+                        onClick={() => filteredTasks("noDate")}>
+                            NoDue
+                        </button>
+                        <button className={`rounded-[0.7rem] pl-2 pr-2 pt-0.5 pb-1 text-757575 ml-2 hover:bg-[#FF5349] hover:text-white font-inter text-[#757575] ${filterType === "near" ? "bg-[#FF5349] text-white" : "bg-white"}`}
+                        onClick={() => filteredTasks("near")}>
+                            Near
+                        </button>
+                        <button  className={` rounded-[0.7rem] pl-2 pr-2 pt-0.5 pb-1 text-757575 ml-2 hover:bg-[#FF5349] hover:text-white font-inter text-[#757575] ${filterType === "later" ? "bg-[#FF5349] text-white" : "bg-white"}`}
+                        onClick={() => filteredTasks("later")}>
+                            Later
+                        </button>
+                        <button className={` rounded-[0.7rem] pl-2 pr-2 pt-0.5 pb-1 text-757575 ml-2 hover:bg-[#FF5349] hover:text-white font-inter text-[#757575] ${filterType === "pastDue" ? "bg-[#FF5349] text-white" : "bg-white"}`}
+                        onClick={() => filteredTasks("pastDue")}>
+                            PastDue
+                        </button>
                     </div>
-                    <form onSubmit={addTask}>   
-                        <button type="submit">+</button>
+                    <form onSubmit={addTask} 
+                    className="fixed left-[11.6rem] top-[12rem] w-[78.5rem] bg-white pt-3 pb-3 rounded-lg">   
+
+                        <button type="submit"
+                        className="ml-5 text-2xl text-[#719191] bg-[#7878802a] w-10 pb-[0.3rem] rounded-lg"
+                        >+</button>
+
                         <input 
+                        className="ml-4 text-lg outline-none w-[46rem] overflow-hidden text-ellipsis"
                         type="text" 
                         placeholder="enter a task" 
                         value = {task}
                         onChange={handleTextChange}
                         required
                         />
+                        
+                        <label className={`absolute right-[21rem] top-[1.15rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{displayTime}</label>
                         <input
+                        className="absolute right-[19rem] top-[1.27rem] text-[0.9rem] outline-none w-[1.8rem]"
                         type="time"
                         value={time}
                         onChange={handleTimeChange}
                         />
-                        <button type="button" onClick={() => setTime("--:-- --")}>Reset Time</button>
+
+                        <button type="button" onClick={() => setTime("--:-- --")}
+                           className="absolute right-[17rem] top-[0.8rem] text-2xl"
+                        >⟳</button>
+
+
+                        <label className={`absolute right-[9rem] top-[1.15rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{date.split('-').reverse().join('-')}</label>
                         <input 
+                        className="absolute right-[7rem] top-4 text-[1.2rem] w-[1.57rem] outline-none"
                         type="date" 
                         value={date}
                         onChange={handleDateChange}
                         />
-                        <button type="button" onClick={()=> setDate("mm/dd/yyyy")}>Reset Date</button>
+                        
+                        <button type="button" onClick={()=> setDate("mm/dd/yyyy")}
+                          className="absolute right-[5rem] top-[0.8rem] text-2xl"
+                        >⟳</button>
                     </form>
                 </div>
 
-                <div className="bg-slate-100">
+                <div className="w-[78.5rem] h-[23rem] fixed left-[11.5rem] top-[17rem] rounded-lg overflow-auto">
                     <ul>
                         {tasks.map((task, index)=>
-                            <div key={index}>
+                            <li key={index}
+                            className="bg-white mt-3 font-bold pt-4 pb-4 rounded-lg whitespace-nowrap flex" 
+                            ref={index === tasks.length - 1 ? lastTaskRef : null}
+                            >
+                                
                                 <input 
+                                className="absolute left-[1.9rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-2 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                 type="checkbox"
                                 onChange={() => completeToggle(index)}
                                 />
                                 {editIndex === index ? (
-                                    <>
+                                    <div>
                                         <input 
+                                        className="absolute left-[5rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis"
                                         type="text"
                                         value={editText}
                                         onChange={handleTextEditChange}
+                                        placeholder={editText === "" ? "Input Task" : ""}
                                         />
+
+                                        <label className={` opacity-45 absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDisplayTime}</label>
                                         <input
+                                        className="absolute left-[57.7rem] opacity-45 text-[0.9rem] w-[1.9rem]"
                                         type="time"
                                         value={editTime}
                                         onChange={handleTimeEditChange}
                                         />
-                                        <button type="button" onClick={() => setEditTime("--:-- --")}>Reset Time</button>
+                                        <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editDisplayTime)}}
+                                        className="absolute left-[60.5rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50"
+                                            >⟳</button>
+                                        
+                                        <label className={`absolute left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('-')}</label>
                                         <input
                                         type="date"
+                                        className="absolute right-[6.9rem] opacity-45 w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] "
                                         value={editDate}
                                         onChange={handleDateEditChange}
                                         />
-                                         <button type="button" onClick={()=> setEditDate("mm/dd/yyyy")}>Reset Date</button>
-                                        <button onClick={() => saveEditing(index)}>Save</button> 
-                                    </>
+                                        
+                                        
+                                         <button type="button" 
+                                         className="absolute left-[72rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem]"
+                                         onClick={()=> setEditDate("mm/dd/yyyy")}
+                                         >⟳</button>
+                                        <button onClick={() => saveEditing(index)}
+                                        className="absolute right-[3rem]"
+                                            >💾</button> 
+                                    </div>
                                  ) : (
-                                <span onClick={() => startEditing(index, task.text, task.dueAt)}>
-                                    {task.text } 
+                                <div onClick={() => startEditing(index, task.text, task.dueAt)} className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-500" : ""}`}>
+                                    <span className="absolute left-[5rem] max-w-[46.3rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {task.text}
+                                    </span>
+
                                     {task.dueAt.getTime() !== 0 && (
-                                        <>
-                                            - {task.dueAt.toLocaleString().slice(11, 17)} {task.dueAt.toLocaleString().slice(20, 23)} - {task.dueAt.toLocaleString().slice(0, 11)}
-                                        </>
+                                        <span>
+                                            <span className="absolute left-[53.6rem]">  
+                                                {task.dueAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                            </span>
+                                            <span className="absolute left-[64.6rem]"> 
+                                                 
+                                            {task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(3,6) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(0,3) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(6,10)}
+                                            </span>
+                                        </span>
                                     )}
-                                </span>
+                                </div>
+
                                 )}
-                                <button onClick={() => deleteTask(index)}>Del</button>
-                            </div>
+                                <button disabled={isEditing && editIndex !== index} onClick={() => deleteTask(index)} className={`ml-[75.9rem] ${isEditing === true && editIndex === index ? "opacity-45": "" }`}>🗑️</button>
+                            </li>
                         )}
                     </ul>
                 </div>
@@ -261,11 +357,13 @@ const TodoListComponent: React.FC = () => {
 }
 
 
+//the ToDoListComponent is called and displayed within the whitecontainer
 const ToDoList = () => {
     return(
         <>  
             <WhiteContainer>
-               <TodoListComponent/>
+                <h1 className="text-[2rem] font-serif font-bold tracking-normal mb-4 ml-8 mt-7">To Do List</h1>
+              <ToDoListComponent/>
             </WhiteContainer>
             <Sidebar/> 
         </>
