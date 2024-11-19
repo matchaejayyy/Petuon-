@@ -27,9 +27,9 @@ const Notes: React.FC = () => {
     // Function para mag-save sang note
     const saveNote = () => {
         if (currentNote.trim() === "" || currentTitle.trim() === "") return;
-
-        const strippedNoteContent = currentNote.replace(/<\/?p>/g, ''); // Pagkuha sang mga HTML tags
-
+    
+        const strippedNoteContent = currentNote.replace(/<\/?p>/g, '').trim();  // ang .trim() para kuhaon ang mga space sa unahan kag likod sang character
+    
         const newNote = {
             id: Date.now(),
             title: currentTitle,
@@ -39,11 +39,11 @@ const Notes: React.FC = () => {
             createdTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             timestamp: new Date().getTime(),
         };
-
+    
         const updatedNotes = editingNote !== null 
             ? notes.map((note) => note.id === editingNote ? newNote : note)
             : [newNote, ...notes];
-
+    
         setNotes(updatedNotes);
         localStorage.setItem("notes", JSON.stringify(updatedNotes));
         setCurrentNote("");
