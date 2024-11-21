@@ -97,19 +97,9 @@ type Flashcard = {
 const FlashCard = () => {
     return (
         <>
-<<<<<<< Updated upstream
-        <WhiteContainer>
-            <div>
-                <h1
-                    className="text-[2rem] font-serif font-bold tracking-normal mb-4 ml-8 mt-7" > FlashCard
-                </h1>
-            </div>
-        </WhiteContainer>    
-=======
             <WhiteContainer>
                 <FlashcardComponent/>
             </WhiteContainer>        
->>>>>>> Stashed changes
             <SideBar/>
         </>
     )
