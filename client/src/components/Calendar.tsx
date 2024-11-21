@@ -7,7 +7,7 @@ export default function Calendar() {
         <WhiteContainer>
             <div>
                 <h1
-                    className="text-[2rem] font-serif font-bold tracking-normal mb-4 ml-8 mt-7" > Calendar
+                    className="text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7" > Calendar
                 </h1>
             </div>
       </WhiteContainer>
