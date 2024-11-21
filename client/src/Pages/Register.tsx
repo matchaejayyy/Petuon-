@@ -52,9 +52,9 @@ const RegisterPage: React.FC<Props> = () => {
       }}
     >
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
-        <div className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0 bg-customGray">
-          <div className="p-8 space-y-6 md:space-y-8 sm:p-10">
-            <h1 className="text-2xl font-bold leading-tight tracking-tight text-gray-900 md:text-3xl dark:text-white">
+      <div className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0" style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}>
+          <div className="p-10 space-y-6 md:space-y-8 sm:p-12">
+            <h1 className="text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl dark:text-white">
               Create your account
             </h1>
             <form
@@ -64,7 +64,7 @@ const RegisterPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-white dark:text-white"
                 >
                   Email
                 </label>
@@ -81,7 +81,7 @@ const RegisterPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-white dark:text-white"
                 >
                   Username
                 </label>
@@ -99,7 +99,7 @@ const RegisterPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-white dark:text-white"
                 >
                   Password
                 </label>

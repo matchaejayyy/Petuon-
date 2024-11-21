@@ -51,9 +51,10 @@ const LoginPage: React.FC<Props> = () => {
         backgroundPosition: "center",
       }}
     >
+
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
-        <div className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0 bg-customGray">
-          <div className="p-8 space-y-6 md:space-y-8 sm:p-10">
+      <div className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0" style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}>
+          <div className="p-10 space-y-6 md:space-y-8 sm:p-12">
             <h2 className="text-4xl font-bold text-white">Welcome!</h2>
             <p className="text-left font-light text-white mb-5">
               Ready to learn smarter? Log in to access your dashboard!
@@ -65,7 +66,7 @@ const LoginPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-white dark:text-white"
                 >
                   Username
                 </label>
@@ -83,7 +84,7 @@ const LoginPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  className="block mb-2 text-sm font-medium text-white dark:text-white"
                 >
                   Password
                 </label>
