@@ -105,7 +105,7 @@ const Calendar: React.FC = () => {
   );
 
   const renderDaysOfWeek = () => (
-    <div className="grid grid-cols-7 text-center font-semibold text-sm mb-2">
+    <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="grid grid-cols-7 text-center font-semibold text-lg mb-2 mt-7">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
         <div key={day} className="p-1">{day}</div>
       ))}
@@ -137,7 +137,7 @@ const Calendar: React.FC = () => {
       day = addDays(day, 1);
     }
 
-    return <div className="grid grid-cols-7 gap-2">{dateCells}</div>;
+    return <div className="grid grid-cols-7 gap-3">{dateCells}</div>;
   };
 
   return (
@@ -145,7 +145,7 @@ const Calendar: React.FC = () => {
       <WhiteContainer>
         <div>
           <h1 className="text-[2.5rem] text-[#354F52] font-serif mb-3 ml-6 mt-6">Calendar</h1>
-          <div className="p-3 ml-[2rem] max-w-[1340px] mx-auto">
+          <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="p-3 ml-[2rem] max-w-[1340px] mx-auto">
             {renderHeader()}
             {renderDaysOfWeek()}
             {renderCells()}
