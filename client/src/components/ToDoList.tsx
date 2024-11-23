@@ -3,6 +3,7 @@ import WhiteContainer from "./WhiteContainer"
 import Sidebar from "./SideBar";
 import { useState, ChangeEvent, FormEvent, useRef} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
+import Clock from "./Clock";
 
 
 type ToDoList = { // Container for the each task element that it contains
@@ -218,7 +219,7 @@ const ToDoListComponent: React.FC = () => {
 
     return (
         <>  
-            <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8 ">
+            <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-2rem] mb-0 my-3 ml-8 ">
                 <div>
                         <button className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}
                         onClick={() => filteredTasks("default")}>
@@ -290,6 +291,7 @@ const ToDoListComponent: React.FC = () => {
                     <ul>
                         {tasks.map((task, index)=>
                             <li key={index}
+                            
                             className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap flex shadow-md transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                             style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                             ref={index === tasks.length - 1 ? lastTaskRef : null}
@@ -299,7 +301,11 @@ const ToDoListComponent: React.FC = () => {
                                 className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                 type="checkbox"
                                 onChange={() => completeToggle(index)}
+
+                                
+                                
                                 />
+                                
                                 {editIndex === index ? (
                                     <div>
                                         <input 
@@ -375,9 +381,12 @@ const ToDoList = () => {
     return(
         <>  
             <WhiteContainer>
+                
                 <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">To Do List</h1>
+                <Clock/>
               <ToDoListComponent/>
             </WhiteContainer>
+            
             <Sidebar/> 
         </>
     )
