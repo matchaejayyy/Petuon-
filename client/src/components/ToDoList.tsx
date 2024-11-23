@@ -309,39 +309,39 @@ const ToDoListComponent: React.FC = () => {
                                 {editIndex === index ? (
                                     <div>
                                         <input 
-                                        className="absolute left-[4rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis bg-transparent "
+                                        className="absolute left-[3rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis bg-transparent "
                                         type="text"
                                         value={editText}
                                         onChange={handleTextEditChange}
                                         placeholder={editText === "" ? "Input Task" : ""}
                                         />
 
-                                        <label className={` opacity-45 ml-[6rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDisplayTime}</label>
+                                        <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDisplayTime}</label>
                                         <input
-                                        className="absolute left-[63.1rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none"
+                                        className="absolute left-[57rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none"
                                         type="time"
                                         value={editTime}
                                         onChange={handleTimeEditChange}
                                         />
                                         <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editDisplayTime)}}
-                                        className="absolute left-[65.7rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem]"
+                                        className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem]"
                                             ><RotateCcw size={20}/></button>
                                         
-                                        <label className={`absolute ml-[6rem]  left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('-')}</label>
+                                        <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('-')}</label>
                                         <input
                                         type="date"
-                                        className="absolute mt-[rem] right-[7.15rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
+                                        className="absolute mt-[-0.1rem] right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
                                         value={editDate}
                                         onChange={handleDateEditChange}
                                         />
                                         
                                         
                                          <button type="button" 
-                                         className="absolute left-[77.7rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem]"
+                                         className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem]"
                                          onClick={()=> setEditDate("mm/dd/yyyy")}
                                          ><RotateCcw size={20}/></button>
                                         <button onClick={() => saveEditing(index)}
-                                        className="absolute right-[3rem] mt-[0rem]"
+                                        className="absolute right-[7rem] mt-[0rem]"
                                             ><Save size={20}/></button> 
                                     </div>
                                  ) : (
