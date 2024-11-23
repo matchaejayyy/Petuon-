@@ -20,11 +20,11 @@ const Clock: React.FC = () => {
   const seconds = time.getSeconds().toString().padStart(2, "0");
 
   return (
-    <div className="flex ml-[55.5rem] mt-[-6rem]">
-      <div className="mt-[1rem] flex items-center text-[#354F52]  py-4 px-8 rounded-lg">
+    <div className="flex ml-[56.5rem] mt-[-6rem]">
+      <div style={{ fontFamily: '"Crimson Pro", serif' }} className="mt-[1rem] flex items-center text-[#354F52]  py-4 px-8 rounded-lg">
         {/* Day */}
         <div className="text-center mx-4">
-          <div className="text-4xl font-bold">{day}</div>
+          <div className="text-4xl ">{day}</div>
           <div className="text-sm uppercase mt-1">Day</div>
         </div>
 
@@ -33,7 +33,7 @@ const Clock: React.FC = () => {
 
         {/* Hours */}
         <div className="text-center mx-4">
-          <div className="text-4xl font-bold">{hours}</div>
+          <div className="text-4xl ">{hours}</div>
           <div className="text-sm uppercase mt-1">Hours</div>
         </div>
 
@@ -42,7 +42,7 @@ const Clock: React.FC = () => {
 
         {/* Minutes */}
         <div className="text-center mx-4">
-          <div className="text-4xl font-bold">{minutes}</div>
+          <div className="text-4xl ">{minutes}</div>
           <div className="text-sm uppercase mt-1">Minutes</div>
         </div>
 
@@ -51,7 +51,7 @@ const Clock: React.FC = () => {
 
         {/* Seconds */}
         <div className="text-center mx-4">
-          <div className="text-4xl font-bold">{seconds}</div>
+          <div className="text-4xl ">{seconds}</div>
           <div className="text-sm uppercase mt-1">Seconds</div>
         </div>
       </div>
