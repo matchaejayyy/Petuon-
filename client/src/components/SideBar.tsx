@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, WalletCards, CalendarRange, NotebookPen, ListTodo } from "lucide-react";
-import logo from "../assets/logo.png";
+import logo from "../assets/petuon_logo.png";
 import background from '../assets/BG.png';
 
 const Sidebar: React.FC = () => {
