@@ -6,6 +6,7 @@ import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import Clock from "./Clock";
 
 
+
 type ToDoList = { // Container for the each task element that it contains
     text: string
     createdAt: Date
@@ -100,6 +101,7 @@ const ToDoListComponent: React.FC = () => {
         setTimeout(() => {
             setIsAnimatingDropDown(false);
         }, 0); //duration sng drop down
+
     }
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
@@ -214,9 +216,6 @@ const ToDoListComponent: React.FC = () => {
         setEditDate(e.target.value)
     }
 
-
-
-
     return (
         <>  
             <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-2rem] mb-0 my-3 ml-8 ">
@@ -255,20 +254,24 @@ const ToDoListComponent: React.FC = () => {
                         style={{fontFamily: '"Signika Negative", sans-serif' }}
                         type="text " 
                         placeholder="Enter a task" 
+
                         value = {task}
                         onChange={handleTextChange}
                         required
                         />
                         
+
                         <label className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{displayTime}</label>
                         <input
                         className="absolute right-[19rem] top-[1.4rem] text-[0.9rem] outline-none w-[1.8rem] bg-transparent text-white  "
+
                         type="time"
                         value={time}
                         onChange={handleTimeChange}
                         />
 
                         <button type="button" onClick={() => setTime("--:-- --")}
+
                            className="absolute right-[17rem] top-[1.5rem] text-2xl"
                         ><RotateCcw size={20} color="black"  /></button>
 
@@ -276,6 +279,7 @@ const ToDoListComponent: React.FC = () => {
                         <label className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{date.split('-').reverse().join('-')}</label>
                         <input 
                         className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent"
+
                         type="date" 
                         value={date}
                         onChange={handleDateChange}
@@ -294,11 +298,14 @@ const ToDoListComponent: React.FC = () => {
                             
                             className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap flex shadow-md transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                             style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
+
                             ref={index === tasks.length - 1 ? lastTaskRef : null}
                             >
                                 
                                 <input 
+
                                 className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
+
                                 type="checkbox"
                                 onChange={() => completeToggle(index)}
 
@@ -309,7 +316,9 @@ const ToDoListComponent: React.FC = () => {
                                 {editIndex === index ? (
                                     <div>
                                         <input 
+
                                         className="absolute left-[3rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis bg-transparent "
+
                                         type="text"
                                         value={editText}
                                         onChange={handleTextEditChange}
@@ -319,11 +328,13 @@ const ToDoListComponent: React.FC = () => {
                                         <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDisplayTime}</label>
                                         <input
                                         className="absolute left-[57rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none"
+
                                         type="time"
                                         value={editTime}
                                         onChange={handleTimeEditChange}
                                         />
                                         <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editDisplayTime)}}
+
                                         className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem]"
                                             ><RotateCcw size={20}/></button>
                                         
@@ -331,12 +342,14 @@ const ToDoListComponent: React.FC = () => {
                                         <input
                                         type="date"
                                         className="absolute mt-[-0.1rem] right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
+
                                         value={editDate}
                                         onChange={handleDateEditChange}
                                         />
                                         
                                         
                                          <button type="button" 
+
                                          className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem]"
                                          onClick={()=> setEditDate("mm/dd/yyyy")}
                                          ><RotateCcw size={20}/></button>
@@ -347,6 +360,7 @@ const ToDoListComponent: React.FC = () => {
                                  ) : (
                                 <div onClick={() => startEditing(index, task.text, task.dueAt)} className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""}`}>
                                     <span className="absolute left-[3rem] max-w-[46.3rem] overflow-hidden text-ellipsis whitespace-nowrap">
+
                                     {task.text}
                                     </span>
 
@@ -364,7 +378,9 @@ const ToDoListComponent: React.FC = () => {
                                 </div>
 
                                 )}
+
                                 <button disabled={isEditing && editIndex !== index} onClick={() => deleteTask(index)} className={`ml-[81.5rem] text-red-600 ${isEditing === true && editIndex === index ? "opacity-45": "" }`}><Trash2 size={20}/></button>
+
                             </li>
                         )}
                     </ul>
@@ -381,9 +397,11 @@ const ToDoList = () => {
     return(
         <>  
             <WhiteContainer>
+
                 
                 <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">To Do List</h1>
                 <Clock/>
+
               <ToDoListComponent/>
             </WhiteContainer>
             
