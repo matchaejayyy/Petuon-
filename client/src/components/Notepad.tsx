@@ -27,9 +27,12 @@ const Notes: React.FC = () => {
     // Function para mag-save sang note
     const saveNote = () => {
         if (currentNote.trim() === "" || currentTitle.trim() === "") return;
-
-        const strippedNoteContent = currentNote.replace(/<\/?p>/g, ''); // Pagkuha sang mga HTML tags
-
+    
+        // Remove <h1>, <h2>, <h3>, and <p> tags (mga header)
+        const strippedNoteContent = currentNote
+            .replace(/<\/?(h1|h2|h3|p)>/g, '')  // This will remove <h1>, <h2>, <h3>, and <p> tags
+            .trim();  // Remove leading/trailing spaces
+        
         const newNote = {
             id: Date.now(),
             title: currentTitle,
@@ -39,11 +42,11 @@ const Notes: React.FC = () => {
             createdTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             timestamp: new Date().getTime(),
         };
-
-        const updatedNotes = editingNote !== null 
+    
+        const updatedNotes = editingNote !== null
             ? notes.map((note) => note.id === editingNote ? newNote : note)
             : [newNote, ...notes];
-
+    
         setNotes(updatedNotes);
         localStorage.setItem("notes", JSON.stringify(updatedNotes));
         setCurrentNote("");
@@ -51,6 +54,7 @@ const Notes: React.FC = () => {
         setEditingNote(null);
         setCreatingNewNote(false);
     };
+    
 
     // Function para mag-edit sang note
     const editNote = (id: number) => {
@@ -127,10 +131,10 @@ const Notes: React.FC = () => {
     return (
         <>
             <WhiteContainer>
-                <h1 className=" text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7"> My Notes</h1>
+                <h1  style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7"> My Notes</h1>
 
                 {/* Filter Buttons */}
-                <div className="font-serif font-bold text-[#354F52] flex space-x-2 mb-0 my-3 ml-8 ">
+                <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8 ">
                     <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>All</button>
                     <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "font-serif font-bold bg-[#657F83] text-white " : "bg-none"}`}>Today</button>
                     <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>Yesterday</button>
@@ -208,11 +212,11 @@ const Notes: React.FC = () => {
                                         }}
                                         onClick={() => handleNoteClick(note)}
                                     >
-                                        <h4 className="font-serif text-xs text-black-500 ml-3 mt-3">{note.createdDate}</h4>
-                                        <h3 className="uppercase font-serif font-bold text-lg mb-1 ml-3 ">{note.title.slice(0, 14)}</h3>
+                                        <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-xs text-black-500 ml-3 mt-3">{note.createdDate}</h4>
+                                        <h3 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="uppercase font-bold text-xl mb-1 ml-3 ">{note.title.slice(0, 14)}</h3>
                                         <hr className="border-t-2 border-black w-full mb-2" />
-                                        <p className="text-gray-700 ml-3">{note.content.slice(0, 20)}...</p>
-                                        <p className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{note.createdTime}</p>
+                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-gray-700 ml-3">{note.content.slice(0, 20)}...</p>
+                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }}className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{note.createdTime}</p>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); editNote(note.id); }}
                                             className="absolute top-7 right-3 text-black hover:text-[#719191]"
