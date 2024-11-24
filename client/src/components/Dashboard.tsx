@@ -7,7 +7,7 @@ export default function Dashboard() {
       <WhiteContainer>
         <div>
           <h1
-            className="text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7" > Dashboard
+             style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7" > Dashboard
           </h1>
         </div>
       </WhiteContainer>
