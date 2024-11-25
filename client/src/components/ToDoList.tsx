@@ -14,7 +14,6 @@ type ToDoList = { // Container for the each task element that it contains
 }
 
 const ToDoListComponent: React.FC = () => {
-const ToDoListComponent: React.FC = () => {
     const [tasks, setTasks] = useState<ToDoList[]>([]); // stores tasks within the Array
     const [tasksBackup, setTasksBackup] = useState<ToDoList[]>([]); // a preserved version of the task use in the filter functionaility
     const [task, setTask] = useState<string>(""); // creates tasks
@@ -28,19 +27,6 @@ const ToDoListComponent: React.FC = () => {
 
     const [editTime, setEditTime] = useState<string>("");
     const [editDate, setEditDate] = useState<string>("");
-
-
-    const [displayTime, setdisplayTime] = useState<string>("")
-    const [editDisplayTime, seteditDisplayTime] = useState<string>("")
-    
-    const [isEditing, setIsEditing] = useState(false);
-    const lastTaskRef = useRef<HTMLLIElement | null>(null);
-
-
-    const [isAnimatingDropDown, setIsAnimatingDropDown] = useState<boolean>(false); //para sa dropdown animation
-
-    const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
-
 
 
     const [displayTime, setdisplayTime] = useState<string>("")
@@ -87,14 +73,11 @@ const ToDoListComponent: React.FC = () => {
         // stores the new task in an array.
         // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
         if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
-        // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
-        if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
             setTasks([...tasks, // "... tasks" copies the element from the array and stores it previously
                 newTask  
             ]);
          } 
 
-        
         
         // stores the new task in a backup array.
         setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
@@ -121,14 +104,11 @@ const ToDoListComponent: React.FC = () => {
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
 
-
         setDate(e.target.value) 
     } 
 
     const handleTimeChange = (e:ChangeEvent<HTMLInputElement>) => {
         setTime(e.target.value) // stores the value of the time set\
-        const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        setdisplayTime(displaytime)
         const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         setdisplayTime(displaytime)
     }
@@ -144,7 +124,6 @@ const ToDoListComponent: React.FC = () => {
     }
 
     function deleteTask(index: number){
-        setIsEditing(false)
         setIsEditing(false)
         setTasks(tasks.filter((_, i) => i !== index));
         setTasksBackup(tasksBackup.filter((_, i) => i !== index))
@@ -186,7 +165,6 @@ const ToDoListComponent: React.FC = () => {
         setEditIndex(index)
         setEditText(text)
         setIsEditing(true)
-        setIsEditing(true)
         if (date_time.toTimeString().slice(0, 5) === "08:00" && date_time.toISOString().split("T")[0] === "1970-01-01"){
             setEditTime("--:-- --")
         } else {
@@ -210,7 +188,6 @@ const ToDoListComponent: React.FC = () => {
 
     function saveEditing(index: number) {
         setIsEditing(false)
-        setIsEditing(false)
         setTasks(tasks.map((task, i) =>
             i === index ? {...task, text: editText, dueAt: editTaskDateTime()} : task
            
@@ -224,18 +201,10 @@ const ToDoListComponent: React.FC = () => {
             setTasks(tasks.filter((_, i) => i !== index));
             setTasksBackup(tasksBackup.filter((_, i) => i !== index))
         }
-
-        if (editText.trim() === "") {
-            setTasks(tasks.filter((_, i) => i !== index));
-            setTasksBackup(tasksBackup.filter((_, i) => i !== index))
-        }
     }
 
     const handleTimeEditChange = (e:ChangeEvent<HTMLInputElement>) => {
         setEditTime(e.target.value)
-        const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        seteditDisplayTime(displaytime)
-        console.log(editDisplayTime)
         const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         seteditDisplayTime(displaytime)
         console.log(editDisplayTime)
@@ -291,7 +260,7 @@ const ToDoListComponent: React.FC = () => {
                         required
                         />
                         
-                        <label className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{displayTime}</label>
+                        <label style={{fontFamily: '"Signika Negative", sans-serif' }} className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{displayTime}</label>
                         <input
                         className="absolute right-[19rem] top-[1.4rem] text-[0.9rem] outline-none w-[1.8rem] bg-transparent text-white  "
                         type="time"
@@ -304,7 +273,7 @@ const ToDoListComponent: React.FC = () => {
                         ><RotateCcw size={20} color="black"  /></button>
 
 
-                        <label className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{date.split('-').reverse().join('-')}</label>
+                        <label style={{fontFamily: '"Signika Negative", sans-serif' }} className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{date.split('-').reverse().join('-')}</label>
                         <input 
                         className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent"
                         type="date" 
@@ -339,13 +308,11 @@ const ToDoListComponent: React.FC = () => {
                                 
                                 {editIndex === index ? (
                                     <div>
-                                    <div>
                                         <input 
                                         className="absolute left-[3rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis bg-transparent "
                                         type="text"
                                         value={editText}
                                         onChange={handleTextEditChange}
-                                        placeholder={editText === "" ? "Input Task" : ""}
                                         placeholder={editText === "" ? "Input Task" : ""}
                                         />
 
@@ -393,18 +360,7 @@ const ToDoListComponent: React.FC = () => {
                                             {task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(3,6) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(0,3) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(6,10)}
                                             </span>
                                         </span>
-                                        <span>
-                                            <span className="absolute left-[53.6rem]">  
-                                                {task.dueAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
-                                            </span>
-                                            <span className="absolute left-[64.6rem]"> 
-                                                 
-                                            {task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(3,6) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(0,3) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(6,10)}
-                                            </span>
-                                        </span>
                                     )}
-                                </div>
-
                                 </div>
 
                                 )}
@@ -420,7 +376,6 @@ const ToDoListComponent: React.FC = () => {
 }
 
 
-//the ToDoListComponent is called and displayed within the whitecontainer
 //the ToDoListComponent is called and displayed within the whitecontainer
 const ToDoList = () => {
     return(

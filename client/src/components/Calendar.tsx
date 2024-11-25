@@ -47,13 +47,13 @@ const Calendar: React.FC = () => {
     <div className="flex justify-between items-center mb-3">
       <button
         onClick={prevMonth}
-        className="flex items-center justify-center hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300 ml-[30rem]"
+        className="mt-[-6rem] flex items-center justify-center hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300 ml-[29rem]"
       >
         <ChevronLeft size={24} />
     
       </button>
       <div
-        className="relative font-serif font-bold text-[#354F52] text-3xl cursor-pointer"
+        className="mt-[-6rem] relative font-serif font-bold text-[#354F52] text-4xl cursor-pointer"
         onClick={toggleDropdown}
       >
         <span>{format(currentMonth, 'MMMM yyyy')}</span>
@@ -97,7 +97,7 @@ const Calendar: React.FC = () => {
       </div>
       <button
         onClick={nextMonth}
-        className="flex items-center justify-center  hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300  mr-[30rem]"
+        className="mt-[-6rem] flex items-center justify-center  hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300  mr-[29rem]"
       >
         <ChevronRight size={24} />
       </button>
@@ -105,7 +105,7 @@ const Calendar: React.FC = () => {
   );
 
   const renderDaysOfWeek = () => (
-    <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="grid grid-cols-7 text-center font-semibold text-lg mb-2 mt-7">
+    <div className="grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-4">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
         <div key={day} className="p-1">{day}</div>
       ))}
