@@ -300,10 +300,8 @@ const ToDoListComponent: React.FC = () => {
                                 <input 
                                 className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                 type="checkbox"
+                                checked={task.completed}
                                 onChange={() => completeToggle(index)}
-
-                                
-                                
                                 />
                                 
                                 {editIndex === index ? (
