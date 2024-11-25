@@ -83,12 +83,15 @@ export const UserProvider = ({ children }: Props) => {
   };
 
   const logout = () => {
+    console.log("Logout function triggered!"); // Debug log
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    delete axios.defaults.headers.common["Authorization"];
     setUser(null);
-    setToken("");
-    navigate("/");
+    setToken(null);
+    navigate("/login"); // Ensure this path matches your routes
   };
+  
 
   return (
     <UserContext.Provider
