@@ -1,11 +1,11 @@
 
-import SideBar from "./SideBar";
-import WhiteContainer from "./WhiteContainer";
+import SideBar from "../components/SideBar";
+import WhiteContainer from "../components/WhiteContainer";
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "../Context/useAuth"; // Import useAuth for logout functionality
+import { useAuth } from "../context/useAuth"; // Import useAuth for logout functionality
 
-export default function Dashboard() {
+const DashboardPage = () => {
   const { logout } = useAuth(); // Access the logout function from useAuth
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -92,3 +92,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+export default DashboardPage

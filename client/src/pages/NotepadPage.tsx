@@ -1,8 +1,10 @@
+/* eslint-disable no-case-declarations */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import {FilePen, Trash2, FilePlus } from "lucide-react";
-import WhiteContainer from "./WhiteContainer";
-import SideBar from "./SideBar";
+import WhiteContainer from "../components/WhiteContainer";
+import SideBar from "../components/SideBar";
 import "react-quill/dist/quill.snow.css";
 
 // Ang function para magkuha sang random pastel color para sa background sang notes
@@ -12,7 +14,7 @@ const getRandomPastelColor = () => {
     return colors[randomIndex];
 };
 
-const Notes: React.FC = () => {
+const NotepadPage: React.FC = () => {
     const [notes, setNotes] = useState<any[]>([]); // Para sa listahan sang notes
     const [currentTitle, setCurrentTitle] = useState<string>(""); // Para sa current title sang note
     const [currentNote, setCurrentNote] = useState<string>(""); // Para sa content sang note
@@ -236,4 +238,4 @@ const Notes: React.FC = () => {
     );
 };
 
-export default Notes;
+export default NotepadPage;

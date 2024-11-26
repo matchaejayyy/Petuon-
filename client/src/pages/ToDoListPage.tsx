@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import WhiteContainer from "./WhiteContainer"
-import Sidebar from "./SideBar";
+import WhiteContainer from "../components/WhiteContainer"
+import Sidebar from "../components/SideBar";
 import { useState, ChangeEvent, FormEvent, useRef} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
-import Clock from "./Clock";
+import Clock from "../components/Clock";
 
 
 
@@ -100,7 +100,7 @@ const ToDoListComponent: React.FC = () => {
         setIsAnimatingDropDown(true);
         setTimeout(() => {
             setIsAnimatingDropDown(false);
-        }, 0); //duration sng drop down
+        }, 0.01); //duration sng drop down
 
     }
 
@@ -377,31 +377,27 @@ const ToDoListComponent: React.FC = () => {
 
                             </li>
                         )}
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
-            </div>
             </div>
         </>
     )
 }
 
 
-//the ToDoListComponent is called and displayed within the whitecontainer
-const ToDoList = () => {
+
+const ToDoListPage = () => {
     return(
         <>  
             <WhiteContainer>
-
-                
                 <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">To Do List</h1>
                 <Clock/>
-
               <ToDoListComponent/>
             </WhiteContainer>
-            
             <Sidebar/> 
         </>
     )
 }
 
-export default ToDoList
+export default ToDoListPage
