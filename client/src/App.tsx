@@ -3,11 +3,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import Dashboard from './components/Dashboard';
-import Calendar from './components/Calendar';
+import Dashboard from './pages/DashboardPage';
+import Calendar from './pages/CalendarPage';
 import Flashcard from './components/FlashCard';
-import ToDoList from './components/ToDoList';
-import Notepad from './components/Notepad'
+import ToDoList from './pages/ToDoListPage';
+import Notepad from './pages/NotepadPage';
+
 
 const App: React.FC = () => {
   return (
@@ -15,7 +16,7 @@ const App: React.FC = () => {
         <Routes>
           {/* Main Routee */}
           <Route path="/" element={<Dashboard />} />
-        
+
           <Route path="/Calendar" element={<Calendar />} />
           <Route path="/Flashcard" element={<Flashcard />} />
           <Route path="/ToDoList" element={<ToDoList />} />
@@ -26,4 +27,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
