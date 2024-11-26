@@ -6,7 +6,7 @@ interface WhiteContainerProps {
 
 const WhiteContainer: React.FC<WhiteContainerProps> = ({ children }) => {
   return (
-    <div className="ml-[8rem] bg-[#F6F6F6] bg-cover h-screen w-screen rounded-tl-[3rem] rounded-bl-[3rem] fixed z-10">
+    <div className="bg-cover p-4 md:px-8 flex flex-col items-center justify-center lg:rounded-l-xl lg:px-5">
       {children}
     </div>
   );

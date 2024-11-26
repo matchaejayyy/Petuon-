@@ -1,60 +1,101 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, WalletCards, CalendarRange, NotebookPen, ListTodo } from "lucide-react";
-import logo from "../assets/logo.png";
-import background from '../assets/BG.png';
+import {
+  LayoutDashboard,
+  WalletCards,
+  CalendarRange,
+  NotebookPen,
+  ListTodo,
+  User,
+  LogOut,
+} from "lucide-react";
+import background from "../assets/BG.png";
+import logo from "../assets/petuon_logo.png";
 
 const Sidebar: React.FC = () => {
-    // Ginakuha ang location (kung diin ka na nga page) gamit ang useLocation para sa highlight sa sidebar
-    const location = useLocation(); 
+  const location = useLocation();
 
-    // Muni nga function nagacheck kung pareho bala ang current nga path sa ginaklik nga link
-    const isActive = (path: string) => {
-        return location.pathname === path;  // Kung ang path pareho sa current nga page, nagabalik siya sang true
-    };
+  const isActive = (path: string) => location.pathname === path;
 
-    return (
-        <div 
-            className="flex flex-col h-screen w-screen bg-cover bg-center bg-no-repeat fixed bg-sm"   
-            style={{ backgroundImage: `url(${background})` }}>
-            
-            {/* Logo */}
-            <img src={logo} className="fixed left-[0.1rem] top-[1rem] size-[8rem]" alt="Logo" />
+  return (
+    <div
+      className="flex md:flex-row lg:flex-col justify-between items-center lg:justify-start bg-cover bg-no-repeat h-16 lg:h-full lg:w-20 md:h-24 rounded-t-2xl lg:rounded-none px-4 md:px-5 relative z-10"
+      style={{ backgroundImage: `url(${background})` }}
+    >
+      {/* Logo Section */}
+      <div className="hidden lg:flex items-center justify-center mb-6 lg:pt-6">
+        <img src={logo} alt="App Logo" className="w-12 h-12 lg:w-16 lg:h-16" />
+      </div>
 
-            {/* Sidebar Links */}
-            <div className="flex flex-col items-start space-y-5 fixed top-40 left-4">
-                <Link 
-                    to="/"  
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>
-                    <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191]" : "text-white"}`} />
-                </Link>
+      {/* Icons with Gap */}
+      <div className="flex lg:flex-col gap-4 md:gap-[42px] lg:gap-6">
+        <Link
+          to="/"
+          className={`relative ${
+            isActive("/")
+              ? "text-[#719191] bg-white p-2 rounded-full"
+              : "text-white"
+          }`}
+        >
+          <LayoutDashboard className="w-6 h-6 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+        </Link>
+        <Link
+          to="#"
+          className={`relative ${
+            isActive("#")
+              ? "text-[#719191] bg-white p-2 rounded-full"
+              : "text-white"
+          }`}
+        >
+          <User className="w-6 h-6 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+        </Link>
+        <Link
+          to="/Calendar"
+          className={`relative ${
+            isActive("/Calendar")
+              ? "text-[#719191] bg-white p-2 rounded-full"
+              : "text-white"
+          }`}
+        >
+          <CalendarRange className="w-6 h-6 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+        </Link>
+        <Link
+          to="/Notepad"
+          className={`relative ${
+            isActive("/Notepad")
+              ? "text-[#719191] bg-white p-2 rounded-full"
+              : "text-white"
+          }`}
+        >
+          <NotebookPen className="w-6 h-6 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+        </Link>
+        <Link
+          to="/ToDoList"
+          className={`relative ${
+            isActive("/ToDoList")
+              ? "text-[#719191] bg-white p-2 rounded-full"
+              : "text-white"
+          }`}
+        >
+          <ListTodo className="w-6 h-6 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+        </Link>
+        <Link
+          to="/Flashcard"
+          className={`relative ${
+            isActive("/Flashcard")
+              ? "text-[#719191] bg-white p-2 rounded-full"
+              : "text-white"
+          }`}
+        >
+          <WalletCards className="w-6 h-6 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+        </Link>
+      </div>
 
-                <Link 
-                    to="/Flashcard"
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Flashcard") ? "bg-[#F6F6F6]" : ""}`}>
-                    <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Flashcard") ? "text-[#719191]" : "text-white"}`} />
-                </Link>
-
-                <Link 
-                    to="/Calendar" 
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Calendar") ? "bg-[#F6F6F6]" : ""}`}>
-                    <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191]" : "text-white"}`} />
-                </Link>
-                
-                <Link 
-                    to="/Notepad"  
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Notepad") ? "bg-[#F6F6F6]" : ""}`}>
-                    <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Notepad") ? "text-[#719191]" : "text-white"}`} />
-                </Link>
-                
-                <Link 
-                    to="/ToDoList" 
-                    className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/ToDoList") ? "bg-[#F6F6F6]" : ""}`}>
-                    <ListTodo size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/ToDoList") ? "text-[#719191]" : "text-white"}`} />
-                </Link>
-            </div>
-        </div>
-    );
-}
+      <Link to="#" className="text-white lg:mt-auto lg:mb-4 lg:self-center">
+        <LogOut className="w-6 h-6 mb-4 md:w-12 md:h-12 lg:w-8 lg:h-8" />
+      </Link>
+    </div>
+  );
+};
 
 export default Sidebar;
