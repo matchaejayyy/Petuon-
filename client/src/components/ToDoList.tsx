@@ -307,6 +307,7 @@ const ToDoListComponent: React.FC = () => {
                                 type="checkbox"
                                 checked={task.completed}
                                 onChange={() => completeToggle(index)}
+                                checked={task.completed}
                                 />
                                 
                                 {editIndex === index ? (
