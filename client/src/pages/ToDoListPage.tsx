@@ -100,8 +100,7 @@ const ToDoListComponent: React.FC = () => {
         setTimeout(() => {
             setIsAnimatingDropDown(false);
 
-        }, 0.01); //duration sng drop down
-
+        }, 0); //duration sng drop down
 
     }
 
