@@ -16,8 +16,10 @@ export default function Dashboard() {
     <div>
       <WhiteContainer>
         <div>
-          <h1 className="text-[2rem] text-[#354F52] font-serif font-bold tracking-normal mb-4 ml-8 mt-7">
-            Dashboard
+
+          <h1
+             style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7" > Dashboard
+
           </h1>
           <div className="fixed top-9 right-12 flex items-center space-x-4">
             <Bell className="text-[#354F52] h-8 w-8 cursor-pointer" />

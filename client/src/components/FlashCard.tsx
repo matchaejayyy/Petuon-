@@ -105,4 +105,6 @@ const FlashCard = () => {
     )
 }
 
+
 export default FlashCard
+
