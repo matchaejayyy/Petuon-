@@ -1,13 +1,15 @@
+
 import SideBar from "./SideBar";
 import WhiteContainer from "./WhiteContainer";
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "../Context/useAuth";
+import { useAuth } from "../Context/useAuth"; // Import useAuth for logout functionality
 
 export default function Dashboard() {
-  const { logout, isLoggedIn , user } = useAuth();
+  const { logout } = useAuth(); // Access the logout function from useAuth
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // Toggle dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -21,17 +23,23 @@ export default function Dashboard() {
              style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7" > Dashboard
 
           </h1>
+          {/* Top-right section for Bell and Profile */}
           <div className="fixed top-9 right-12 flex items-center space-x-4">
+            {/* Bell Icon */}
             <Bell className="text-[#354F52] h-8 w-8 cursor-pointer" />
+            {/* Profile Icon with Dropdown */}
             <div className="relative">
+              {/* Profile Icon (clickable) */}
               <button
                 onClick={toggleDropdown}
                 className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300"
               >
                 <User className="text-[#354F52] h-7 w-7" />
               </button>
+              {/* Dropdown Menu */}
               {isDropdownOpen && (
                 <div className="absolute top-12 right-0 w-56 bg-white shadow-lg rounded-lg border">
+                  {/* Profile Section */}
                   <div className="p-4 border-b flex items-center">
                     <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-[#354F52]">
                       <User className="h-6 w-6" />
@@ -41,6 +49,7 @@ export default function Dashboard() {
                       <p className="text-sm text-gray-500">carmine@gmail.com</p>
                     </div>
                   </div>
+                  {/* Dropdown Options */}
                   <ul className="py-2">
                     <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
                       <Trophy className="h-5 w-5 mr-2 text-gray-700" />
@@ -55,10 +64,12 @@ export default function Dashboard() {
                       Darkmode
                     </li>
                   </ul>
+                  {/* Footer Options */}
                   <ul className="border-t">
+                    {/* Logout Option */}
                     <li
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={logout}
+                      onClick={logout} // Call the logout function here
                     >
                       Log out
                     </li>
