@@ -105,7 +105,7 @@ const Calendar: React.FC = () => {
   );
 
   const renderDaysOfWeek = () => (
-    <div className="grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-4">
+    <div className="text-[#354F52] grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-4">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
         <div key={day} className="p-1">{day}</div>
       ))}
@@ -127,7 +127,7 @@ const Calendar: React.FC = () => {
 
       const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 ${
         isCurrentMonth ? '' : 'text-gray-400'
-      } ${isToday ? 'bg-[#FE9B72] text-black border-[#E5EE91] shadow-lg' : ''}`; // Custom style for today's date
+      } ${isToday ? 'bg-[#FE9B72] text-white border-[#E5EE91] shadow-lg' : ''}`; // Custom style for today's date
 
       dateCells.push(
         <div key={day.toString()} className={dayClasses}>
@@ -144,8 +144,8 @@ const Calendar: React.FC = () => {
     <>
       <WhiteContainer>
         <div>
-          <h1 className="text-[2.5rem] text-[#354F52] font-serif mb-3 ml-6 mt-6">Calendar</h1>
-          <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="p-3 ml-[2rem] max-w-[1340px] mx-auto">
+          <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">Calendar</h1>
+          <div style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-[1rem]">
             {renderHeader()}
             {renderDaysOfWeek()}
             {renderCells()}
