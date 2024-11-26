@@ -1,15 +1,13 @@
-
 import SideBar from "./SideBar";
 import WhiteContainer from "./WhiteContainer";
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
-import { useState } from "react";
-import { useAuth } from "../Context/useAuth"; // Import useAuth for logout functionality
+import { useState } from "react"; 
+import { useAuth } from "../Context/useAuth";
 
-export default function Dashboard() {
-  const { logout } = useAuth(); // Access the logout function from useAuth
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+const Dashboard: React.FC = () => {
+  const { logout } = useAuth();
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-  // Toggle dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -18,10 +16,11 @@ export default function Dashboard() {
     <div>
       <WhiteContainer>
         <div>
-
           <h1
-             style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7" > Dashboard
-
+            style={{ fontFamily: '"Crimson Pro", serif' }}
+            className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7"
+          >
+            Dashboard
           </h1>
           {/* Top-right section for Bell and Profile */}
           <div className="fixed top-9 right-12 flex items-center space-x-4">
@@ -69,7 +68,14 @@ export default function Dashboard() {
                     {/* Logout Option */}
                     <li
                       className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                      onClick={logout} // Call the logout function here
+                      onClick={() => {
+                        console.log("Logout button clicked!");  // Debugging: Check if clicked
+                        if (typeof logout === 'function') {
+                          logout();  // Ensure it's a function before calling
+                        } else {
+                          console.error("logout is not a function");
+                        }
+                      }}
                     >
                       Log out
                     </li>
@@ -91,4 +97,6 @@ export default function Dashboard() {
       <SideBar />
     </div>
   );
-}
+};
+
+export default Dashboard;

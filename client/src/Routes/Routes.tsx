@@ -8,14 +8,16 @@ import ToDoList from '../components/ToDoList';
 import Notepad from '../components/Notepad';
 import LoginPage from '../components/LoginPage';
 import RegisterPage from '../Pages/Register';
+import { UserProvider } from '../Context/useAuth'; // Ensure correct import path
 
 interface RoutersProps {
   isLoggedIn: boolean;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
 }
 
-const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
+const Routers: React.FC<RoutersProps> = ({ isLoggedIn, setIsLoggedIn }) => {
   return (
-    <Router>
+    <UserProvider setIsLoggedIn={setIsLoggedIn}>
       <Routes>
         {isLoggedIn ? (
           <>
@@ -36,8 +38,8 @@ const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
           </>
         )}
       </Routes>
-    </Router>
+    </UserProvider>
   );
 };
 
-export default Routers; 
+export default Routers;

@@ -1,29 +1,30 @@
-import { createContext, useEffect, useState } from "react";
+import React , { createContext, useEffect, useState, ReactNode, FC } from "react";
 import { UserProfile } from "../Model/User";
 import { useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../Services/AuthService";
 import { toast } from "react-toastify";
-import React from "react";
 import axios from "axios";
 
-type UserContextType = {
+interface UserContextType {
   user: UserProfile | null;
   token: string | null;
   registerUser: (email: string, username: string, password: string) => void;
   loginUser: (username: string, password: string) => void;
-  logout: () => void;
   isLoggedIn: () => boolean;
-};
+  logout: () => void;
+}
 
-type Props = { children: React.ReactNode };
+interface Props {
+  children: ReactNode;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
 
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
-export const UserProvider = ({ children }: Props) => {
+export const UserProvider: FC<Props> = ({ children, setIsLoggedIn }) => {
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
@@ -33,8 +34,19 @@ export const UserProvider = ({ children }: Props) => {
       setToken(token);
       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     }
-    setIsReady(true);
   }, []);
+
+  const logout = () => {
+    console.log("Logout triggered");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    delete axios.defaults.headers.common["Authorization"];
+    setUser(null);
+    setToken(null);
+    toast.info("Logged out successfully!");
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
 
   const registerUser = async (
     email: string,
@@ -82,21 +94,26 @@ export const UserProvider = ({ children }: Props) => {
     return !!user;
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    setToken("");
-    navigate("/");
-  };
-
   return (
     <UserContext.Provider
-      value={{ loginUser, user, token, logout, isLoggedIn, registerUser }}
+      value={{
+        user,
+        token,
+        loginUser, 
+        registerUser,
+        isLoggedIn, 
+        logout, 
+      }}
     >
-      {isReady ? children : null}
+      {children}
     </UserContext.Provider>
   );
 };
 
-export const useAuth = () => React.useContext(UserContext);
+export const useAuth = () => {
+  const context = React.useContext(UserContext);
+  if (!context) {
+    throw new Error("useAuth must be used within a UserProvider");
+  }
+  return context;
+};
