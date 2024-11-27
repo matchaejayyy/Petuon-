@@ -37,8 +37,6 @@ const ToDoListComponent: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const lastTaskRef = useRef<HTMLLIElement | null>(null);
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
     const [isAnimatingDropDown, setIsAnimatingDropDown] = useState<boolean>(false); //para sa dropdown animation
 
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
