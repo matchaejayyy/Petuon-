@@ -1,15 +1,15 @@
-import React , { createContext, useEffect, useState, ReactNode, FC } from "react";
-import { UserProfile } from "../Model/User";
+import React, { createContext, useEffect, useState, ReactNode, FC } from "react";
+import { UserProfile, UserProfileToken } from "../Model/User"; // Ensure correct import path
 import { useNavigate } from "react-router-dom";
-import { loginAPI, registerAPI } from "../services/AuthService";
+import { signUp, signIn, signOut } from "../Services/AuthService";
 import { toast } from "react-toastify";
-import axios from "axios";
+import supabase from '../../src/SupabaseClient';
 
 interface UserContextType {
   user: UserProfile | null;
   token: string | null;
-  registerUser: (email: string, username: string, password: string) => void;
-  loginUser: (username: string, password: string) => void;
+  registerUser: (email: string, password: string) => void;
+  loginUser: (email: string, password: string) => void;
   isLoggedIn: () => boolean;
   logout: () => void;
 }
@@ -27,67 +27,69 @@ export const UserProvider: FC<Props> = ({ children, setIsLoggedIn }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-    if (user && token) {
-      setUser(JSON.parse(user));
-      setToken(token);
-      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-    }
+    const fetchSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error("Error fetching session:", error);
+        return;
+      }
+      if (session) {
+        setUser({
+          userName: session.user.email || '', // Using email as userName
+          email: session.user.email || '',
+        });
+        setToken(session.access_token);
+      }
+    };
+
+    fetchSession();
   }, []);
 
-  const logout = () => {
-    console.log("Logout triggered");
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    delete axios.defaults.headers.common["Authorization"];
-    setUser(null);
-    setToken(null);
-    toast.info("Logged out successfully!");
-    setIsLoggedIn(false);
-    navigate("/login");
+  const registerUser = async (email: string, password: string) => {
+    try {
+      const user = await signUp(email, password);
+      if (user) {
+        setUser({
+          userName: user.email || '', // Using email as userName
+          email: user.email || '',
+        });
+        toast.success("Registration Success!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.warning("Server error occurred");
+    }
   };
 
-  const registerUser = async (
-    email: string,
-    username: string,
-    password: string
-  ) => {
-    await registerAPI(email, username, password)
-      .then((res) => {
-        if (res) {
-          localStorage.setItem("token", res?.data.token);
-          const userObj = {
-            userName: res?.data.userName,
-            email: res?.data.email,
-          };
-          localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
-          setUser(userObj!);
-          toast.success("Login Success!");
-          navigate("/search");
-        }
-      })
-      .catch((e) => toast.warning("Server error occured"));
+  const loginUser = async (email: string, password: string) => {
+    try {
+      const session = await signIn(email, password);
+      if (session) {
+        setUser({
+          userName: session.user.email || '', // Using email as userName
+          email: session.user.email || '',
+        });
+        setToken(session.access_token);
+        setIsLoggedIn(true);
+        navigate("/dashboard");
+        toast.success("Login Success!");
+      }
+    } catch (error) {
+      toast.warning("Server error occurred");
+    }
   };
 
-  const loginUser = async (username: string, password: string) => {
-    await loginAPI(username, password)
-      .then((res) => {
-        if (res) {
-          localStorage.setItem("token", res?.data.token);
-          const userObj = {
-            userName: res?.data.userName,
-            email: res?.data.email,
-          };
-          localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
-          setUser(userObj!);
-          toast.success("Login Success!");
-          navigate("/search");
-        }
-      })
-      .catch((e) => toast.warning("Server error occured"));
+  const logout = async () => {
+    try {
+      await signOut();
+      setUser(null);
+      setToken(null);
+      setIsLoggedIn(false);
+      navigate("/login");
+      toast.info("Logged out successfully!");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
   };
 
   const isLoggedIn = () => {
@@ -99,10 +101,10 @@ export const UserProvider: FC<Props> = ({ children, setIsLoggedIn }) => {
       value={{
         user,
         token,
-        loginUser, 
+        loginUser,
         registerUser,
-        isLoggedIn, 
-        logout, 
+        isLoggedIn,
+        logout,
       }}
     >
       {children}

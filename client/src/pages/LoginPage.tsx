@@ -5,8 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBG.png";
-
-type Props = {};
+import { signIn } from "../Services/AuthService";
+import supabase from '../../src/SupabaseClient';
 
 type LoginFormsInputs = {
   userName: string;
@@ -18,7 +18,7 @@ const validation = Yup.object().shape({
   password: Yup.string().required("Password is required"),
 });
 
-const LoginPage: React.FC<Props> = () => {
+const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const {
     register,
@@ -26,22 +26,29 @@ const LoginPage: React.FC<Props> = () => {
     formState: { errors },
   } = useForm<LoginFormsInputs>({ resolver: yupResolver(validation) });
 
-  const handleLogin = (form: LoginFormsInputs) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const userExists = users.find(
-      (user: LoginFormsInputs) =>
-        user.userName === form.userName && user.password === form.password
-    );
-
-    if (userExists) {
-      localStorage.setItem("isLoggedIn", "true");
-      alert("Login successful! Redirecting to dashboard...");
-      navigate("/dashboard"); // Redirect to the dashboard
-      window.location.reload(); // This will force a page refresh after navigation
-    } else {
-      alert("Invalid username or password");
+  const handleLogin = async (form: LoginFormsInputs) => {
+    try {
+      // Check if user exists in the profiles table based on username (you may need to adjust this)
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('userName', form.userName)
+        .single();
+      
+      if (data) {
+        const session = await signIn(data.email, form.password); // Login using email from profiles
+        if (session) {
+          alert("Login successful! Redirecting to dashboard...");
+          navigate("/dashboard");
+        }
+      } else {
+        alert("User not found.");
+      }
+    } catch (error: any) {
+      alert(error.message || "Login failed. Please check your credentials.");
     }
   };
+  
 
   return (
     <section

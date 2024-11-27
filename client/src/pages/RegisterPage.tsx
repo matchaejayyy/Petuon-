@@ -4,15 +4,14 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBG.png";
 import { useForm } from "react-hook-form";
-
-type Props = {};
+import { signUp } from "../Services/AuthService";
+import supabase from '../../src/SupabaseClient';
 
 type RegisterFormsInputs = {
   email: string;
   userName: string;
   password: string;
 };
-
 const validation = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   userName: Yup.string().required("Username is required"),
@@ -21,7 +20,7 @@ const validation = Yup.object().shape({
     .required("Password is required"),
 });
 
-const RegisterPage: React.FC<Props> = () => {
+const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const {
     register,
@@ -29,19 +28,22 @@ const RegisterPage: React.FC<Props> = () => {
     formState: { errors },
   } = useForm<RegisterFormsInputs>({ resolver: yupResolver(validation) });
 
-  const handleRegister = (form: RegisterFormsInputs) => {
-    // Simulate registering the user and saving in localStorage
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    users.push({
-      email: form.email,
-      userName: form.userName,
-      password: form.password,
-    });
-    localStorage.setItem("users", JSON.stringify(users));
-
-    alert("Registration successful! Please log in.");
-    navigate("/login"); // Redirect to the login page
+  const handleRegister = async (form: RegisterFormsInputs) => {
+    try {
+      const user = await signUp(form.email, form.password);
+      if (user) {
+        // Store additional user info (e.g., userName) in the profiles table
+        await supabase.from("profiles").insert([
+          { user_id: user.id, userName: form.userName },
+        ]);
+        alert("Registration successful! Please log in.");
+        navigate("/login");
+      }
+    } catch (error: any) {
+      alert(error.message || "Registration failed. Please try again.");
+    }
   };
+
 
   return (
     <section
@@ -73,6 +75,7 @@ const RegisterPage: React.FC<Props> = () => {
                   type="text"
                   id="email"
                   className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  placeholder="Email"
                   {...register("email")}
                 />
                 {errors.email && (

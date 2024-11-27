@@ -1,34 +1,33 @@
-import axios from "axios";
-import { handleError } from "../helpers/Errorhandler";
-import { UserProfileToken } from "../model/User";
+import supabase from '../../src/SupabaseClient';
 
-const api = "http://localhost:5167/api/";
 
-export const loginAPI = async (username: string, password: string) => {
-  try {
-    const data = await axios.post<UserProfileToken>(api + "account/login", {
-      username: username,
-      password: password,
-    });
-    return data;
-  } catch (error) {
-    handleError(error);
+export const signUp = async (email: string, password: string) => {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
+  if (error) {
+    throw error;
+  }
+  return data.user;
+};
+
+export const signIn = async (email: string, password: string) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) {
+    throw error;
+  }
+  return data.session;
+};
+
+export const signOut = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw error;
   }
 };
 
-export const registerAPI = async (
-  email: string,
-  username: string,
-  password: string
-) => {
-  try {
-    const data = await axios.post<UserProfileToken>(api + "account/register", {
-      email: email,
-      username: username,
-      password: password,
-    });
-    return data;
-  } catch (error) {
-    handleError(error);
-  }
-};
+
