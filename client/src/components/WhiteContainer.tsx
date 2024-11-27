@@ -6,10 +6,10 @@ interface WhiteContainerProps {
 
 const WhiteContainer: React.FC<WhiteContainerProps> = ({ children }) => {
   return (
-    <div className="ml-[8rem] bg-[#F6F6F6] bg-cover h-screen w-screen rounded-tl-[3rem] rounded-bl-[3rem] fixed z-10">
+    <div className="bg-[#ffffff] bg-cover h-[calc(100vh-4rem)] overflow-y-auto w-screen fixed px-4 lg:ml-[8rem] ">
       {children}
     </div>
   );
 };
 
-export default WhiteContainer;
+export default WhiteContainer;  
