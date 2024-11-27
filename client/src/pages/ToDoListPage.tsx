@@ -94,7 +94,7 @@ const ToDoListComponent: React.FC = () => {
             return new Date(taskDate + " " + taskTime + ":00") 
         }
     }
-
+ 
     function editTaskDateTime(){
         if (editDate === "mm/dd/yyyy" && editTime === "--:-- --") {
             return new Date(0)
@@ -112,13 +112,13 @@ const ToDoListComponent: React.FC = () => {
         try {
             
             const newTask = {
-                task_id: 0,
+                task_id:  0,
                 text: task, // the description of the task
                 createdAt: new Date(), // stores the Date from when it is created
                 dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
                 completed: false // the status of if it is complete or not
             }
-            
+            axios.post('http://localhost:3002/insertTask', newTask)
            
             // stores the new task in an array.
             // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
@@ -127,8 +127,6 @@ const ToDoListComponent: React.FC = () => {
                     newTask  
                 ]);
             } 
-            console.log(tasks)
-            await axios.post('http://localhost:3002/insertTask', newTask)
 
             // stores the new task in a backup array.
             setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
