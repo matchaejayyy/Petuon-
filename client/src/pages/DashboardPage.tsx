@@ -18,6 +18,7 @@ const DashboardPage: React.FC = () => {
         </div>
       </WhiteContainer>
       <Sidebar />
+    
     </div>
   );
 };
