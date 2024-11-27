@@ -7,7 +7,7 @@ import Clock from "../components/Clock";
 import axios from 'axios';
 
 
-type ToDoList = { // Container for the each task element that it contains
+interface ToDoList { // Container for the each task element that it contains
     task_id: number
     text: string
     createdAt: Date
@@ -67,16 +67,13 @@ const ToDoListComponent: React.FC = () => {
         };
     
         fetchData(); 
-        return () => {
-       
-        };
       }, []);
 
     useEffect(() => { //updates tasks
         const interval = setInterval(() => {
             setTasks((prevTasks) =>
                 prevTasks.map((task) => {
-                    return task
+                    return task;
                 
              })
             );
@@ -112,14 +109,15 @@ const ToDoListComponent: React.FC = () => {
         try {
             
             const newTask = {
-                task_id:  0,
+                task_id:  Math.floor(Math.random() * 1000000000),
                 text: task, // the description of the task
                 createdAt: new Date(), // stores the Date from when it is created
                 dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
                 completed: false // the status of if it is complete or not
             }
-            axios.post('http://localhost:3002/insertTask', newTask)
-           
+         
+    
+            
             // stores the new task in an array.
             // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
             if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
@@ -128,14 +126,15 @@ const ToDoListComponent: React.FC = () => {
                 ]);
             } 
 
+    
+
             // stores the new task in a backup array.
             setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
                 newTask
             ]);
 
-          
-
-            
+            axios.post("http://localhost:3002/insertTask", newTask);
+        
             setTask("") // resets the value of the Task
             setDate("mm/dd/yyyy")  // resets the value of the Date
             setTime("--:-- --") // resets the value of the Time
