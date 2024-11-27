@@ -5,11 +5,10 @@ import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import Clock from "../components/Clock";
 import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 
 
 interface ToDoList { // Container for the each task element that it contains
-    task_id: string;
+    task_id: number
     text: string
     createdAt: Date
     dueAt: Date
@@ -18,7 +17,7 @@ interface ToDoList { // Container for the each task element that it contains
 
 const ToDoListComponent: React.FC = () => {
     const [tasks, setTasks] = useState<ToDoList[]>([]); // stores tasks within the Array
-    const [tasksBackup, setTasksBackup] = useState<ToDoList[]>([]); // a preserved version of the task use in the filter functionality
+    const [tasksBackup, setTasksBackup] = useState<ToDoList[]>([]); // a preserved version of the task use in the filter functionaility
     const [task, setTask] = useState<string>(""); // creates tasks
     const [date, setDate] = useState<string>("mm/dd/yyyy"); // creates date
     const [time, setTime] = useState<string>("--:-- --") // creates time
@@ -45,7 +44,7 @@ const ToDoListComponent: React.FC = () => {
         const fetchData = async () => {
           try {
             const response = await axios.get('http://localhost:3002/getTask');
-              const taskData = response.data.map((task: {task_id: string, text: string; created_at: Date; due_at: Date; completed: boolean }) => {
+              const taskData = response.data.map((task: {task_id: BigInteger, text: string; created_at: Date; due_at: Date; completed: boolean }) => {
                 const createdAt = new Date(task.created_at);
                 const dueAt = new Date(task.due_at);
 
@@ -61,10 +60,10 @@ const ToDoListComponent: React.FC = () => {
           
             setTasks(taskData);
             setTasksBackup(taskData);
+              
           } catch (err) {
             console.error('There was an error retrieving data!', err);
           }
-          console.log(tasks)
         };
     
         fetchData(); 
@@ -105,18 +104,20 @@ const ToDoListComponent: React.FC = () => {
 
     
     const addTask = async (e: FormEvent) => { // when form is submitted 
-        e.preventDefault();
+        e.preventDefault(); // prevent from redirecting to a new page when submitted
 
         try {
+            
             const newTask = {
-                task_id: uuidv4(),
+                task_id:  Math.floor(Math.random() * 1000000000),
                 text: task, // the description of the task
                 createdAt: new Date(), // stores the Date from when it is created
                 dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
                 completed: false // the status of if it is complete or not
             }
          
-           
+    
+            
             // stores the new task in an array.
             // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
             if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
@@ -125,34 +126,38 @@ const ToDoListComponent: React.FC = () => {
                 ]);
             } 
 
+    
+
             // stores the new task in a backup array.
             setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
                 newTask
             ]);
 
+            axios.post("http://localhost:3002/insertTask", newTask);
+        
             setTask("") // resets the value of the Task
             setDate("mm/dd/yyyy")  // resets the value of the Date
             setTime("--:-- --") // resets the value of the Time
-
+         
             setIsAnimatingDropDown(true);
             setTimeout(() => {
                 setIsAnimatingDropDown(false);
             }, 0.01); //duration sng drop down
 
             
-            if (lastTaskRef.current) {
-                lastTaskRef.current.scrollIntoView({
-                    behavior: "smooth",
-                    block: "end", 
-                });
-            }
 
-             await axios.post("http://localhost:3002/insertTask", newTask);
-            
-            
         } catch (err) {
             console.error('There was an error inserting Task', err)
-        } 
+        }
+
+
+        if (lastTaskRef.current) {
+            lastTaskRef.current.scrollIntoView({
+                behavior: "smooth",
+                block: "end", 
+            });
+        }
+
     }
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +175,7 @@ const ToDoListComponent: React.FC = () => {
         setTask(e.target.value) // stores the description of the task
     };
     
-    const  completeToggle = async (task_id: string) => {
+    const  completeToggle = async (task_id: number) => {
         try {
             const FindComplete = tasks.find(task => task.task_id ===  task_id);
             
@@ -192,16 +197,16 @@ const ToDoListComponent: React.FC = () => {
            
         } catch (error) {
             console.error('Error completing task:', error);
-        } 
+        }
     }
 
-    const deleteTask = async (task_id: string) => {
+    const deleteTask = async (task_id: number) => {
         try {
+            await axios.delete(`http://localhost:3002/deleteTask/${task_id}`);
             setIsEditing(false)
             setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
             setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
             cancelEditing()
-            await axios.delete(`http://localhost:3002/deleteTask/${task_id}`);
         }
         catch (error) {
             console.error('Error deleting task:', error);
@@ -264,7 +269,7 @@ const ToDoListComponent: React.FC = () => {
         setEditText("")
     }
 
-    async function saveEditing(task_id: string) {
+    async function saveEditing(task_id: number) {
         try {
             const updatedText = editText.trim();
             const updatedDueAt = editTaskDateTime();
@@ -296,7 +301,7 @@ const ToDoListComponent: React.FC = () => {
                 dueAt: dueAt,
             });
 
-  
+            console.log(editTime)
         } catch (error) {
             console.log('There was an error updating task', error)
         }
@@ -398,7 +403,7 @@ const ToDoListComponent: React.FC = () => {
                                 className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                 type="checkbox"
                                 checked={task.completed}
-                                onChange={() => completeToggle(task.task_id!)}
+                                onChange={() => completeToggle(task.task_id)}
                                 />
                                 
                                 {editIndex === index ? (
@@ -427,7 +432,7 @@ const ToDoListComponent: React.FC = () => {
                                         <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('/')}</label>
                                         <input
                                         type="date"
-                                        className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
+                                        className="absolute mt-[-0.1rem] right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
 
                                         value={editDate}
                                         onChange={handleDateEditChange}
@@ -439,7 +444,7 @@ const ToDoListComponent: React.FC = () => {
                                          className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem]"
                                          onClick={()=> setEditDate("mm/dd/yyyy")}
                                          ><RotateCcw size={20}/></button>
-                                        <button onClick={() => saveEditing(task.task_id!)}
+                                        <button onClick={() => saveEditing(task.task_id)}
                                         className="absolute right-[7rem] mt-[0rem]"
                                             ><Save size={20}/></button> 
                                     </div>
