@@ -40,10 +40,10 @@ app.get('/getTask', async (req, res) => {
 
 app.post('/insertTask', async (req, res) => {
   try {
-  const {task_id, text, createdAt, dueAt, completed } = req.body;
+  const { text, createdAt, dueAt, completed } = req.body;
 
-  const query = 'INSERT INTO tasks (task_id, text, created_at, due_at, completed) VALUES ($1, $2, $3, $4, $5) RETURNING *';
-  const values = [task_id, text, createdAt, dueAt, completed];
+  const query = 'INSERT INTO tasks (text, created_at, due_at, completed) VALUES ($1, $2, $3, $4) RETURNING *';
+  const values = [text, createdAt, dueAt, completed];
 
   pool.query(query, values)
 
