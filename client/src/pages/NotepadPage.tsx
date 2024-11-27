@@ -137,11 +137,11 @@ const NotepadPage: React.FC = () => {
 
                 {/* Filter Buttons */}
                 <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8 ">
-                    <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>All</button>
-                    <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "font-serif font-bold bg-[#657F83] text-white " : "bg-none"}`}>Today</button>
-                    <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>Yesterday</button>
-                    <button onClick={() => setFilter("This Week")} className={`px-4 py-2 rounded-md ${filter === "This Week" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>This Week</button>
-                    <button onClick={() => setFilter("This Month")} className={`px-4 py-2 rounded-md ${filter === "This Month" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}>This Month</button>
+                    <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>All</button>
+                    <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "font-serif font-bold bg-[#657F83] text-white " : "bg-none"} hover:scale-110 `}>Today</button>
+                    <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>Yesterday</button>
+                    <button onClick={() => setFilter("This Week")} className={`px-4 py-2 rounded-md ${filter === "This Week" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>This Week</button>
+                    <button onClick={() => setFilter("This Month")} className={`px-4 py-2 rounded-md ${filter === "This Month" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>This Month</button>
                 </div>
 
                 {/* Notes Editor or Full Note View */}
@@ -186,7 +186,7 @@ const NotepadPage: React.FC = () => {
                         <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-1 w-max">
                             {/* New Note Button */}
                             <div
-                                className="p-6 border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2 ,"
+                                className="p-6 border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20,"
                                 onClick={() => setCreatingNewNote(true)}
                                 style={{ 
                                     width: "16rem", // Set consistent width
@@ -195,18 +195,18 @@ const NotepadPage: React.FC = () => {
                                 }}
                                 //add icon
                                 >
-                                <FilePlus size={90}  className="mb-2 text-[#354F52]" />  
+                                <FilePlus size={90}  className="mb-2 text-[#354F52] " />  
                             </div>                  
                             {/* Render Notes */}
                             {filteredNotes.length === 0 ? (
-                                <div className="text-center mt-4 ml-5">
+                                <div className="text-center mt-4 ml-5 ">
                                     <p className="text-2xl font-serif font-bold text-gray-500">No notes available.</p>
                                 </div>
                             ) : (
                                 filteredNotes.map((note) => (
                                     <div
                                         key={note.id}
-                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer ml-5 mb-2"
+                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20"
                                         style={{ 
                                             width: "16rem", // Set consistent width
                                             minHeight: "16rem", // Set consistent height

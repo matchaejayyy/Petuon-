@@ -25,8 +25,11 @@ const DashboardPage = () => {
           </h1>
           {/* Top-right section for Bell and Profile */}
           <div className="fixed top-9 right-12 flex items-center space-x-4">
+          <span className="mt-[-1rem] ml-[2.3rem] animate-ping absolute inline-flex h-[.5rem] w-[.5rem] rounded-full bg-sky-400 opacity-75 duration-1000"></span>
+            
             {/* Bell Icon */}
             <Bell className="text-[#354F52] h-8 w-8 cursor-pointer" />
+            
             {/* Profile Icon with Dropdown */}
             <div className="relative">
               {/* Profile Icon (clickable) */}
