@@ -1,7 +1,7 @@
 import React , { createContext, useEffect, useState, ReactNode, FC } from "react";
 import { UserProfile } from "../Model/User";
 import { useNavigate } from "react-router-dom";
-import { loginAPI, registerAPI } from "../Services/AuthService";
+import { loginAPI, registerAPI } from "../services/AuthService";
 import { toast } from "react-toastify";
 import axios from "axios";
 
