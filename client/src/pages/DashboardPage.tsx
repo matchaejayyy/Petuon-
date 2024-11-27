@@ -92,6 +92,7 @@ const DashboardPage = () => {
         </div>
       </WhiteContainer>
       <SideBar />
+    
     </div>
   );
 }
