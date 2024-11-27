@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
-import { useState, ChangeEvent, FormEvent, useRef} from "react"
+import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import Clock from "../components/Clock";
-
+import axios from 'axios';
 
 
 type ToDoList = { // Container for the each task element that it contains
+    task_id: number
     text: string
     createdAt: Date
     dueAt: Date
@@ -40,6 +41,51 @@ const ToDoListComponent: React.FC = () => {
 
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
 
+    useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await axios.get('http://localhost:3002/getTask');
+              const taskData = response.data.map((task: {task_id: BigInteger, text: string; created_at: Date; due_at: Date; completed: boolean }) => {
+                const createdAt = new Date(task.created_at);
+                const dueAt = new Date(task.due_at);
+
+                return {
+                    task_id: task.task_id,
+                    text: task.text,
+                    createdAt: createdAt,
+                    dueAt: dueAt,
+                    completed: task.completed,
+                }
+                
+            });
+            console.log(taskData[0].task_id)
+            setTasks(taskData);
+            setTasksBackup(taskData);
+              
+          } catch (err) {
+            console.error('There was an error retrieving data!', err);
+          }
+        };
+    
+        fetchData(); 
+        return () => {
+       
+        };
+      }, []);
+
+    useEffect(() => { //updates tasks
+        const interval = setInterval(() => {
+            setTasks((prevTasks) =>
+                prevTasks.map((task) => {
+                    return task
+                
+             })
+            );
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     function taskDateTime(){ // returns a new Date with the set condition
         if (date === "mm/dd/yyyy" &&  time === "--:-- --" ) { // if date and time are empty 
             return new Date(0) // date is set to 0
@@ -65,6 +111,7 @@ const ToDoListComponent: React.FC = () => {
         e.preventDefault(); // prevent from redirecting to a new page when submitted
 
         const newTask = {
+            task_id: 0,
             text: task, // the description of the task
             createdAt: new Date(), // stores the Date from when it is created
             dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
@@ -79,11 +126,17 @@ const ToDoListComponent: React.FC = () => {
             ]);
          } 
 
-        
         // stores the new task in a backup array.
         setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
             newTask
         ]);
+
+        try {
+            axios.post('http://localhost:3002/insertTask', newTask)
+            
+        } catch (err) {
+            console.error('There was an error inserting Task', err)
+        }
 
         setTask("") // resets the value of the Task
         setDate("mm/dd/yyyy")  // resets the value of the Date
@@ -125,11 +178,18 @@ const ToDoListComponent: React.FC = () => {
     ));
     }
 
-    function deleteTask(index: number){
-        setIsEditing(false)
-        setTasks(tasks.filter((_, i) => i !== index));
-        setTasksBackup(tasksBackup.filter((_, i) => i !== index))
-        cancelEditing()
+    const deleteTask = async (task_id: number) => {
+        try {
+            await axios.delete(`http://localhost:3002/deleteTask/${task_id}`);
+            setIsEditing(false)
+            setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+            setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+            cancelEditing()
+        }
+        catch (error) {
+            console.error('Error deleting task:', error);
+        }
+        
     }
 
     function filteredTasks(filterType: string) {
@@ -271,10 +331,8 @@ const ToDoListComponent: React.FC = () => {
                         />
 
                         <button type="button" onClick={() => setTime("--:-- --")}
-
-                           className="absolute right-[17rem] top-[1.5rem] text-2xl"
-                        ><RotateCcw size={20} color="black"  /></button>
-
+                           className="absolute right-[17rem] top-[1.5rem] text-2xl">
+                        <RotateCcw size={20} color="black"  /></button>
 
                         <label className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{date.split('-').reverse().join('-')}</label>
                         <input 
@@ -373,7 +431,7 @@ const ToDoListComponent: React.FC = () => {
 
                                 )}
 
-                                <button disabled={isEditing && editIndex !== index} onClick={() => deleteTask(index)} className={`ml-[81.5rem] text-red-600 ${isEditing === true && editIndex === index ? "opacity-45": "" }`}><Trash2 size={20}/></button>
+                                <button disabled={isEditing && editIndex !== index} onClick={() => deleteTask(task.task_id)} className={`ml-[81.5rem] text-red-600 ${isEditing === true && editIndex === index ? "opacity-45": "" }`}><Trash2 size={20}/></button>
 
                             </li>
                         )}
