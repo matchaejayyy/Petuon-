@@ -67,7 +67,7 @@ const CalendarPage: React.FC = () => {
                     <button
                       key={index}
                       onClick={() => handleMonthChange(index)}
-                      style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="p-2 text-sm hover:bg-[#354F52] hover:text-white transition-colors rounded-md "
+                      style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="p-2 text-sm hover:bg-[#354F52] hover:text-white transition-colors rounded-md  "
                     >
                       {month}
                     </button>
@@ -105,7 +105,7 @@ const CalendarPage: React.FC = () => {
   );
 
   const renderDaysOfWeek = () => (
-    <div className="text-[#354F52] grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-[-1.4rem]">
+    <div className="text-[#354F52] grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-[-1.4rem] ">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
         <div key={day} className="p-1">{day}</div>
       ))}
@@ -125,9 +125,9 @@ const CalendarPage: React.FC = () => {
       const isToday = isSameDay(day, new Date());
       const isCurrentMonth = getMonth(day) === selectedMonth;
 
-      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 ${
+      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg ${
         isCurrentMonth ? '' : 'text-gray-400'
-      } ${isToday ? 'bg-[#FE9B72] text-white border-[#E5EE91] shadow-lg' : ''}`; // Custom style for today's date
+      } ${isToday ? 'bg-[#FE9B72] text-white border-[#E5EE91] hover:shadow-2xl ' : ''}`; // Custom style for today's date
 
       dateCells.push(
         <div key={day.toString()} className={dayClasses}>

@@ -26,31 +26,31 @@ const Sidebar: React.FC = () => {
                 <Link 
                     to="/"  
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>
-                    <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191]" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+                    <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
                 </Link>
 
                 <Link 
                     to="/Flashcard"
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Flashcard") ? "bg-[#F6F6F6]" : ""}`}>
-                    <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Flashcard") ? "text-[#719191]" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+                    <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Flashcard") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-125"}`} />
                 </Link>
 
                 <Link 
                     to="/Calendar" 
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Calendar") ? "bg-[#F6F6F6]" : ""}`}>
-                    <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191]" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+                    <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-125"}`} />
                 </Link>
                 
                 <Link 
                     to="/Notepad"  
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Notepad") ? "bg-[#F6F6F6]" : ""}`}>
-                    <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Notepad") ? "text-[#719191]" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+                    <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Notepad") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-125"}`} />
                 </Link>
                 
                 <Link 
                     to="/ToDoList" 
                     className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/ToDoList") ? "bg-[#F6F6F6]" : ""}`}>
-                    <ListTodo size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/ToDoList") ? "text-[#719191]" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+                    <ListTodo size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/ToDoList") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-125"}`} />
                 </Link>
             </div>
         </div>
