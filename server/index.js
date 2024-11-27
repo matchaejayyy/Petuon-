@@ -63,5 +63,46 @@ try {
 };
 });
 
+app.patch('/completeTask/:task_id', async (req, res) => {
+  try {
+    const {task_id} = req.params;
+    const {completed} = req.body;
+
+    const query = `
+    UPDATE tasks 
+    SET completed = $1
+    WHERE task_id = $2
+    RETURNING *;
+    `
+
+    const values = [completed, task_id];
+    await pool.query(query, values);
+
+  } catch (error) {
+    console.error('Error updating task:', error)
+  }
+
+})
+
+app.patch('/updateTask/:task_id', async (req, res) => {
+  try {
+    const { task_id } = req.params; 
+    const { text, dueAt } = req.body; 
+
+    const query = `
+      UPDATE tasks 
+      SET text = $1, due_at = $2 
+      WHERE task_id = $3 
+      RETURNING *;
+    `;
+
+    const values = [text, dueAt, task_id];
+    
+    await pool.query(query, values); 
+  } catch (error) {
+    console.error('Error updating task:', error);
+  }
+});
+
 
 //>>>> FOR TO DO LIST

@@ -32,7 +32,6 @@ const ToDoListComponent: React.FC = () => {
 
 
     const [displayTime, setdisplayTime] = useState<string>("")
-    const [editDisplayTime, seteditDisplayTime] = useState<string>("")
     
     const [isEditing, setIsEditing] = useState(false);
     const lastTaskRef = useRef<HTMLLIElement | null>(null);
@@ -172,10 +171,29 @@ const ToDoListComponent: React.FC = () => {
         setTask(e.target.value) // stores the description of the task
     };
     
-    function completeToggle(index: number) {
-        setTasks(tasks.map((task, i) =>
-            i === index ? {...task, completed: !task.completed} : task
-    ));
+    const  completeToggle = async (task_id: number) => {
+        try {
+            const FindComplete = tasks.find(task => task.task_id ===  task_id);
+            
+            if (!FindComplete) return;
+            const updateTask = !FindComplete.completed
+           
+
+            setTasks(tasks.map(task =>
+                task.task_id === task_id ? {...task, completed: !task.completed} : task
+            ));
+            setTasksBackup(tasks.map(task => 
+                task.task_id === task_id ? {...task, completed: !task.completed} : task
+            ))
+    
+            await axios.patch(`http://localhost:3002/completeTask/${task_id}`, {
+                completed: updateTask,
+            });
+            
+           
+        } catch (error) {
+            console.error('Error completing task:', error);
+        }
     }
 
     const deleteTask = async (task_id: number) => {
@@ -189,7 +207,6 @@ const ToDoListComponent: React.FC = () => {
         catch (error) {
             console.error('Error deleting task:', error);
         }
-        
     }
 
     function filteredTasks(filterType: string) {
@@ -248,28 +265,46 @@ const ToDoListComponent: React.FC = () => {
         setEditText("")
     }
 
-    function saveEditing(index: number) {
-        setIsEditing(false)
-        setTasks(tasks.map((task, i) =>
-            i === index ? {...task, text: editText, dueAt: editTaskDateTime()} : task
-           
-        ));
-        setTasksBackup(tasksBackup.map((task, i) =>
-            i === index ? {...task, text: editText, dueAt: editTaskDateTime()} : task
-        ));
-        cancelEditing()
+    async function saveEditing(task_id: number) {
+        try {
+            const updatedText = editText.trim();
+            const updatedDueAt = editTaskDateTime();
 
-        if (editText.trim() === "") {
-            setTasks(tasks.filter((_, i) => i !== index));
-            setTasksBackup(tasksBackup.filter((_, i) => i !== index))
+            setIsEditing(false)
+            setTasks(tasks.map(task =>
+                task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
+            
+            ));
+            setTasksBackup(tasksBackup.map(task =>
+                task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
+            ));
+            cancelEditing()
+
+            const findTask = tasks.find(task => task.task_id === task_id)
+            if (!findTask) return;
+            const text = updatedText;
+            const dueAt = updatedDueAt;
+            console.log(text, dueAt)
+
+            if (editText.trim() === "") {
+                setTasks(tasks.filter(task => task.task_id !== task_id));
+                setTasksBackup(tasksBackup.filter(task => task.task_id !== task_id))
+                deleteTask(task_id)
+            }
+
+            await axios.patch(`http://localhost:3002/updateTask/${task_id}`, {
+                text: text,
+                dueAt: dueAt,
+            });
+
+            console.log(editTime)
+        } catch (error) {
+            console.log('There was an error updating task', error)
         }
     }
 
     const handleTimeEditChange = (e:ChangeEvent<HTMLInputElement>) => {
         setEditTime(e.target.value)
-        const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-        seteditDisplayTime(displaytime)
-        console.log(editDisplayTime)
     }
 
     const handleDateEditChange = (e:ChangeEvent<HTMLInputElement>) => {
@@ -364,7 +399,7 @@ const ToDoListComponent: React.FC = () => {
                                 className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                 type="checkbox"
                                 checked={task.completed}
-                                onChange={() => completeToggle(index)}
+                                onChange={() => completeToggle(task.task_id)}
                                 />
                                 
                                 {editIndex === index ? (
@@ -377,7 +412,7 @@ const ToDoListComponent: React.FC = () => {
                                         placeholder={editText === "" ? "Input Task" : ""}
                                         />
 
-                                        <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDisplayTime}</label>
+                                        <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{new Date(new Date().toLocaleDateString() + " " + editTime + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</label>
                                         <input
                                         className="absolute left-[57rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none"
 
@@ -385,12 +420,12 @@ const ToDoListComponent: React.FC = () => {
                                         value={editTime}
                                         onChange={handleTimeEditChange}
                                         />
-                                        <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editDisplayTime)}}
+                                        <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editTime);}}
 
                                         className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem]"
                                             ><RotateCcw size={20}/></button>
                                         
-                                        <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('-')}</label>
+                                        <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('/')}</label>
                                         <input
                                         type="date"
                                         className="absolute mt-[-0.1rem] right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
@@ -405,7 +440,7 @@ const ToDoListComponent: React.FC = () => {
                                          className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem]"
                                          onClick={()=> setEditDate("mm/dd/yyyy")}
                                          ><RotateCcw size={20}/></button>
-                                        <button onClick={() => saveEditing(index)}
+                                        <button onClick={() => saveEditing(task.task_id)}
                                         className="absolute right-[7rem] mt-[0rem]"
                                             ><Save size={20}/></button> 
                                     </div>
