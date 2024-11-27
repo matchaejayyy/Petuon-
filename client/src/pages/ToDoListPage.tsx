@@ -57,7 +57,7 @@ const ToDoListComponent: React.FC = () => {
                 }
                 
             });
-            console.log(taskData[0].task_id)
+          
             setTasks(taskData);
             setTasksBackup(taskData);
               
@@ -106,41 +106,53 @@ const ToDoListComponent: React.FC = () => {
     }
 
     
-    const addTask = (e: FormEvent) => { // when form is submitted 
+    const addTask = async (e: FormEvent) => { // when form is submitted 
         e.preventDefault(); // prevent from redirecting to a new page when submitted
 
-        const newTask = {
-            task_id: 0,
-            text: task, // the description of the task
-            createdAt: new Date(), // stores the Date from when it is created
-            dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
-            completed: false // the status of if it is complete or not
-        }
-
-        // stores the new task in an array.
-        // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
-        if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
-            setTasks([...tasks, // "... tasks" copies the element from the array and stores it previously
-                newTask  
-            ]);
-         } 
-
-        // stores the new task in a backup array.
-        setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
-            newTask
-        ]);
-
         try {
-            axios.post('http://localhost:3002/insertTask', newTask)
             
+            const newTask = {
+                task_id: 0,
+                text: task, // the description of the task
+                createdAt: new Date(), // stores the Date from when it is created
+                dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
+                completed: false // the status of if it is complete or not
+            }
+            
+           
+            // stores the new task in an array.
+            // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
+            if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
+                setTasks([...tasks, // "... tasks" copies the element from the array and stores it previously
+                    newTask  
+                ]);
+            } 
+            console.log(tasks)
+            await axios.post('http://localhost:3002/insertTask', newTask)
+
+            // stores the new task in a backup array.
+            setTasksBackup([...tasksBackup,  // "... tasks" copies the element from the tasks array and stores it in the backupTasks 
+                newTask
+            ]);
+
+          
+
+            
+            setTask("") // resets the value of the Task
+            setDate("mm/dd/yyyy")  // resets the value of the Date
+            setTime("--:-- --") // resets the value of the Time
+         
+            setIsAnimatingDropDown(true);
+            setTimeout(() => {
+                setIsAnimatingDropDown(false);
+            }, 0.01); //duration sng drop down
+
+            
+
         } catch (err) {
             console.error('There was an error inserting Task', err)
         }
 
-        setTask("") // resets the value of the Task
-        setDate("mm/dd/yyyy")  // resets the value of the Date
-        setTime("--:-- --") // resets the value of the Time
-        console.log(tasks)
 
         if (lastTaskRef.current) {
             lastTaskRef.current.scrollIntoView({
@@ -148,11 +160,6 @@ const ToDoListComponent: React.FC = () => {
                 block: "end", 
             });
         }
-
-        setIsAnimatingDropDown(true);
-        setTimeout(() => {
-            setIsAnimatingDropDown(false);
-        }, 0.01); //duration sng drop down
 
     }
 
