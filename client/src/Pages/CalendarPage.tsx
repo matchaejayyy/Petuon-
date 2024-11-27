@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format, startOfMonth, startOfWeek, endOfMonth, addDays, isSameDay, getMonth, getYear, addMonths, subMonths } from 'date-fns';
-import SideBar from './SideBar';
-import WhiteContainer from './WhiteContainer';
+import SideBar from '../components/SideBar';
+import WhiteContainer from '../components/WhiteContainer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Calendar: React.FC = () => {

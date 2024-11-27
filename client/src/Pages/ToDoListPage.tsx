@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import WhiteContainer from "./WhiteContainer"
-import Sidebar from "./SideBar";
+import WhiteContainer from "../components/WhiteContainer"
+import Sidebar from "../components/SideBar";
 import { useState, ChangeEvent, FormEvent, useRef} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
-import Clock from "./Clock";
+import Clock from "../components/Clock";
 
 
 

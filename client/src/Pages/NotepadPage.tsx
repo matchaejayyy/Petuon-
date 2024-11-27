@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import {FilePen, Trash2, FilePlus } from "lucide-react";
-import WhiteContainer from "./WhiteContainer";
-import SideBar from "./SideBar";
+import WhiteContainer from "../components/WhiteContainer";
+import SideBar from "../components/SideBar";
 import "react-quill/dist/quill.snow.css";
 
 // Ang function para magkuha sang random pastel color para sa background sang notes
