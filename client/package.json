@@ -11,8 +11,6 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
-    "axios": "^1.7.8",
-    "date-fns": "^4.1.0",
     "axios": "^1.7.7",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.456.0",
@@ -24,10 +22,9 @@
     "react-router-dom": "^6.28.0",
     "react-toastify": "^10.0.6",
     "tailwind-scrollbar": "^3.1.0",
-    "yup": "^1.4.0",
-    "react-quill": "^2.0.0",
-    "react-router-dom": "^6.28.0",
-    "toastify": "^2.0.1"
+    "toastify": "^2.0.1",
+    "uuid": "^11.0.3",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
