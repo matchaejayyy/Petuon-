@@ -104,5 +104,4 @@ app.patch('/updateTask/:task_id', async (req, res) => {
   }
 });
 
-
 //>>>> FOR TO DO LIST

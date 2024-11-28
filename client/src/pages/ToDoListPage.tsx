@@ -2,7 +2,7 @@
 import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
 import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
-import {RotateCcw, SquarePlus, Save, Trash2, Ellipsis } from "lucide-react";
+import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import Clock from "../components/Clock";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
