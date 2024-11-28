@@ -56,6 +56,7 @@ const Clock: React.FC = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 
