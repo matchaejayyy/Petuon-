@@ -1,13 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 
-import Dashboard from '../Pages/DashboardPage';
-import Calendar from '../Pages/CalendarPage';
+
+import Dashboard from '../pages/DashboardPage';
+import Calendar from '../pages/CalendarPage';
 import Flashcard from '../components/FlashCard';
-import ToDoList from '../Pages/ToDoListPage';
-import Notepad from '../Pages/NotepadPage';
-import LoginPage from '../Pages/LoginPage';
-import RegisterPage from '../Pages/RegisterPage';
+import ToDoList from '../pages/ToDoListPage';
+import Notepad from '../pages/NotepadPage';
+import LoginPage from '../pages/LoginPage';
+import RegisterPage from '../pages/RegisterPage';
 import { UserProvider } from '../Context/useAuth'; // Ensure correct import path
 
 interface RoutersProps {

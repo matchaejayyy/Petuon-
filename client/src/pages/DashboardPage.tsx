@@ -11,7 +11,7 @@ const Dashboard: React.FC = () => {
         <div>
 
           <h1
-             style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7" > Dashboard
+            style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7" > Dashboard
 
           </h1>
           {/* Top-right section for Bell and Profile */}

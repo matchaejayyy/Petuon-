@@ -100,7 +100,7 @@ const ToDoListComponent: React.FC = () => {
         setIsAnimatingDropDown(true);
         setTimeout(() => {
             setIsAnimatingDropDown(false);
-        }, 0.01); //duration sng drop down
+        }, 0); //duration sng drop down
 
     }
 
@@ -377,27 +377,31 @@ const ToDoListComponent: React.FC = () => {
 
                             </li>
                         )}
-                        </ul>
-                    </div>
+                    </ul>
                 </div>
+            </div>
             </div>
         </>
     )
 }
 
 
-
-const ToDoListPage = () => {
+//the ToDoListComponent is called and displayed within the whitecontainer
+const ToDoList = () => {
     return(
         <>  
             <WhiteContainer>
+
+                
                 <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">To Do List</h1>
                 <Clock/>
+
               <ToDoListComponent/>
             </WhiteContainer>
+            
             <Sidebar/> 
         </>
     )
 }
 
-export default ToDoListPage
+export default ToDoList
