@@ -5,6 +5,8 @@ import WhiteContainer from '../components/WhiteContainer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios'
 
+import Avatar from '../components/Avatar'
+
 interface Tasks {
   task_id: string;
   text: string;
@@ -141,6 +143,7 @@ const CalendarPage: React.FC = () => {
     fetchTasks();
   }, []);
 
+
   const renderCells = () => {
     const monthStart = startOfMonth(currentMonth);
     const startDate = startOfWeek(monthStart);
@@ -189,8 +192,10 @@ const CalendarPage: React.FC = () => {
             {renderHeader()}
             {renderDaysOfWeek()}
             {renderCells()}
+            
           </div>
         </div>
+        <Avatar/>
       </WhiteContainer>
       <SideBar />
     </>

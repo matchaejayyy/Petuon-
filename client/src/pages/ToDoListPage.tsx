@@ -6,7 +6,7 @@ import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import Clock from "../components/Clock";
 import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-
+import Avatar from '../components/Avatar'
 
 interface ToDoList { // Container for the each task element that it contains
     task_id: string;
@@ -502,7 +502,8 @@ const ToDoListPage = () => {
             <WhiteContainer>
                 <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">To Do List</h1>
                 <Clock/>
-              <ToDoListComponent/>
+                <ToDoListComponent/>
+                <Avatar/>
             </WhiteContainer>
             <Sidebar/> 
         </>
