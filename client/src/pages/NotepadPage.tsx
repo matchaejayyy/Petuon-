@@ -6,6 +6,7 @@ import {FilePen, Trash2, FilePlus } from "lucide-react";
 import WhiteContainer from "../components/WhiteContainer";
 import SideBar from "../components/SideBar";
 import "react-quill/dist/quill.snow.css";
+import Avatar from '../components/Avatar'
 
 // Ang function para magkuha sang random pastel color para sa background sang notes
 const getRandomPastelColor = () => {
@@ -232,6 +233,7 @@ const NotepadPage: React.FC = () => {
                     </div>  
                 </div>
                 )}
+                 <Avatar/>
             </WhiteContainer>
             <SideBar />
         </>
