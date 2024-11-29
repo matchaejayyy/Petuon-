@@ -298,7 +298,7 @@ const ToDoListComponent: React.FC = () => {
                 deleteTask(task_id)
             }
 
-            await axios.patch(`http://localhost:3002/task/updateTask/${task_id}`, {
+            await axios.patch(`http://localhost:3002/tasks/updateTask/${task_id}`, {
                 text: text,
                 dueAt: dueAt,
             });

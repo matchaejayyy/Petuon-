@@ -4,7 +4,6 @@ import SideBar from '../components/SideBar';
 import WhiteContainer from '../components/WhiteContainer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios'
-
 import Avatar from '../components/Avatar'
 
 interface Tasks {
@@ -126,7 +125,7 @@ const CalendarPage: React.FC = () => {
 
   useEffect(() => {
       const fetchTasks = async () => {
-        const response = await axios.get('http://localhost:3002/getTask');
+        const response = await axios.get('http://localhost:3002/tasks/getTask');
         const taskData = response.data.map((task: {task_id: string, text: string,due_at: Date}) => {
           const dueAt = new Date(task.due_at);
 
