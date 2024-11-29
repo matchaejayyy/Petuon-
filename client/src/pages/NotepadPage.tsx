@@ -181,12 +181,12 @@ const NotepadPage: React.FC = () => {
                 ) : (
 
                     /* Notes List */
-                    <div className="mt-6 px-3">
-                    <div className="overflow-x-auto">
-                        <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-1 w-max">
+                    <div className="mt-6 px-3 ">
+                    <div className="overflow-x-auto ">
+                        <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-1 w-max  ">
                             {/* New Note Button */}
                             <div
-                                className="p-6 border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20,"
+                                className="border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20,"
                                 onClick={() => setCreatingNewNote(true)}
                                 style={{ 
                                     width: "16rem", // Set consistent width
@@ -206,7 +206,7 @@ const NotepadPage: React.FC = () => {
                                 filteredNotes.map((note) => (
                                     <div
                                         key={note.id}
-                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20"
+                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer  ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20"
                                         style={{ 
                                             width: "16rem", // Set consistent width
                                             minHeight: "16rem", // Set consistent height
@@ -214,10 +214,13 @@ const NotepadPage: React.FC = () => {
                                         }}
                                         onClick={() => handleNoteClick(note)}
                                     >
-                                        <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-xs text-black-500 ml-3 mt-3">{note.createdDate}</h4>
-                                        <h3 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="uppercase font-bold text-xl mb-1 ml-3 ">{note.title.slice(0, 14)}</h3>
+                                        <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-xs text-black-500 ml-3 mt-3 ">{note.createdDate}</h4>
+                                        <h3 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="uppercase font-bold text-xl mb-1 ml-3 ">
+                                            {note.title.length > 14 ? `${note.title.slice(0, 14)}...` : note.title}</h3>
                                         <hr className="border-t-2 border-black w-full mb-2" />
-                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-gray-700 ml-3">{note.content.slice(0, 20)}...</p>
+                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-gray-700 ml-3">
+                                            {note.content.length > 20 ? `${note.content.slice(0, 20)}...` : note.content}
+                                        </p>
                                         <p style={{ fontFamily: '"Signika Negative", sans-serif' }}className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{note.createdTime}</p>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); editNote(note.id); }}

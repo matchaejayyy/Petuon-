@@ -393,12 +393,11 @@ const ToDoListComponent: React.FC = () => {
                         {tasks.map((task, index)=>
                             <li key={index}
                             
-                            className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap flex shadow-md transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
+                            className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap flex shadow-md  hover:shadow-xl transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                             style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
 
                             ref={index === tasks.length - 1 ? lastTaskRef : null}
-                            >
-                                
+                            >  
                                 <input 
                                 className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                 type="checkbox"
