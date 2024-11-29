@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, startOfMonth, startOfWeek, endOfMonth, addDays, isSameDay, getMonth, getYear, addMonths, subMonths } from 'date-fns';
 import SideBar from '../components/SideBar';
 import WhiteContainer from '../components/WhiteContainer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import axios from 'axios'
+
+import Avatar from '../components/Avatar'
+
+interface Tasks {
+  task_id: string;
+  text: string;
+  dueAt: Date;
+}
 
 const CalendarPage: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -10,6 +19,9 @@ const CalendarPage: React.FC = () => {
   const [selectedYear, setSelectedYear] = useState(getYear(currentMonth));
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
+
+  const [tasks, setTasks] = useState<Tasks[]>([])
+  
   // Navigate to the previous or next month
   const prevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
@@ -50,8 +62,8 @@ const CalendarPage: React.FC = () => {
         className="mt-[-7rem] flex items-center justify-center hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300 ml-[29rem]"
       >
         <ChevronLeft size={24} />
-    
-      </button>
+     </button>
+     
       <div
         className="mt-[-7rem] relative font-serif font-bold text-[#354F52] text-4xl cursor-pointer transform transition-transform duration-200 hover:scale-105 active:scale-90"
         onClick={toggleDropdown}
@@ -112,6 +124,26 @@ const CalendarPage: React.FC = () => {
     </div>
   );
 
+  useEffect(() => {
+      const fetchTasks = async () => {
+        const response = await axios.get('http://localhost:3002/getTask');
+        const taskData = response.data.map((task: {task_id: string, text: string,due_at: Date}) => {
+          const dueAt = new Date(task.due_at);
+
+          return {
+              task_id: task.task_id,
+              text: task.text,
+              dueAt: dueAt,
+          }
+        
+      });
+      setTasks(taskData)
+      console.log(taskData)
+    }
+    fetchTasks();
+  }, []);
+
+
   const renderCells = () => {
     const monthStart = startOfMonth(currentMonth);
     const startDate = startOfWeek(monthStart);
@@ -119,12 +151,18 @@ const CalendarPage: React.FC = () => {
 
     const dateCells = [];
     let day = startDate;
+    
+      
 
     while (day <= endDate) {
       const formattedDate = format(day, 'd');
       const isToday = isSameDay(day, new Date());
       const isCurrentMonth = getMonth(day) === selectedMonth;
+      const formattedFullDate = format(day, 'yyyy-MM-dd');
 
+      const tasksForDay = tasks.filter(task => format(new Date(task.dueAt), "yyyy-MM-dd") === formattedFullDate);
+
+      
       const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg ${
         isCurrentMonth ? '' : 'text-gray-400'
       } ${isToday ? 'bg-[#FE9B72] text-white border-[#E5EE91] hover:shadow-2xl ' : ''}`; // Custom style for today's date
@@ -132,6 +170,11 @@ const CalendarPage: React.FC = () => {
       dateCells.push(
         <div key={day.toString()} className={dayClasses}>
           <div className="text-right text-sm font-semibold">{formattedDate}</div>
+          {tasksForDay.map(task => (
+            <div key={task.task_id} className="text-xs text-blue-500 truncate">
+              {task.text}
+            </div>
+          ))} 
         </div>
       );
       day = addDays(day, 1);
@@ -145,12 +188,14 @@ const CalendarPage: React.FC = () => {
       <WhiteContainer>
         <div>
           <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">Calendar</h1>
-          <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="p-3 ml-[2rem] max-w-[1340px] mx-auto">
+          <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="p-3 ml-[2rem] max-w-[1340px] mx-auto ">
             {renderHeader()}
             {renderDaysOfWeek()}
             {renderCells()}
+            
           </div>
         </div>
+        <Avatar/>
       </WhiteContainer>
       <SideBar />
     </>

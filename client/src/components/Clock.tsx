@@ -20,12 +20,12 @@ const Clock: React.FC = () => {
   const seconds = time.getSeconds().toString().padStart(2, "0");
 
   return (
-    <div className="flex ml-[55.5rem] mt-[-6rem]">
+    <div className="flex ml-[57.5rem] mt-[-4em] ">
       <div style={{ fontFamily: '"Crimson Pro", serif' }} className="mt-[1rem] flex items-center text-[#354F52]  py-4 px-8 rounded-lg">
         {/* Day */}
         <div className="text-center mx-4">
           <div className="text-4xl ">{day}</div>
-          <div className="text-sm uppercase mt-1">Day</div>
+          <div className="text-sm uppercase mt-1 ">Day</div>
         </div>
 
         {/* Divider */}
@@ -56,6 +56,7 @@ const Clock: React.FC = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

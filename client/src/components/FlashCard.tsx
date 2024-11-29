@@ -2,7 +2,7 @@ import { BookmarkMinus, Trash2, TrashIcon, X } from "lucide-react";
 import SideBar from "./SideBar"
 import WhiteContainer from "./WhiteContainer"
 import React, { useState, useEffect } from 'react';
-
+import Avatar from '../components/Avatar'
 
 type Flashcard = {
     question: string;
@@ -314,13 +314,13 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
           {OnFirstPage ? (
             <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
               <h1
-                className="text-[#354F52] text-3xl m-10 mr-[78.2rem]"
-                style={{ fontFamily: '"Crimson Pro", serif' }}
+                className="text-[#354F52] font-serif text-3xl m-10 mr-[77rem]"
+                
               >
                 Saved Decks
               </h1>
               <div className="w-[90vw] flex items-center justify-center relative mt-[-1.5rem] ">
-  <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5">
+              <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5">
                   {Object.keys(decks).length === 0 ? (
                     <p
                       className="text-2xl text-center col-span-full "
@@ -360,7 +360,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
                   )}
                 </ul>
               </div>
-              <div className="fixed top-13 right-10">
+              <div className="fixed top-[6rem] right-[3.9rem]">
                 <button
                   onClick={handleCreateNewDeck}
                   className="bg-lime-700 h-16 w-36 rounded-full"
@@ -389,7 +389,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
           ) : (
             <div>
               <div className="flex">
-                <h1 className="text-5xl m-10">Create Flashcards!</h1>
+                <h1 className="ml-[2.1rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">Create Flashcards!</h1>
                 <div className="flex justify-center items-center">
                   <input
                     type="text"
@@ -431,6 +431,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
           <WhiteContainer>
           <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">FlashCards</h1>
             <FlashcardComponent />
+            <Avatar/>
           </WhiteContainer>
           <SideBar />
         </>
