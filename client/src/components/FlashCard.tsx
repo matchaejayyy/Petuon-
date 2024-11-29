@@ -1,7 +1,7 @@
 import SideBar from "./SideBar"
 import WhiteContainer from "./WhiteContainer"
 import React, { useState, useEffect } from 'react';
-
+import Avatar from '../components/Avatar'
 
 type Flashcard = {
     question: string;
@@ -405,6 +405,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
         <>
           <WhiteContainer>
             <FlashcardComponent />
+            <Avatar/>
           </WhiteContainer>
           <SideBar />
         </>
