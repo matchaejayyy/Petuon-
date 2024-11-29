@@ -44,7 +44,7 @@ const ToDoListComponent: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await axios.get('http://localhost:3002/getTask');
+            const response = await axios.get('http://localhost:3002/tasks/getTask');
               const taskData = response.data.map((task: {task_id: string, text: string; created_at: Date; due_at: Date; completed: boolean }) => {
                 const createdAt = new Date(task.created_at);
                 const dueAt = new Date(task.due_at);
