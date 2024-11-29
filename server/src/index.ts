@@ -9,14 +9,14 @@ const { Pool } = require('pg');
 app.use(cors());
 app.use(bodyParser.json());
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3002;
 
 const pool = new Pool({
-    host: process.env.PG_HOST,
-    port: process.env.PG_PORT,
-    database: process.env.PG_DATABASE,
-    user: process.env.PG_USER,
-    password: process.env.PG_PASSWORD,
+    host: process.env.PG_HOST || "aws-0-ap-southeast-1.pooler.supabase.com",
+    port: process.env.PG_PORT || 6543,
+    database: process.env.PG_DATABASE || "postgres",
+    user: process.env.PG_USER || "postgres.oizvoxoctozusoahxjos",
+    password: process.env.PG_PASSWORD || "Carmine_123456789!!!",
 });
 
  //>>>> declares server port running on 3002
@@ -28,7 +28,7 @@ app.listen(PORT, () => {
 
 //>>>> FOR TO DO LIST
 
-app.get('/getTask', async (req, res) => { 
+app.get('/getTask', async (req: any, res: { status: (arg0: number) => { (): any; new(): any; send: { (arg0: any): void; new(): any; }; }; }) => { 
   try {
       const result = await pool.query('SELECT * FROM tasks')
       res.status(200).send(result.rows);
@@ -38,7 +38,7 @@ app.get('/getTask', async (req, res) => {
 });
 
 
-app.post('/insertTask', async (req, res) => {
+app.post('/insertTask', async (req: { body: { task_id: any; text: any; createdAt: any; dueAt: any; completed: any; }; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { message: string; }): void; new(): any; }; }; }) => {
   try {
   const {task_id, text, createdAt, dueAt, completed } = req.body;
 
@@ -53,7 +53,7 @@ app.post('/insertTask', async (req, res) => {
   };
 });
 
-app.delete('/deleteTask/:task_id', async (req, res) => {
+app.delete('/deleteTask/:task_id', async (req: { params: { task_id: any; }; }, res: { send: (arg0: string) => void; }) => {
 try {
   const { task_id } = req.params;
   pool.query('DELETE FROM tasks WHERE task_id = $1', [task_id]);
@@ -63,7 +63,7 @@ try {
 };
 });
 
-app.patch('/completeTask/:task_id', async (req, res) => {
+app.patch('/completeTask/:task_id', async (req: { params: { task_id: any; }; body: { completed: any; }; }, res: any) => {
   try {
     const {task_id} = req.params;
     const {completed} = req.body;
@@ -84,7 +84,7 @@ app.patch('/completeTask/:task_id', async (req, res) => {
 
 })
 
-app.patch('/updateTask/:task_id', async (req, res) => {
+app.patch('/updateTask/:task_id', async (req: { params: { task_id: any; }; body: { text: any; dueAt: any; }; }, res: any) => {
   try {
     const { task_id } = req.params; 
     const { text, dueAt } = req.body; 
