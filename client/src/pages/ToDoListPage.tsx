@@ -1,24 +1,23 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+
 import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
-import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
-import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
-import Clock from "../components/Clock";
-import axios from 'axios';
-import { v4 as uuidv4 } from 'uuid';
 import Avatar from '../components/Avatar'
 
-interface ToDoList { // Container for the each task element that it contains
-    task_id: string;
-    text: string
-    createdAt: Date
-    dueAt: Date
-    completed: boolean
-}
+import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
+import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
+
+import Clock from "../components/Clock";
+import axios from 'axios';
+
+import { v4 as uuidv4 } from 'uuid';
+
+import { Task } from '../types/ToDoListTypes'
+
 
 const ToDoListComponent: React.FC = () => {
-    const [tasks, setTasks] = useState<ToDoList[]>([]); // stores tasks within the Array
-    const [tasksBackup, setTasksBackup] = useState<ToDoList[]>([]); // a preserved version of the task use in the filter functionality
+    const [tasks, setTasks] = useState<Task[]>([]); // stores tasks within the Array
+    const [tasksBackup, setTasksBackup] = useState<Task[]>([]); // a preserved version of the task use in the filter functionality
     const [task, setTask] = useState<string>(""); // creates tasks
     const [date, setDate] = useState<string>("mm/dd/yyyy"); // creates date
     const [time, setTime] = useState<string>("--:-- --") // creates time
@@ -30,7 +29,6 @@ const ToDoListComponent: React.FC = () => {
 
     const [editTime, setEditTime] = useState<string>("");
     const [editDate, setEditDate] = useState<string>("");
-
 
     const [displayTime, setdisplayTime] = useState<string>("")
     
@@ -156,7 +154,7 @@ const ToDoListComponent: React.FC = () => {
 
             
            
-            await axios.post("http://localhost:3002/insertTask", newTask);
+            await axios.post("http://localhost:3002/tasks/insertTask", newTask);
             console.log("added task")
             
         } catch (err) {
@@ -194,7 +192,7 @@ const ToDoListComponent: React.FC = () => {
                 task.task_id === task_id ? {...task, completed: !task.completed} : task
             ))
     
-            await axios.patch(`http://localhost:3002/completeTask/${task_id}`, {
+            await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
                 completed: updateTask,
             });
             
@@ -210,7 +208,7 @@ const ToDoListComponent: React.FC = () => {
             setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
             setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
             cancelEditing()
-            await axios.delete(`http://localhost:3002/deleteTask/${task_id}`);
+            await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`);
         }
         catch (error) {
             console.error('Error deleting task:', error);
@@ -300,7 +298,7 @@ const ToDoListComponent: React.FC = () => {
                 deleteTask(task_id)
             }
 
-            await axios.patch(`http://localhost:3002/updateTask/${task_id}`, {
+            await axios.patch(`http://localhost:3002/task/updateTask/${task_id}`, {
                 text: text,
                 dueAt: dueAt,
             });
