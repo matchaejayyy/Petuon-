@@ -4,7 +4,6 @@ import SideBar from '../components/SideBar';
 import WhiteContainer from '../components/WhiteContainer';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios'
-
 import Avatar from '../components/Avatar'
 
 interface Tasks {
@@ -65,7 +64,7 @@ const CalendarPage: React.FC = () => {
      </button>
      
       <div
-        className="mt-[-7rem] relative font-serif font-bold text-[#354F52] text-4xl cursor-pointer"
+        className="mt-[-7rem] relative font-serif font-bold text-[#354F52] text-4xl cursor-pointer transform transition-transform duration-200 hover:scale-105 active:scale-90"
         onClick={toggleDropdown}
       >
         <span>{format(currentMonth, 'MMMM yyyy')}</span>
@@ -79,7 +78,7 @@ const CalendarPage: React.FC = () => {
                     <button
                       key={index}
                       onClick={() => handleMonthChange(index)}
-                      style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="p-2 text-sm hover:bg-[#354F52] hover:text-white transition-colors rounded-md"
+                      style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="p-2 text-sm hover:bg-[#354F52] hover:text-white transition-colors rounded-md  "
                     >
                       {month}
                     </button>
@@ -87,7 +86,7 @@ const CalendarPage: React.FC = () => {
                 </div>
               </div>
               <div>
-                <h3 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="text-lg font-semibold">Select Year</h3>
+                <h3 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="text-lg font-semibold ">Select Year</h3>
                 <div className="mt-2 max-h-64 overflow-y-auto">
                   {[...Array(21)].map((_, idx) => {
                     const year = selectedYear + idx - 10;  // Showing 10 years before and 10 years after current year
@@ -95,7 +94,7 @@ const CalendarPage: React.FC = () => {
                       <button
                         key={year}
                         onClick={() => handleYearChange(year)}
-                        style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="block p-2 text-sm hover:bg-[#354F52] hover:text-white w-full text-left transition-colors rounded-md"
+                        style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="block p-2 text-sm hover:bg-[#354F52] hover:text-white w-full text-left transition-colors rounded-md "
                       >
                         {year}
                       </button>
@@ -109,7 +108,7 @@ const CalendarPage: React.FC = () => {
       </div>
       <button
         onClick={nextMonth}
-        className="mt-[-7rem] flex items-center justify-center  hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300  mr-[29rem]"
+        className="mt-[-7rem] flex items-center justify-center  hover:bg-[#52796f] text-[#354F52] rounded-full p-2 transition-all duration-300  mr-[29rem] "
       >
         <ChevronRight size={24} />
       </button>
@@ -117,7 +116,7 @@ const CalendarPage: React.FC = () => {
   );
 
   const renderDaysOfWeek = () => (
-    <div className="text-[#354F52] grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-[-1.4rem]">
+    <div className="text-[#354F52] grid grid-cols-7 font-serif text-center font-semibold text-lg mb-2 mt-[-1.4rem] ">
       {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
         <div key={day} className="p-1">{day}</div>
       ))}
@@ -126,7 +125,7 @@ const CalendarPage: React.FC = () => {
 
   useEffect(() => {
       const fetchTasks = async () => {
-        const response = await axios.get('http://localhost:3002/getTask');
+        const response = await axios.get('http://localhost:3002/tasks/getTask');
         const taskData = response.data.map((task: {task_id: string, text: string,due_at: Date}) => {
           const dueAt = new Date(task.due_at);
 
@@ -163,9 +162,9 @@ const CalendarPage: React.FC = () => {
       const tasksForDay = tasks.filter(task => format(new Date(task.dueAt), "yyyy-MM-dd") === formattedFullDate);
 
       
-      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 ${
+      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg ${
         isCurrentMonth ? '' : 'text-gray-400'
-      } ${isToday ? 'bg-[#FE9B72] text-white border-[#E5EE91] shadow-lg' : ''}`; // Custom style for today's date
+      } ${isToday ? 'bg-[#FE9B72] text-white border-[#E5EE91] hover:shadow-2xl ' : ''}`; // Custom style for today's date
 
       dateCells.push(
         <div key={day.toString()} className={dayClasses}>
@@ -188,7 +187,7 @@ const CalendarPage: React.FC = () => {
       <WhiteContainer>
         <div>
           <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">Calendar</h1>
-          <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="p-3 ml-[2rem] max-w-[1340px] mx-auto">
+          <div style={{fontFamily: '"Signika Negative", sans-serif' }} className="p-3 ml-[2rem] max-w-[1340px] mx-auto ">
             {renderHeader()}
             {renderDaysOfWeek()}
             {renderCells()}

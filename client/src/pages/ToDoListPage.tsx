@@ -319,29 +319,29 @@ const ToDoListComponent: React.FC = () => {
 
     return (
         <>  
-            <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-2rem] mb-0 my-3 ml-8 ">
+            <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ">
                 <div>
-                        <button className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}
+                        <button className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
                         onClick={() => filteredTasks("default")}>
                             Default
                         </button>
 
-                        <button  className={`px-4 py-2 rounded-md ${filterType === "noDate" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}
+                        <button  className={`px-4 py-2 rounded-md ${filterType === "noDate" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
                         onClick={() => filteredTasks("noDate")}>
                             NoDue
                         </button>
 
-                        <button className={`px-4 py-2 rounded-md ${filterType === "near" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}
+                        <button className={`px-4 py-2 rounded-md ${filterType === "near" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
                         onClick={() => filteredTasks("near")}>
                             Near
                         </button>
 
-                        <button  className={`px-4 py-2 rounded-md ${filterType === "later" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}
+                        <button  className={`px-4 py-2 rounded-md ${filterType === "later" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
                         onClick={() => filteredTasks("later")}>
                             Later
                         </button>
 
-                        <button className={`px-4 py-2 rounded-md ${filterType === "pastDue" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"}`}
+                        <button className={`px-4 py-2 rounded-md ${filterType === "pastDue" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
                         onClick={() => filteredTasks("pastDue")}>
                             PastDue
                         </button>
@@ -350,11 +350,11 @@ const ToDoListComponent: React.FC = () => {
                     className="fixed text-black left-[10rem] top-[10rem] w-[84rem] bg-white  pt-3 pb-3 rounded-lg shadow-md">   
 
                         <button type="submit"
-                        className="ml-5 mt-2 text-2xl text-black w-10 pb-[0.3rem] rounded-lg"
+                        className="ml-5 mt-2 text-2xl text-black transform transition-transform duration-300 hover:scale-110 active:scale-50"
                         ><SquarePlus size={25} color="#354f52"  /></button>
 
                         <input 
-                        className="ml-1 text-lg text-black outline-none w-[46rem] overflow-hidden text-ellipsis transform translate-y-[-5px] bg-transparent  "
+                        className="ml-2 text-lg text-black outline-none w-[46rem] overflow-hidden text-ellipsis transform translate-y-[-5px] bg-transparent  "
                         style={{fontFamily: '"Signika Negative", sans-serif' }}
                         type="text " 
                         placeholder="Enter a task" 
@@ -367,7 +367,7 @@ const ToDoListComponent: React.FC = () => {
 
                         <label className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{displayTime}</label>
                         <input
-                        className="absolute right-[19rem] top-[1.4rem] text-[0.9rem] outline-none w-[1.8rem] bg-transparent text-white  "
+                        className="absolute right-[18.9rem] top-[1.4rem] text-[0.9rem] outline-none w-[1.8rem] bg-transparent text-white  scale-125 transform transition-transform duration-200 hover:scale-150 active:scale-110 "
 
                         type="time"
                         value={time}
@@ -375,12 +375,12 @@ const ToDoListComponent: React.FC = () => {
                         />
 
                         <button type="button" onClick={() => setTime("--:-- --")}
-                           className="absolute right-[17rem] top-[1.5rem] text-2xl">
+                           className="absolute right-[17rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
                         <RotateCcw size={20} color="black"  /></button>
 
                         <label className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{date.split('-').reverse().join('-')}</label>
                         <input 
-                        className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent"
+                        className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent transform transition-transform duration-200 hover:scale-125 active:scale-90"
 
                         type="date" 
                         value={date}
@@ -388,7 +388,7 @@ const ToDoListComponent: React.FC = () => {
                         />
                         
                         <button type="button" onClick={() => setDate("mm/dd/yyyy")}
-                        className="absolute right-[5rem] top-[1.5rem] text-2xl">
+                        className="absolute right-[5rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
                         <RotateCcw size={20} color="black" /></button>
                     </form>
                 </div>
@@ -424,7 +424,7 @@ const ToDoListComponent: React.FC = () => {
                                             <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{new Date(new Date().toLocaleDateString() + " " + editTime + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</label>
                                         
                                             <input
-                                            className="absolute left-[57rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none"
+                                            className="absolute left-[56.9rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none scale-110 transform transition-transform duration-200 hover:scale-125 active:scale-90"
                                             type="time"
                                             value={editTime}
                                             onChange={handleTimeEditChange}
@@ -432,22 +432,22 @@ const ToDoListComponent: React.FC = () => {
 
                                             <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editTime);}}
 
-                                            className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem]"><RotateCcw size={20}/></button>
+                                            className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"><RotateCcw size={20}/></button>
                                         
                                             <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('/')}</label>
 
                                             <input
                                             type="date"
-                                            className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none"
+                                            className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
                                             value={editDate}
                                             onChange={handleDateEditChange}
                                             />
                                         
                                             <button type="button" 
-                                            className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem]"
+                                            className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"
                                             onClick={()=> setEditDate("mm/dd/yyyy")}><RotateCcw size={20}/></button>
 
-                                            <button onClick={() => saveEditing(task.task_id!)}className="absolute right-[7rem] mt-[0rem]"><Save size={20}/></button> 
+                                            <button onClick={() => saveEditing(task.task_id!)}className="absolute right-[7rem] mt-[0rem] transform transition-transform duration-200 hover:scale-125 active:scale-90"><Save size={20}/></button> 
 
                                         </div>
 
@@ -478,7 +478,7 @@ const ToDoListComponent: React.FC = () => {
                                     {/* <button onClick={() => startEditing(index, task.text, task.dueAt)}><Ellipsis /></button> */}
 
                                     <button disabled={isEditing && editIndex !== index} onClick={() => deleteTask(task.task_id)} 
-                                    className={`ml-[81.5rem] text-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isEditing === true && editIndex === index ? "opacity-45" : ""}`}>
+                                    className={`ml-[81.5rem] text-red-600 opacity-0 group-hover:opacity-100 transition-opacity transform transition-transform duration-200 hover:scale-125 active:scale-90 duration-300 ${isEditing === true && editIndex === index ? "opacity-45" : ""}`}>
                                     <Trash2 size={20}/>
                                     </button>
 
@@ -509,3 +509,14 @@ const ToDoListPage = () => {
 }
 
 export default ToDoListPage
+
+
+
+
+
+
+
+
+
+
+
