@@ -434,7 +434,7 @@ const ToDoListComponent: React.FC = () => {
 
                                             <input
                                             type="date"
-                                            className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                                            className="absolute right-[12.4rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
                                             value={editDate}
                                             onChange={handleDateEditChange}
                                             />
