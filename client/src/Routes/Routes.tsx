@@ -1,7 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-
-
+import { Routes, Route, Navigate } from 'react-router-dom';  // Removed BrowserRouter import
 import Dashboard from '../pages/DashboardPage';
 import Calendar from '../pages/CalendarPage';
 import Flashcard from '../components/FlashCard';
@@ -9,7 +7,7 @@ import ToDoList from '../pages/ToDoListPage';
 import Notepad from '../pages/NotepadPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
-import { UserProvider } from '../Context/useAuth'; // Ensure correct import path
+import { UserProvider } from '../contexts/useAuth'; // Ensure correct import path
 
 interface RoutersProps {
   isLoggedIn: boolean;
@@ -26,8 +24,10 @@ const Routers: React.FC<RoutersProps> = ({ isLoggedIn, setIsLoggedIn }) => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/Calendar" element={<Calendar />} />
             <Route path="/Flashcard" element={<Flashcard />} />
-            <Route path="/ToDoList" element={<ToDoList />} />
             <Route path="/Notepad" element={<Notepad />} />
+
+            {/* Dynamic Route for ToDoList with taskId */}
+            <Route path="/ToDoList" element={<ToDoList />} />
           </>
         ) : (
           <>

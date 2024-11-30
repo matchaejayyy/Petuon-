@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState, ReactNode, FC } from "react";
-import { UserProfile, UserProfileToken } from "../Model/User"; // Ensure correct import path
+import { UserProfile, UserProfileToken } from "../model/User"; // Ensure correct import path
 import { useNavigate } from "react-router-dom";
-import { signUp, signIn, signOut } from "../Services/AuthService";
+import { signUp, signIn, signOut } from "../services/AuthService";
 import { toast } from "react-toastify";
 import supabase from '../../src/SupabaseClient';
 
