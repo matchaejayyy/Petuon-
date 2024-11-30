@@ -304,15 +304,15 @@ const ToDoListComponent: React.FC = () => {
                     </form>
                 </div>
 
-                <div  className="font-normal text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+                <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                 {tasks.length === 0 ? (
-                    <h1 className="text-center text-gray-500 mt-10">No tasks available</h1>
+                    <h1 className="text-center text-gray-500 ml-[7rem] mt-[10.5rem] text-2xl">No tasks available.</h1>
                 ) : (
                     <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
                         <ul>
                             {tasks.map((task, index)=>
                                 <li key={index}
-                                className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
+                                className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                 style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                 ref={index === tasks.length - 1 ? lastTaskRef : null}>
 
