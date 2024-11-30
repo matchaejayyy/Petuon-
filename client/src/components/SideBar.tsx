@@ -11,11 +11,12 @@ const Sidebar: React.FC = () => {
 
   return (
     <div>
+      {/* Desktop Sidebar */}
       <div 
-        className="hidden lg:flex flex-col h-screen w-screen bg-cover bg-center bg-no-repeat bottom-0 z-10 fixed px-4"
+        className="hidden lg:flex flex-col h-screen w-screen bg-cover bg-center bg-no-repeat bottom-0 z-10 fixed px-4 lg:z-0"
         style={{ backgroundImage: `url(${background})` }}>
-        <img src={logo} className="fixed left-[0.1rem] top-[1rem] size-[8rem]" alt="Logo" />
-        <div className="flex flex-col items-start space-y-5 fixed bottom-0 left-4 mb-5">
+        <img src={logo} className="fixed left-0 top-[1rem] size-[6rem]" alt="Logo" />
+        <div className="flex flex-col items-start space-y-5 fixed mt-32 left-0 mb-5">
           <Link
             to="/"
             className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>
@@ -44,33 +45,59 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Bottom Navigation */}
       <div
-        className="lg:hidden fixed bottom-0 left-0 w-full bg-[#354F52] flex justify-around items-center py-2 shadow-md rounded-t-3xl h-24 z-10"
+        className="lg:hidden fixed bottom-0 left-0 w-full bg-[#354F52] flex justify-around items-center py-2 shadow-md rounded-t-3xl h-20 z-10 md:px-8"
         style={{ backgroundImage: `url(${background})` }}>
         <Link
           to="/"
-          className={`flex flex-col items-center text-sm ${isActive("/") ? "text-[#F6F6F6]" : "text-white"}`}>
-          <LayoutDashboard size={32} />
+          className={`flex flex-col items-center text-sm ${isActive("/") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              isActive("/") ? "bg-white" : ""
+            }`}>
+            <LayoutDashboard className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
         </Link>
         <Link
           to="/Flashcard"
-          className={`flex flex-col items-center text-sm ${isActive("/Flashcard") ? "text-[#F6F6F6]" : "text-white"}`}>
-          <WalletCards size={32} />
+          className={`flex flex-col items-center text-sm ${isActive("/Flashcard") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              isActive("/Flashcard") ? "bg-white" : ""
+            }`}>
+            <WalletCards className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
         </Link>
         <Link
           to="/Calendar"
-          className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-[#F6F6F6]" : "text-white"}`}>
-          <CalendarRange size={32} />
+          className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              isActive("/Calendar") ? "bg-white" : ""
+            }`}>
+            <CalendarRange className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
         </Link>
         <Link
           to="/Notepad"
-          className={`flex flex-col items-center text-sm ${isActive("/Notepad") ? "text-[#F6F6F6]" : "text-white"}`}>
-          <NotebookPen size={32} />
+          className={`flex flex-col items-center text-sm ${isActive("/Notepad") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              isActive("/Notepad") ? "bg-white" : ""
+            }`}>
+            <NotebookPen className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
         </Link>
         <Link
           to="/ToDoList"
-          className={`flex flex-col items-center text-sm ${isActive("/ToDoList") ? "text-[#F6F6F6]" : "text-white"}`}>
-          <ListTodo size={32} />
+          className={`flex flex-col items-center text-sm ${isActive("/ToDoList") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+              isActive("/ToDoList") ? "bg-white" : ""
+            }`}>
+            <ListTodo className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
         </Link>
       </div>
     </div>
