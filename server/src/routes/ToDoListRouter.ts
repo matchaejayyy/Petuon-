@@ -18,7 +18,7 @@ const pool = new Pool({
 router.get('/getTask', async (req: Request, res: Response) => {
     try {
         const result = await pool.query('SELECT * FROM tasks');
-        res.status(200).send(result.rows);
+        res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).json({ message: 'Internal server error' });
