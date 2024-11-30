@@ -310,7 +310,6 @@ const ToDoListComponent: React.FC = () => {
                 ) : (
                     <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
                         <ul>
-                       
                             {tasks.map((task, index)=>
                                 <li key={index}
                                 className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
