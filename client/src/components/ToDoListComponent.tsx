@@ -4,7 +4,9 @@ import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useToDoList } from "../hooks/useToDoList";
 
-const ToDoListComponent: React.FC = () => {
+import { ToDoListProps } from "../types/ToDoListTypes"
+
+const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => {
     // Creates Date
     const [date, setDate] = useState<string>("mm/dd/yyyy"); 
     // Creates Time
@@ -143,10 +145,14 @@ const ToDoListComponent: React.FC = () => {
                 filteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0);
                 break;
             case "near":
-                filteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() > now.getTime());
+                filteredTasks = tasksBackup
+                .filter((task) => task.dueAt.getTime() > now.getTime())
+                .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
                 break;
             case "later":
-                filteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() > now.getTime()).reverse();
+                filteredTasks = tasksBackup
+                .filter((task) => task.dueAt.getTime() > now.getTime())
+                .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime());
                 break;
             case "default":
                 filteredTasks = tasksBackup
@@ -209,204 +215,260 @@ const ToDoListComponent: React.FC = () => {
         setEditDate(e.target.value);
     }
 
-    return (
-        <>  
-            <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8">
-                <div>
-                        <button 
-                        className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
-                        onClick={() => filteredTasks("default")}>
-                            Default
-                        </button>
+    const displayStatus = (date: Date) => {
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
 
-                        <button  
-                        className={`px-4 py-2 rounded-md ${filterType === "noDate" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
-                        onClick={() => filteredTasks("noDate")}>
-                            NoDue
-                        </button>
+        if (date.toLocaleDateString() === "1/1/1970")
+            return "NoDue"
+        else if (date.toLocaleDateString() === new Date().toLocaleDateString()) {
+            return "Today"
+        } else if (date.toLocaleDateString() === tomorrow.toLocaleDateString()) {
+            return "Tomorrow"
+        } else {
+            return "Upcoming"
+        }
+    }
 
-                        <button 
-                        className={`px-4 py-2 rounded-md ${filterType === "near" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
-                        onClick={() => filteredTasks("near")}>
-                            Near
-                        </button>
+    if (variant === "default") {
+        return (
+            <>  
+                <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8">
+                    <div>
+                            <button 
+                            className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
+                            onClick={() => filteredTasks("default")}>
+                                Default
+                            </button>
 
-                        <button  
-                        className={`px-4 py-2 rounded-md ${filterType === "later" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
-                        onClick={() => filteredTasks("later")}>
-                            Later
-                        </button>
+                            <button  
+                            className={`px-4 py-2 rounded-md ${filterType === "noDate" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
+                            onClick={() => filteredTasks("noDate")}>
+                                NoDue
+                            </button>
 
-                        <button 
-                        className={`px-4 py-2 rounded-md ${filterType === "pastDue" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
-                        onClick={() => filteredTasks("pastDue")}>
-                            PastDue
-                        </button>
-        
-                    <form 
-                    onSubmit={handleAddTask} 
-                    className="fixed text-black left-[10rem] top-[10rem] w-[84rem] bg-white  pt-3 pb-3 rounded-lg shadow-md"
-                    >   
+                            <button 
+                            className={`px-4 py-2 rounded-md ${filterType === "near" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
+                            onClick={() => filteredTasks("near")}>
+                                Near
+                            </button>
 
-                        <button type="submit"
-                        className="ml-5 mt-2 text-2xl text-black transform transition-transform duration-300 hover:scale-110 active:scale-50">
-                            <SquarePlus size={25} color="#354f52"/>
-                        </button>
+                            <button  
+                            className={`px-4 py-2 rounded-md ${filterType === "later" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
+                            onClick={() => filteredTasks("later")}>
+                                Later
+                            </button>
 
-                        <input 
-                        className="ml-2 text-lg text-black outline-none w-[46rem] overflow-hidden text-ellipsis transform translate-y-[-5px] bg-transparent  "
-                        style={{fontFamily: '"Signika Negative", sans-serif' }}
-                        type="text " 
-                        placeholder="Enter a task" 
-                        value = {task}
-                        onChange={handleTextChange}
-                        required
-                        />
+                            <button 
+                            className={`px-4 py-2 rounded-md ${filterType === "pastDue" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
+                            onClick={() => filteredTasks("pastDue")}>
+                                PastDue
+                            </button>
+            
+                        <form 
+                        onSubmit={handleAddTask} 
+                        className="fixed text-black left-[10rem] top-[10rem] w-[84rem] bg-white  pt-3 pb-3 rounded-lg shadow-md"
+                        >   
+
+                            <button type="submit"
+                            className="ml-5 mt-2 text-2xl text-black transform transition-transform duration-300 hover:scale-110 active:scale-50">
+                                <SquarePlus size={25} color="#354f52"/>
+                            </button>
+
+                            <input 
+                            className="ml-2 text-lg text-black outline-none w-[46rem] overflow-hidden text-ellipsis transform translate-y-[-5px] bg-transparent  "
+                            style={{fontFamily: '"Signika Negative", sans-serif' }}
+                            type="text " 
+                            placeholder="Enter a task" 
+                            value = {task}
+                            onChange={handleTextChange}
+                            required
+                            />
+                            
+                            <label 
+                            className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>
+                                {displayTime}
+                            </label>
+
+                            <input
+                            className="absolute right-[18.9rem] top-[1.4rem] text-[0.9rem] outline-none w-[1.8rem] bg-transparent text-white  scale-125 transform transition-transform duration-200 hover:scale-150 active:scale-110 "
+                            type="time"
+                            value={time}
+                            onChange={handleTimeChange}
+                            />
+
+                            <button 
+                            type="button" 
+                            onClick={() => setTime("--:-- --")}
+                            className="absolute right-[17rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
+                                <RotateCcw size={20} color="black"  />
+                            
+                            </button>
+
+                            <label 
+                            className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>
+                                {date.split('-').reverse().join('-')}
+                            </label>
                         
-                        <label 
-                        className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>
-                            {displayTime}
-                        </label>
+                            <input 
+                            className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                            type="date" 
+                            value={date}
+                            onChange={handleDateChange}
+                            />
+                            
+                            <button 
+                            type="button" 
+                            onClick={() => setDate("mm/dd/yyyy")}
+                            className="absolute right-[5rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
+                                <RotateCcw size={20} color="black" />
+                            </button>
+                        </form>
+                    </div>
 
-                        <input
-                        className="absolute right-[18.9rem] top-[1.4rem] text-[0.9rem] outline-none w-[1.8rem] bg-transparent text-white  scale-125 transform transition-transform duration-200 hover:scale-150 active:scale-110 "
-                        type="time"
-                        value={time}
-                        onChange={handleTimeChange}
-                        />
+                    <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+                    {tasks.length === 0 ? (
+                        <h1 className="text-center text-gray-500 ml-[7rem] mt-[10.5rem] text-2xl">No tasks available.</h1>
+                    ) : (
+                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
+                            <ul>
+                                {tasks.map((task, index)=>
+                                    <li key={index}
+                                    className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
+                                    style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
+                                    ref={index === tasks.length - 1 ? lastTaskRef : null}>
 
-                        <button 
-                        type="button" 
-                        onClick={() => setTime("--:-- --")}
-                        className="absolute right-[17rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
-                            <RotateCcw size={20} color="black"  />
-                        
-                        </button>
+                                        <input 
+                                        className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
+                                        type="checkbox"
+                                        checked={task.completed}
+                                        onChange={() => completeToggle(task.task_id!)}
+                                        />
+                                    
+                                        {editIndex === index ? (
+                                            <div>
+                                                <input 
+                                                className="absolute left-[3rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis bg-transparent "
+                                                type="text"
+                                                value={editText}
+                                                onChange={handleTextEditChange}
+                                                placeholder={editText === "" ? "Input Task" : ""}
+                                                />
 
-                        <label 
-                        className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>
-                            {date.split('-').reverse().join('-')}
-                        </label>
-                       
-                        <input 
-                        className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent transform transition-transform duration-200 hover:scale-125 active:scale-90"
-                        type="date" 
-                        value={date}
-                        onChange={handleDateChange}
-                        />
-                        
-                        <button 
-                        type="button" 
-                        onClick={() => setDate("mm/dd/yyyy")}
-                        className="absolute right-[5rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
-                            <RotateCcw size={20} color="black" />
-                        </button>
-                    </form>
+                                                <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{new Date(new Date().toLocaleDateString() + " " + editTime + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</label>
+                                            
+                                                <input
+                                                className="absolute left-[56.9rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none scale-110 transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                                                type="time"
+                                                value={editTime}
+                                                onChange={handleTimeEditChange}
+                                                />
+
+                                                <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editTime);}}
+
+                                                className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"><RotateCcw size={20}/></button>
+                                            
+                                                <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('/')}</label>
+
+                                                <input
+                                                type="date"
+                                                className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                                                value={editDate}
+                                                onChange={handleDateEditChange}
+                                                />
+                                            
+                                                <button type="button" 
+                                                className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"
+                                                onClick={()=> setEditDate("mm/dd/yyyy")}><RotateCcw size={20}/></button>
+
+                                                <button onClick={() => saveEditing(task.task_id!)}className="absolute right-[7rem] mt-[0rem] transform transition-transform duration-200 hover:scale-125 active:scale-90"><Save size={20}/></button> 
+
+                                            </div>
+
+                                        ) : (
+
+                                            <div 
+                                            onClick={() => startEditing(index, task.text, task.dueAt)} 
+                                            className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""}`}
+                                            >
+                                        
+                                                <span 
+                                                className="absolute left-[3rem] max-w-[46.3rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                                                {task.text}
+                                                </span>
+
+                                                {task.dueAt.getTime() !== 0 && (
+                                                    <span>
+                                                        <span className="absolute left-[53.6rem]">  
+                                                            {task.dueAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                                        </span>
+
+                                                        <span className="absolute left-[64.6rem]">      
+                                                            {task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(3,6) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(0,3) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(6,10)}
+                                                        </span>
+                                                    </span>
+                                                )}
+
+                                            </div>
+
+                                        )}
+                                    
+                                        <button 
+                                        disabled={isEditing && editIndex !== index} onClick={() => handleDeleteTask(task.task_id)} 
+                                        className={`ml-[81.5rem] text-red-600 opacity-0 group-hover:opacity-100 transform transition-transform duration-200 hover:scale-125 active:scale-90${isEditing === true && editIndex === index ? "opacity-45" : ""}`}>
+                                            <Trash2 size={20}/>
+                                        </button>
+
+                                    </li>
+                                )}   
+                            
+                            </ul>
+                        </div>
+                    )}
+                    </div>
                 </div>
-
-                <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                {tasks.length === 0 ? (
-                    <h1 className="text-center text-gray-500 ml-[7rem] mt-[10.5rem] text-2xl">No tasks available.</h1>
-                ) : (
-                    <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
-                        <ul>
-                            {tasks.map((task, index)=>
-                                <li key={index}
-                                className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
-                                style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
-                                ref={index === tasks.length - 1 ? lastTaskRef : null}>
-
+            </>
+        )
+    } else {
+        return (
+            <>
+                <div>
+                    <h1>My Tasks</h1>
+                    <ul>
+                    {tasks
+                    .sort((a, b) => {
+                            if (a.dueAt && b.dueAt) {
+                            if (a.dueAt.getTime() === 0) return 1; 
+                            if (b.dueAt.getTime() === 0) return -1; 
+                            return a.dueAt.getTime() - b.dueAt.getTime(); 
+                        }
+                            return 0; 
+                        }).slice(0, 5).map((task, index) => 
+                            <li key={index} className="border-t-2 mt-[1rem]">
+                                <div className="">
                                     <input 
-                                    className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
+                                    className="ml-[0.7rem] mt-[0.7rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                     type="checkbox"
                                     checked={task.completed}
                                     onChange={() => completeToggle(task.task_id!)}
                                     />
-                                
-                                    {editIndex === index ? (
-                                        <div>
-                                            <input 
-                                            className="absolute left-[3rem] opacity-45 w-[46rem] outline-none overflow-hidden text-ellipsis bg-transparent "
-                                            type="text"
-                                            value={editText}
-                                            onChange={handleTextEditChange}
-                                            placeholder={editText === "" ? "Input Task" : ""}
-                                            />
 
-                                            <label className={`opacity-45 ml-[-0.1rem] absolute translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] outline-none ${editTime === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>{new Date(new Date().toLocaleDateString() + " " + editTime + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</label>
-                                        
-                                            <input
-                                            className="absolute left-[56.9rem] opacity-45 text-[0.9rem] w-[1.9rem] mt-[-0.1rem] bg-transparent outline-none scale-110 transform transition-transform duration-200 hover:scale-125 active:scale-90"
-                                            type="time"
-                                            value={editTime}
-                                            onChange={handleTimeEditChange}
-                                            />
-
-                                            <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editTime);}}
-
-                                            className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"><RotateCcw size={20}/></button>
-                                        
-                                            <label className={`absolute ml-[-0.1rem]  mt-[-0.1rem] left-[64.8rem] opacity-45 text-[0.9rem] translate-y-[0.1rem] ${editDate === "mm/dd/yyyy" ? "text-transparent select-none pointer-events-none" : "" }`}>{editDate.split('-').reverse().join('/')}</label>
-
-                                            <input
-                                            type="date"
-                                            className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
-                                            value={editDate}
-                                            onChange={handleDateEditChange}
-                                            />
-                                        
-                                            <button type="button" 
-                                            className="absolute left-[72.2rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"
-                                            onClick={()=> setEditDate("mm/dd/yyyy")}><RotateCcw size={20}/></button>
-
-                                            <button onClick={() => saveEditing(task.task_id!)}className="absolute right-[7rem] mt-[0rem] transform transition-transform duration-200 hover:scale-125 active:scale-90"><Save size={20}/></button> 
-
-                                        </div>
-
-                                    ) : (
-
-                                        <div 
-                                        onClick={() => startEditing(index, task.text, task.dueAt)} 
-                                        className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""}`}
-                                        >
-                                    
-                                            <span 
-                                            className="absolute left-[3rem] max-w-[46.3rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                                            {task.text}
-                                            </span>
-
-                                            {task.dueAt.getTime() !== 0 && (
-                                                <span>
-                                                    <span className="absolute left-[53.6rem]">  
-                                                        {task.dueAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
-                                                    </span>
-
-                                                    <span className="absolute left-[64.6rem]">      
-                                                        {task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(3,6) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(0,3) + task.dueAt.toLocaleDateString([], { day: '2-digit', month: '2-digit', year: 'numeric' }).slice(6,10)}
-                                                    </span>
-                                                </span>
-                                            )}
-
-                                        </div>
-
-                                    )}
-                                
-                                    <button 
-                                    disabled={isEditing && editIndex !== index} onClick={() => handleDeleteTask(task.task_id)} 
-                                    className={`ml-[81.5rem] text-red-600 opacity-0 group-hover:opacity-100 transform transition-transform duration-200 hover:scale-125 active:scale-90${isEditing === true && editIndex === index ? "opacity-45" : ""}`}>
-                                        <Trash2 size={20}/>
-                                    </button>
-
-                                </li>
-                            )}   
-                        
-                        </ul>
-                    </div>
-                )}
+                                    <span className="absolute ml-9 mt-[0.7rem]">{task.text}</span>
+                                    <span className="ml-[25rem]">{displayStatus(task.dueAt)}</span>
+                                </div>
+                            </li>
+                        )}
+                    </ul>
+                    <button className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700">View all</button>
                 </div>
-            </div>
-        </>
-    )
+                {tasks.length <= 4 && (
+                    <div className="mt-4 text-center text-gray-500">No more tasks</div>
+                )}
+            </>
+        )   
+    }
+
 }
 
 export default ToDoListComponent
