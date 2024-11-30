@@ -1,11 +1,8 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import WhiteContainer from "../components/WhiteContainer";
 import Sidebar from "../components/SideBar";
 import Avatar from "../components/Avatar";
 import Clock from "../components/Clock";
 import ToDoListComponent from "../components/ToDoListComponent"
-
 
 const ToDoListPage = () => {
     return(
