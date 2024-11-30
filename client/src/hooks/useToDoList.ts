@@ -62,6 +62,7 @@ export const useToDoList = () => {
           setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
 
           await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`);
+          
         } catch (error) {
           console.error("Error deleting task:", error);
         }
@@ -86,7 +87,6 @@ export const useToDoList = () => {
           completed: updatedCompletedStatus,
         });
   
-        console.log("Task completion toggled");
       } catch (error) {
         console.error("Error toggling task completion:", error);
       }
@@ -118,7 +118,6 @@ export const useToDoList = () => {
           dueAt: updatedDueAt,
         });
         
-        console.log("Task updated successfully");
       } catch (error) {
         console.error("There was an error updating the task:", error);
       }
