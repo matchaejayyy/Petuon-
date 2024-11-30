@@ -78,6 +78,11 @@ const ToDoListComponent: React.FC = () => {
             completed: false, // the status of if it is complete or not
         }
             
+        if (taskDateTime() < new Date() && !(time === "--:-- --" && date == "mm/dd/yyyy")) {
+            alert("Cannot set time in current or past");
+            return;
+        }
+
             if (lastTaskRef.current) {
                 lastTaskRef.current.scrollIntoView({
                     behavior: "smooth",
@@ -102,8 +107,9 @@ const ToDoListComponent: React.FC = () => {
     } 
 
     const handleTimeChange = (e:ChangeEvent<HTMLInputElement>) => {
-        setTime(e.target.value); // stores the value of the time set
 
+
+        setTime(e.target.value); // stores the value of the time set
         const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         setdisplayTime(displaytime);
     }
@@ -186,6 +192,12 @@ const ToDoListComponent: React.FC = () => {
     async function saveEditing(task_id: string) {
         setIsEditing(false);
         cancelEditing();
+
+        if (editTaskDateTime() < new Date() && !(editTime === "--:-- --" && editDate == "mm/dd/yyyy")) {
+            alert('The due date and time cannot be in the past.');
+            return;
+          }
+
         await saveEditedTask(task_id, editText, editTaskDateTime())
     }
 
@@ -268,6 +280,7 @@ const ToDoListComponent: React.FC = () => {
                         onClick={() => setTime("--:-- --")}
                         className="absolute right-[17rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
                             <RotateCcw size={20} color="black"  />
+                        
                         </button>
 
                         <label 
