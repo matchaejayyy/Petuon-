@@ -23,8 +23,10 @@ const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/Calendar" element={<Calendar />} />
             <Route path="/Flashcard" element={<Flashcard />} />
-            <Route path="/ToDoList" element={<ToDoList />} />
             <Route path="/Notepad" element={<Notepad />} />
+
+            {/* Dynamic Route for ToDoList with taskId */}
+            <Route path="/ToDoList" element={<ToDoList />} />
           </>
         ) : (
           <>
@@ -40,4 +42,4 @@ const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
   );
 };
 
-export default Routers; 
+export default Routers;

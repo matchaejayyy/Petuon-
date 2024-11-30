@@ -1,3 +1,4 @@
+import { BookmarkMinus, CircleArrowLeft, CircleArrowRight, CopyPlus,  FolderPlus, ListPlus, Minus, } from "lucide-react";
 import SideBar from "./SideBar"
 import WhiteContainer from "./WhiteContainer"
 import React, { useState, useEffect } from 'react';
@@ -48,28 +49,32 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
 
 
   return (
-    <div className="bg-slate-500 min-h-28 min-w-80 flex justify-center items-center">
-      <input
-        type="text"
-        value={question}
-        onChange={handleQuestionChange}
-        className="h-16 m-5 rounded-3xl w-1/3 p-5"
-        placeholder="Insert question"
-      />
-      <input
-        type="text"
-        value={answer}
-        onChange={handleAnswerChange}
-        className="h-16 m-5 rounded-3xl w-1/3 p-5"
-        placeholder="Insert answer"
-      />
-      <button
-        onClick={createFlashcard}
-        className="bg-lime-700 h-16 w-36 rounded-full"
-      >
-        Create
-      </button>
-    </div>
+    <div className="mt-[-2rem] flex flex-col md:flex-row justify-center items-center gap-10 p-4 ">
+  <input
+    type="text"
+    value={question}
+    onChange={handleQuestionChange}
+    style={{ fontFamily: '"Signika Negative", sans-serif' }} 
+    className="h-16 rounded-3xl w-full md:w-1/3 p-5 shadow-xl border-2 border-[#52796F] focus:outline-none focus:ring-2 focus:ring-[#52796F] focus:border-transparent placeholder-gray-300 text-white bg-[#657F83] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+    placeholder="Insert question"
+  />
+  <input
+    type="text"
+    value={answer}
+    onChange={handleAnswerChange}
+    style={{ fontFamily: '"Signika Negative", sans-serif' }}
+    className="h-16 rounded-3xl w-full md:w-1/3 p-5 shadow-xl border-2 border-[#52796F] focus:outline-none focus:ring-2 focus:ring-[#52796F] focus:border-transparent placeholder-gray-300 text-white bg-[#657F83] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+    placeholder="Insert answer"
+  />
+  <button
+    onClick={createFlashcard}
+    className="bg-[#657F83] text-white font-semibold h-16 w-16 shadow-xl rounded-full hover:bg-[#52796F] transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center transform hover:scale-110"
+  >
+    <ListPlus className="w-10 h-10 ml-2" />
+  </button>
+</div>
+
+
   );
 };
 
@@ -121,21 +126,28 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
   
     const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
         return (
-          <ul className=" w-screen h-[70vh] flex flex-col items-center overflow-y-auto">
-            {flashcards.map((flashcard, index) => (
-              <li key={index} className="w-2/3 m-3 relative">
-              <div className="bg-orange-100 rounded-2xl h-52 w-full m-5 flex flex-col items-center justify-center overflow-auto relative">
-                <button className="absolute top-3 right-3 bg-red-600 h-10 w-10 rounded-full flex items-center justify-center"
-                onClick={(e) => { e.stopPropagation(); deleteFlashcard(index); }}
+            <ul className="h-[70vh] mr-[7rem] mt-[-1rem] flex flex-col items-center overflow-y-auto p-0 ">
+            {flashcards.map((flashcard, index) => {
+              const assignedColor = colors[index % colors.length];
+              return (
+              <li key={index} className="w-2/3 mt-10 ml-[9rem] m-[7rem] relative transform transition-transform duration-200 hover:scale-105">
+                <div style={{fontFamily: '"Signika Negative", sans-serif' }} className={`${assignedColor} rounded-2xl h-[20rem] w-full flex flex-col items-center justify-center overflow-auto relative shadow-lg`}>
+                <button
+                  className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    deleteFlashcard(index);
+                  }}
                 >
-                &#x1f5d1;
+                  <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
                 </button>
                 <h1 className="text-5xl mb-5 break-words">{flashcard.question}</h1>
                 <h2 className="text-xl">{flashcard.answer}</h2>
-              </div>
-            </li>
-            ))}
-          </ul>
+                </div>
+              </li>
+              );
+            })}
+            </ul>
         );
       };
 
@@ -195,51 +207,51 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
         const isQuizComplete = currentIndex === tempFlashcards.length - 1 && showAnswer && QuizFinished;
         
         
-      
+    
         return (
           <div className="flex flex-col items-center justify-center h-[80%]">
             {isQuizComplete ? (
               <div className="inline items-center justify-center">
-              <div className="w-[60%] mb-8">
-                <div className="h-[300px] bg-black rounded-2xl shadow-lg overflow-hidden">
-                  <div
-                    className="bg-orange-100 w-full h-full p-5 text-center cursor-pointer flex flex-col justify-center items-center"
+              <div className=" mb-8">
+                <div className="w-[80rem] h-[300px] bg-black rounded-2xl shadow-lg overflow-hidden ml-[-8rem] ">
+                    <div
+                    className="bg-[#FE9B72] w-full h-full p-5 text-center cursor-pointer flex flex-col justify-center items-center"
                     onClick={() => setShowAnswer((prev) => !prev)}
-                  >
-                    <h2 className="text-4xl mb-5">{currentFlashcard.question}</h2>
-                    <p className={`text-xl ${showAnswer ? "text-black" : "text-gray-400"}`}>
+                    >
+                    <h2 style={{fontFamily: '"Signika Negative", sans-serif' }} className="text-4xl mb-5">{currentFlashcard.question}</h2>
+                    <p style={{fontFamily: '"Signika Negative", sans-serif' }} className={`text-xl ${showAnswer ? "text-black" : "text-gray-200"}`}> 
                       {showAnswer ? currentFlashcard.answer : "Tap to show answer"}
                     </p>
-                  </div>
+                    </div>
                 </div>
                 <div className="flex justify-between mt-5 w-full">
-                  <button
+                    <button
                     onClick={handlePreviousFlashcard}
-                    className="bg-gray-800 text-white h-10 w-28 rounded-full"
+                    className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] ml-[-8rem]"
                     disabled={currentIndex === 0}
-                  >
-                    Previous
-                  </button>
-                  <button
+                    >
+                    <CircleArrowLeft className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
+                    </button>
+                    <button
                     onClick={handleNextFlashcard}
-                    className="bg-gray-800 text-white h-10 w-28 rounded-full"
-                  >
-                    Next
-                  </button>
+                    className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" //1234
+                    >
+                    <CircleArrowRight className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
+                    </button>
                 </div>
               </div>
               
-              <div className="flex flex-col items-center mt-8">
-                <p className="text-3xl">Quiz complete! Well done!</p>
+              <div className="flex flex-col  ml-[21rem] mt-[-5rem]">
+                <p style={{fontFamily: '"Signika Negative", sans-serif' }} className="text-4xl">Quiz complete! Well done!</p>
                 <button
                   onClick={shuffleFlashcards}
-                  className="bg-gray-800 text-white h-10 w-36 rounded-full mt-3"
+                  style={{fontFamily: '"Signika Negative", sans-serif' }} className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-5 ml-[7rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
                 >
                   Shuffle & Restart
                 </button>
                 <button
                   onClick={() => setOnFirstPage(true)}
-                  className="bg-gray-800 text-white h-10 w-36 rounded-full mt-3"
+                  style={{fontFamily: '"Signika Negative", sans-serif' }} className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-5 ml-[7rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
                 >
                   Go to Flashcards
                 </button>
@@ -247,31 +259,29 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
             </div>
             
             ) : (
-              <div className="w-[60%] h-[300px] flex flex-col items-center justify-center bg-black rounded-2xl shadow-lg">
+              <div className="w-[80%] h-[450px] ml-[-8rem] flex flex-col items-center justify-center rounded-2xl ">
                 <div
-                  className="bg-orange-100 rounded-2xl p-5 w-full text-center cursor-pointer flex flex-col justify-center items-center h-full"
+                  className="bg-[#FE9B72] rounded-2xl p-5 w-full text-center cursor-pointer flex flex-col justify-center items-center h-full shadow-lg"
                   onClick={() => setShowAnswer((prev) => !prev)}
                 >
-                  <h2 className="text-4xl mb-5">{currentFlashcard.question}</h2>
-                  <p className={`text-xl ${showAnswer ? "text-black" : "text-gray-400"}`}>
+                  <h2 style={{fontFamily: '"Signika Negative", sans-serif' }} className="text-6xl mb-5">{currentFlashcard.question}</h2>
+                  <p style={{fontFamily: '"Signika Negative", sans-serif' }} className={`text-3xl ${showAnswer ? "text-black" : "text-gray-400"}`}>
                     {showAnswer ? currentFlashcard.answer : "Tap to show answer"}
                   </p>
                 </div>
                 <div className="flex justify-between mt-5 w-full">
-                  <button
-                    onClick={handlePreviousFlashcard}
-                    className="bg-gray-800 text-white h-10 w-28 rounded-full"
-                    disabled={currentIndex === 0}
-                  >
-                    Previous
-                  </button>
+                <button
+                    onClick={handleNextFlashcard}
+                    className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]"
+                    >
+                    <CircleArrowLeft className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
+                    </button>
                   <button
                     onClick={handleNextFlashcard}
-                    className="bg-gray-800 text-white h-10 w-28 rounded-full"
-                    
-                  >
-                    Next
-                  </button>
+                    className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]"
+                    >
+                    <CircleArrowRight className="w-[3.5rem] h-[3.5rem] text-[#354F52] " />
+                    </button>
                 </div>
               </div>
             )}
@@ -305,105 +315,132 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
         setDecks(updatedDecks);
         localStorage.setItem("decks", JSON.stringify(updatedDecks));
       };
+
+      const colors = ["bg-[#FE9B72]", "bg-[#FFC973]", "bg-[#E5EE91]", "bg-[#B692FE]"];
     
-      
-        return (
-          <>
-            {OnFirstPage ? (
-              <div className="flex flex-col items-center">
-                <h1 className="text-5xl m-10">Saved Decks</h1>
-                <ul className="w-screen h-[70vh] flex flex-col items-center overflow-y-auto">
+      return (
+        <>
+          {OnFirstPage ? (
+            <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
+              <h1
+                className="text-[#354F52] font-serif text-3xl m-10 mr-[77rem]"
+                
+              >
+                Saved Decks
+              </h1>
+              <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
+              <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5 [&::-webkit-scrollbar]:w-2">
                   {Object.keys(decks).length === 0 ? (
-                    <p className="text-xl mt-10">No decks saved yet. Create one to get started!</p>
+                    <p
+                      className="text-2xl text-gray-500 text-center col-span-full "
+                      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                    >
+                      No decks saved yet. Create one to get started!
+                    </p>
                   ) : (
-                    Object.keys(decks).map((title) => (
-                      <li key={title} className="w-2/3 m-3">
-                        <div className="bg-blue-100 rounded-2xl h-20 w-full m-5 flex items-center justify-center">
-                          <h1 className="text-3xl">{title}</h1>
-                          <button
+                    Object.keys(decks).map((title, index) => {
+                      const assignedColor = colors[index % colors.length];
+    
+                      return (
+                        <li key={title} className="w-full">
+                          <div
                             onClick={() => loadDeck(title)}
-                            className="bg-lime-700 h-10 w-20 rounded-full ml-5"
+                            className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
                           >
-                            Load
-                          </button>
-                          <button
-                          className="bg-red-600 h-10 w-20 rounded-full ml-5"
-                          onClick={(e) => { e.stopPropagation(); deleteDeck(title); }}
-                          >
-                            delete
-                          </button>
-                        </div>
-                      </li>
-                    ))
+                            <h1
+                              className="text-2xl font-bold uppercase text-center flex items-center justify-center h-full w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                            >
+                              {title}
+                            </h1>
+                            <button
+                              className="absolute bottom-3 right-3  h-8 w-8 rounded-full flex items-center justify-center "
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteDeck(title);
+                              }}
+                            >
+                              <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
+                            </button>
+                          </div>
+                        </li> 
+                      );
+                    })
                   )}
                 </ul>
+              </div>
+              <div className="fixed top-[6rem] right-[3.9rem]">
                 <button
                   onClick={handleCreateNewDeck}
-                  className="bg-lime-700 h-16 w-36 rounded-full mt-5"
+                  className=" scale-125 flex items-center justify-center"
                 >
-                  Create New Deck
+                  <CopyPlus className="text-[#354F52] w-7 h-7 mt-[1rem] mr-[60rem] transform transition-transform duration-200 hover:scale-125" />
                 </button>
               </div>
-            ) : isReviewing ? (
-              <div>
-                <div className="flex">
-                  <h1 className="text-5xl m-10">Review</h1>
-                  <div className="flex justify-center items-center">
-                    <button
-                      onClick={() => setisReviewing(false)}
-                      className="bg-gray-800 text-white h-16 w-36 rounded-full"
-                    >
-                      Add Flashcards
-                    </button>
-                  </div>
-                </div>
-                <div className="bg-slate-500">
-                  <QuizFlashcard flashcards={flashcards} />
+            </div>
+          ) : isReviewing ? (
+            <div>
+              <div className="flex">
+                <h1 className="ml-[2.1rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">Review</h1>
+                <div className="flex justify-center items-center">
+                  <button
+                    onClick={() => setisReviewing(false)}
+                    className="flex mt-[-2.8rem] ml-[-2.8rem]"
+                  >
+                    <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
+                  </button>
                 </div>
               </div>
-            ) : (
-              <div>
-                <div className="flex">
-                  <h1 className="text-5xl m-10">Create Flashcards!</h1>
-                  <div className="flex justify-center items-center">
-                    <input
-                      type="text"
-                      value={DeckTitle}
-                      onChange={(e) => setDeckTitle(e.target.value)}
-                      className="h-16 m-5 rounded-3xl w-1/3 p-5"
-                      placeholder="Title"
-                    />
+              <div className="b">
+                <QuizFlashcard flashcards={flashcards} />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div className="flex">
+                <h1 className="ml-[2.1rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">Create Flashcards!</h1>
+                <div className="flex justify-center items-center">
+                  <input
+                    type="text"
+                    value={DeckTitle}
+                    onChange={(e) => setDeckTitle(e.target.value)}
+                    style={{ fontFamily: '"Signika Negative", sans-serif' }}  
+                    className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+                    placeholder="Title"
+                  />
                     <button
-                      onClick={saveDeck}
-                      className="bg-lime-700 h-16 w-36 rounded-full"
+                    onClick={saveDeck}
+                    className="flex  "
                     >
-                      Save
+                    <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
                     </button>
                     <button
-                      onClick={() => setisReviewing(true)}
-                      className="bg-gray-800 text-white h-16 w-36 rounded-full m-10"
+                    onClick={() => setisReviewing(true)}
+                    style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                    className="bg-[#657F83] text-white h-16 w-36 rounded-3xl m-10 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
                     >
-                      Start Learning!
+                    Start Learning!
                     </button>
                     <button
                       onClick={() => setOnFirstPage(true)}
-                      className="bg-blue-400 text-white h-16 w-20 rounded-full text-4xl ml-10 text-center"
+                      className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
                     >
-                      &#8592;
+                      <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />
                     </button>
-                  </div>
                 </div>
-                <CreateFlashcard flashcards={flashcards} setFlashcards={setFlashcards} />
-                <FlashcardList flashcards={flashcards} />
               </div>
-            )}
-          </>
-          );}
-    
+              <CreateFlashcard flashcards={flashcards} setFlashcards={setFlashcards} />
+              <FlashcardList flashcards={flashcards} />
+            </div>
+          )}
+        </>
+      );
+    };
     const FlashCard = () => {
       return (
         <>
           <WhiteContainer>
+          <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">FlashCards</h1>
             <FlashcardComponent />
             <Avatar/>
           </WhiteContainer>
