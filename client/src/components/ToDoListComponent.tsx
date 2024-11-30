@@ -77,23 +77,24 @@ const ToDoListComponent: React.FC = () => {
             dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
             completed: false, // the status of if it is complete or not
         }
-            await addTask(newTask);
-
-            setTask(""); // resets the value of the Task
-            setDate("mm/dd/yyyy");  // resets the value of the Date
-            setTime("--:-- --"); // resets the value of the Time
-
+            
             if (lastTaskRef.current) {
                 lastTaskRef.current.scrollIntoView({
                     behavior: "smooth",
                     block: "end", 
                 });
             }
-
+            
             setIsAnimatingDropDown(true);
             setTimeout(() => {
                 setIsAnimatingDropDown(false);
             }, 10); //duration sng drop down
+
+            setTask(""); // resets the value of the Task
+            setDate("mm/dd/yyyy");  // resets the value of the Date
+            setTime("--:-- --"); // resets the value of the Time
+            
+            await addTask(newTask);
     }
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
