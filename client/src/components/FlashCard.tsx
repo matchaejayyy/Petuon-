@@ -130,7 +130,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
             {flashcards.map((flashcard, index) => {
               const assignedColor = colors[index % colors.length];
               return (
-              <li key={index} className="w-2/3 mt-10 ml-[9rem] m-[7rem] relative transform transition-transform duration-200 hover:scale-105">
+              <li key={index} className="w-2/3 mt-10 ml-[7rem] m-[7rem] relative transform transition-transform duration-200 hover:scale-105">
                 <div style={{fontFamily: '"Signika Negative", sans-serif' }} className={`${assignedColor} rounded-2xl h-[20rem] w-full flex flex-col items-center justify-center overflow-auto relative shadow-lg`}>
                 <button
                   className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
