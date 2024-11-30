@@ -3,15 +3,11 @@
 import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
 import Avatar from '../components/Avatar'
-
 import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
-
 import Clock from "../components/Clock";
 import axios from 'axios';
-
 import { v4 as uuidv4 } from 'uuid';
-
 import { Task } from '../types/ToDoListTypes'
 
 
