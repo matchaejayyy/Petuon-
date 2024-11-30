@@ -1,17 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import React from "react";
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBG.png";
-
-type Props = {};
-
-type LoginFormsInputs = {
-  userName: string;
-  password: string;
-};
+import axios from "axios";
+import { LoginFormsInputs, Props } from "../types/LoginTypes";
 
 const validation = Yup.object().shape({
   userName: Yup.string().required("Username is required"),
@@ -19,6 +14,7 @@ const validation = Yup.object().shape({
 });
 
 const LoginPage: React.FC<Props> = () => {
+  const [error, setError] = useState<string | null>(null); // Track error message in state
   const navigate = useNavigate();
   const {
     register,
@@ -26,22 +22,30 @@ const LoginPage: React.FC<Props> = () => {
     formState: { errors },
   } = useForm<LoginFormsInputs>({ resolver: yupResolver(validation) });
 
-  const handleLogin = (form: LoginFormsInputs) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const userExists = users.find(
-      (user: LoginFormsInputs) =>
-        user.userName === form.userName && user.password === form.password
-    );
+  const handleLogin = async (form: LoginFormsInputs) => {
+    try {
+      const response = await axios.post('http://localhost:3002/login', {
+        userName: form.userName,
+        password: form.password,
+      });
 
-    if (userExists) {
-      localStorage.setItem("isLoggedIn", "true");
-      alert("Login successful! Redirecting to dashboard...");
-      navigate("/dashboard"); // Redirect to the dashboard
-      window.location.reload(); // This will force a page refresh after navigation
-    } else {
-      alert("Invalid username or password");
+      if (response.data.token) {
+        // Store JWT token in a state variable or in cookies (securely)
+        // For now, we'll use state to store it
+        const token = response.data.token;
+
+        // Optionally, store the token in a more persistent storage (cookies) if needed
+
+        // Show success message and navigate to dashboard
+        alert("Login successful! Redirecting to dashboard...");
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      // Handle error (e.g., invalid username/password)
+      setError(error.response?.data?.message || "Something went wrong");
     }
   };
+
 
   return (
     <section

@@ -4,20 +4,15 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBG.png";
 import { useForm } from "react-hook-form";
+import axios from "axios";
+import { RegisterFormsInputs, Props } from "../types/RegisterTypes";
 
-type Props = {};
-
-type RegisterFormsInputs = {
-  email: string;
-  userName: string;
-  password: string;
-};
 
 const validation = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("Email is required"),
   userName: Yup.string().required("Username is required"),
   password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
 });
 
@@ -29,20 +24,26 @@ const RegisterPage: React.FC<Props> = () => {
     formState: { errors },
   } = useForm<RegisterFormsInputs>({ resolver: yupResolver(validation) });
 
-  const handleRegister = (form: RegisterFormsInputs) => {
-    // Simulate registering the user and saving in localStorage
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    users.push({
-      email: form.email,
-      userName: form.userName,
-      password: form.password,
-    });
-    localStorage.setItem("users", JSON.stringify(users));
 
-    alert("Registration successful! Please log in.");
-    navigate("/login"); // Redirect to the login page
+  const handleRegister = async (form: RegisterFormsInputs) => {
+    try {
+      const response = await axios.post('http://localhost:3002/register', form);
+
+      // Handle successful registration
+      alert(response.data.message); // This will show the success message from the backend
+      navigate('/login'); // Redirect to login page after successful registration
+    } catch (error: any) {
+      // Handle error from the API
+      if (error.response) {
+        // Server-side error
+        alert(`Error: ${error.response.data.error}`);
+      } else {
+        // Network or other error
+        console.error('Error registering user:', error);
+        alert('An error occurred. Please try again.');
+      }
+    }
   };
-
   return (
     <section
       className="h-screen flex items-center justify-center"
