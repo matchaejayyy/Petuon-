@@ -78,6 +78,11 @@ const ToDoListComponent: React.FC = () => {
             completed: false, // the status of if it is complete or not
         }
             
+        if (taskDateTime() < new Date() && !(time === "--:-- --" && date == "mm/dd/yyyy")) {
+            alert("Cannot set time in current or past");
+            return;
+        }
+
             if (lastTaskRef.current) {
                 lastTaskRef.current.scrollIntoView({
                     behavior: "smooth",
@@ -102,8 +107,9 @@ const ToDoListComponent: React.FC = () => {
     } 
 
     const handleTimeChange = (e:ChangeEvent<HTMLInputElement>) => {
-        setTime(e.target.value); // stores the value of the time set
 
+
+        setTime(e.target.value); // stores the value of the time set
         const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         setdisplayTime(displaytime);
     }
@@ -186,6 +192,12 @@ const ToDoListComponent: React.FC = () => {
     async function saveEditing(task_id: string) {
         setIsEditing(false);
         cancelEditing();
+
+        if (editTaskDateTime() < new Date() && !(editTime === "--:-- --" && editDate == "mm/dd/yyyy")) {
+            alert('The due date and time cannot be in the past.');
+            return;
+          }
+
         await saveEditedTask(task_id, editText, editTaskDateTime())
     }
 
@@ -268,6 +280,7 @@ const ToDoListComponent: React.FC = () => {
                         onClick={() => setTime("--:-- --")}
                         className="absolute right-[17rem] top-[1.5rem] text-2xl transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]">
                             <RotateCcw size={20} color="black"  />
+                        
                         </button>
 
                         <label 
@@ -292,16 +305,18 @@ const ToDoListComponent: React.FC = () => {
                 </div>
 
                 <div  className="font-normal text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                
-                    <div className="w-[84rem] h-[28.5rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto">
-
+                {tasks.length === 0 ? (
+                    <h1 className="text-center text-gray-500 mt-10">No tasks available</h1>
+                ) : (
+                    <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
                         <ul>
+                       
                             {tasks.map((task, index)=>
                                 <li key={index}
                                 className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                 style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                 ref={index === tasks.length - 1 ? lastTaskRef : null}>
-                                
+
                                     <input 
                                     className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
                                     type="checkbox"
@@ -383,10 +398,12 @@ const ToDoListComponent: React.FC = () => {
                                         <Trash2 size={20}/>
                                     </button>
 
-                            </li>
-                        )}
+                                </li>
+                            )}   
+                        
                         </ul>
                     </div>
+                )}
                 </div>
             </div>
         </>

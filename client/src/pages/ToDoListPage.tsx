@@ -4,7 +4,6 @@ import Avatar from "../components/Avatar";
 import Clock from "../components/Clock";
 
 import ToDoListComponent from "../components/ToDoListComponent"
-
 const ToDoListPage = () => {
     return(
         <>  
