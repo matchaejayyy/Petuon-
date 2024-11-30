@@ -306,7 +306,7 @@ const ToDoListComponent: React.FC = () => {
 
                 <div  className="font-normal text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                 {tasks.length === 0 ? (
-                    <h1 className="text-center text-gray-500 mt-10">No tasks available</h1>
+                    <h1 className="text-center text-gray-500 ml-[7rem] mt-[10rem]">No tasks available</h1>
                 ) : (
                     <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
                         <ul>
