@@ -240,12 +240,14 @@ const CalendarPage: React.FC = () => {
   
               {/* Show full task list when expanded */}
               {expandedDay === formattedFullDate && (
-                <div className="mt-2 bg-white border shadow-lg rounded-md p-2 z-10">
+                <div className="mt-2 bg-white border shadow-lg rounded-md p-2 z-10 max-h-20 overflow-y-auto [&::-webkit-scrollbar]:w-2">
                   {tasksForDay.map(task => (
                     <div
                       key={task.task_id}
-                      onClick={() => navigate(`/ToDoList`)} // Redirect to ToDoListPage on click
-                      className="text-xs text-black truncate cursor-pointer hover:bg-gray-200 p-1 rounded"
+                      onClick={() => navigate(`/ToDoList`)}
+                      className="text-md text-black truncate cursor-pointer hover:bg-gray-200 p-1 rounded"
+                      style={{ fontFamily: '"Signika Negative", serif' }}
+                      
                     >
                       {task.text}
                     </div>
