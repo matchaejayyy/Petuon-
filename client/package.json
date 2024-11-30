@@ -16,6 +16,7 @@
     "lucide-react": "^0.456.0",
     "quill": "^2.0.2",
     "react": "^18.3.1",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.2",
     "react-quill": "^2.0.0",
