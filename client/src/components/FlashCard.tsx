@@ -332,7 +332,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
               <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5 [&::-webkit-scrollbar]:w-2">
                   {Object.keys(decks).length === 0 ? (
                     <p
-                      className="text-2xl text-center col-span-full "
+                      className="text-2xl text-gray-500 text-center col-span-full "
                       style={{ fontFamily: '"Signika Negative", sans-serif' }}
                     >
                       No decks saved yet. Create one to get started!

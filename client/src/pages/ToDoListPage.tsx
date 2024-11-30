@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-
 import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
 import Avatar from '../components/Avatar'
@@ -9,6 +7,7 @@ import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 
 import Clock from "../components/Clock";
 import axios from 'axios';
+
 
 import { v4 as uuidv4 } from 'uuid';
 
