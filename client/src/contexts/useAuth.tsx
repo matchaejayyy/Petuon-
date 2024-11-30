@@ -8,7 +8,7 @@ import supabase from '../../src/SupabaseClient';
 interface UserContextType {
   user: UserProfile | null;
   token: string | null;
-  registerUser: (email: string, password: string) => void;
+  registerUser: (email: string, password: string, userName: string) => void;
   loginUser: (email: string, password: string) => void;
   isLoggedIn: () => boolean;
   logout: () => void;
@@ -45,9 +45,9 @@ export const UserProvider: FC<Props> = ({ children, setIsLoggedIn }) => {
     fetchSession();
   }, []);
 
-  const registerUser = async (email: string, password: string) => {
+  const registerUser = async (email: string, password: string, userName: string) => {
     try {
-      const user = await signUp(email, password);
+      const user = await signUp(email, password, userName);
       if (user) {
         setUser({
           userName: user.email || '', // Using email as userName
