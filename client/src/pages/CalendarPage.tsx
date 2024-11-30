@@ -208,7 +208,7 @@ const CalendarPage: React.FC = () => {
       );
   
       // Styling for day cells
-      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer transition-all duration-300 ${
+      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer  hover:shadow-lg transition-shadow transition-all duration-300 ${
         isCurrentMonth ? '' : 'text-gray-400'
       } ${isToday ? 'bg-[#FE9B72] text-white' : ''}`; // Highlight for today
   

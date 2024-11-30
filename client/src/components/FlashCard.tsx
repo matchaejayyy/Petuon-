@@ -218,8 +218,8 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
                     className="bg-[#FE9B72] w-full h-full p-5 text-center cursor-pointer flex flex-col justify-center items-center"
                     onClick={() => setShowAnswer((prev) => !prev)}
                     >
-                    <h2 className="text-4xl mb-5">{currentFlashcard.question}</h2>
-                    <p className={`text-xl ${showAnswer ? "text-black" : "text-gray-400"}`}>
+                    <h2 style={{fontFamily: '"Signika Negative", sans-serif' }} className="text-4xl mb-5">{currentFlashcard.question}</h2>
+                    <p style={{fontFamily: '"Signika Negative", sans-serif' }} className={`text-xl ${showAnswer ? "text-black" : "text-gray-200"}`}> 
                       {showAnswer ? currentFlashcard.answer : "Tap to show answer"}
                     </p>
                     </div>
