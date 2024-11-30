@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { application } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-
+import LoginRouter from './routes/LoginRouter';
+import RegisterRouter from "./routes/RegisterRouter";
 import ToDoListRouter from "./routes/ToDoListRouter";
 
 dotenv.config();
@@ -17,6 +18,9 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/tasks', ToDoListRouter);
+app.use('/register', RegisterRouter)
+app.use('/login', LoginRouter);
+
 
 
  // Start Server on port 3002

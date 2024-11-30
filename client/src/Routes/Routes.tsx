@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Dashboard from '../pages/DashboardPage';
 import Calendar from '../pages/CalendarPage';
@@ -9,37 +9,29 @@ import Notepad from '../pages/NotepadPage';
 import LoginPage from '../pages/LoginPage';
 import RegisterPage from '../pages/RegisterPage';
 
-interface RoutersProps {
-  isLoggedIn: boolean;
-}
-
-const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
+const RoutesComponent: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {isLoggedIn ? (
-          <>
-            {/* Authenticated Routes */}
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/Calendar" element={<Calendar />} />
-            <Route path="/Flashcard" element={<Flashcard />} />
-            <Route path="/Notepad" element={<Notepad />} />
+        {/* Redirect root to login page */}
+        <Route path="/" element={<LoginPage />} />
 
-            {/* Dynamic Route for ToDoList with taskId */}
-            <Route path="/ToDoList" element={<ToDoList />} />
-          </>
-        ) : (
-          <>
-            {/* Unauthenticated Routes */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            {/* Redirect unauthenticated users to Login */}
-            <Route path="*" element={<Navigate to="/login" />} />
-          </>
-        )}
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* Protected Routes (you can implement later with authentication) */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/flashcard" element={<Flashcard />} />
+        <Route path="/todo" element={<ToDoList />} />
+        <Route path="/notepad" element={<Notepad />} />
+
+        {/* Catch-all Route for invalid paths */}
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
   );
 };
 
-export default Routers;
+export default RoutesComponent;

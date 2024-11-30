@@ -27,7 +27,7 @@ const RegisterPage: React.FC<Props> = () => {
 
   const handleRegister = async (form: RegisterFormsInputs) => {
     try {
-      const response = await axios.post('http://localhost:3002/register', form);
+      const response = await axios.post('http://localhost:3002/register/register', form);
 
       // Handle successful registration
       alert(response.data.message); // This will show the success message from the backend
