@@ -15,7 +15,6 @@ const PORT = process.env.PORT || 3002;
 app.use(cors());
 app.use(bodyParser.json());
 
-
 // Routes
 app.use('/tasks', ToDoListRouter);
 app.use('/notes', NotesListRouter);
