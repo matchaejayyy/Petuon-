@@ -26,37 +26,24 @@ router.get('/getTask', async (req: Request, res: Response) => {
 });
 
 // Insert a new task
-let notes = [];
+router.post('/insertTask', async (req: Request, res: Response) => {
+    try {
+        const { task_id, text, createdAt, dueAt, completed } = req.body;
 
-// Insert note API
-router.post("/notes/insertNote", (req, res) => {
-    // Destructure data from request body
-    const { title, content, color } = req.body;
+        const query = `
+            INSERT INTO tasks (task_id, text, created_at, due_at, completed)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *;
+        `;
+        const values = [task_id, text, createdAt, dueAt, completed];
 
-    // Validate the input
-    if (!title || !content || !color) {
-        return res.status(400).json({ message: "Missing required fields" });
+        const result = await pool.query(query, values);
+        res.status(201).json(result.rows[0]);
+    } catch (error) {
+        console.error('Error inserting task:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-
-    // If all fields are valid, create a new note
-    const newNote = {
-        id: notes.length + 1, // You would generate this using your database
-        title,
-        content,
-        color,
-        createdAt: new Date().toISOString(),
-    };
-
-    // Push to mock database
-    notes.push(newNote);
-
-    // Send response
-    res.status(201).json({
-        message: "Note created successfully",
-        note: newNote,
-    });
 });
-
 
 // Delete a task
 router.delete('/deleteTask/:task_id', async (req: Request, res: Response) => {
