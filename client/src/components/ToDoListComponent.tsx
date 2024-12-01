@@ -458,7 +458,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         return (
             <>
                 <div>
-                    <h1>My Tasks</h1>
+                    <h1>
+                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="font-bold text-lg text-[#354F52] mt-[1rem] ml-[1rem] ">My Task</div>
+                        </h1>
                     <ul>
                     {tasks
                     .sort((a, b) => {
@@ -469,7 +471,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         }
                             return 0; 
                         }).slice(0, 5).map((task, index) => 
-                            <li key={index} className="border-t-2 mt-[1rem]">
+                            <li key={index} className="border-t-2 mt-[0.8rem]">
                                 <div className="">
                                     <input 
                                     className="ml-[0.7rem] mt-[0.7rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
@@ -485,13 +487,13 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         )}
                     </ul>
                     <button 
-                    className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                    style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
                     onClick={() => navigate(`/ToDoList`)}>
                         View all
                     </button>
                 </div>
                 {tasks.length <= 4 && (
-                    <div className="mt-4 text-center text-gray-500">No more tasks</div>
+                    <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-4 text-center text-gray-500">No more tasks</div>
                 )}
             </>
         )   
