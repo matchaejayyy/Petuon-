@@ -1,18 +1,5 @@
-import express, { Request, Response } from 'express';
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const router = express.Router();
-
-const pool = new Pool({
-    host: process.env.PG_HOST || "aws-0-ap-southeast-1.pooler.supabase.com",
-    port: parseInt(process.env.PG_PORT || "6543"),
-    database: process.env.PG_DATABASE || "postgres",
-    user: process.env.PG_USER || "postgres.oizvoxoctozusoahxjos",
-    password: process.env.PG_PASSWORD || "Carmine_123456789!!!",
-});
+import { Request, Response } from 'express';
+import { pool, router } from '../database/CarmineDB'
 
 // Fetch all notes
 // In your Express route (backend)
