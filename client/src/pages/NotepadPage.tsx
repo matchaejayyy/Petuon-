@@ -145,7 +145,7 @@ const NotepadPage: React.FC = () => {
                 return noteDate.toDateString() === yesterday.toDateString();
             } else if (filter === "This Week") {
                 const startOfWeek = new Date(today);
-                startOfWeek.setDate(today.getDate() - today.getDay()); // Start of the week (Sunday)
+                startOfWeek.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1)); // Start of the week (Monday)
                 return noteDate >= startOfWeek;
             } else if (filter === "This Month") {
                 return noteDate.getMonth() === today.getMonth() && noteDate.getFullYear() === today.getFullYear();
