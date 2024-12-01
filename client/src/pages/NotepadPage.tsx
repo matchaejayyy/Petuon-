@@ -136,7 +136,7 @@ const NotepadPage: React.FC = () => {
     const getFilteredNotes = () => {
         const today = new Date();
         const filtered = notes.filter((note) => {
-            const noteDate = new Date(note.createdDate);
+            const noteDate = new Date(note.created_date);
             if (filter === "Today") {
                 return noteDate.toDateString() === today.toDateString();
             } else if (filter === "Yesterday") {
