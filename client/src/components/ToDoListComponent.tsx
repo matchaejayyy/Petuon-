@@ -93,6 +93,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             return;
         }
 
+           
+            setIsAnimatingDropDown(true);
+            setTimeout(() => {
+                setIsAnimatingDropDown(false);
+            }, 10); //duration sng drop down
+
             if (lastTaskRef.current) {
                 lastTaskRef.current.scrollIntoView({
                     behavior: "smooth",
@@ -100,11 +106,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 });
             }
             
-            setIsAnimatingDropDown(true);
-            setTimeout(() => {
-                setIsAnimatingDropDown(false);
-            }, 10); //duration sng drop down
-
+            
             setTask(""); // resets the value of the Task
             setDate("mm/dd/yyyy");  // resets the value of the Date
             setTime("--:-- --"); // resets the value of the Time
@@ -174,7 +176,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 break;
             case "completed":
                 FilteredTasks = tasksBackup.filter((task) => task.completed)
-                TasksMessage = "No completed tasks available.";
+                TasksMessage = "No tasks completed.";
                 break;
             default:
                 FilteredTasks = tasksBackup.filter((task) => !task.completed);;
