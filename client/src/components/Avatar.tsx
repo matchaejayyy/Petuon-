@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../contexts/useAuth"; // Import useAuth for logout functionality
+import { useAuth } from "../contexts/UserProvider"; // Import useAuth for logout functionality
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
 
 const Avatar = () => {

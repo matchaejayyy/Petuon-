@@ -6,6 +6,8 @@ import LoginBG from "../assets/LoginBG.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { RegisterFormsInputs, Props } from "../types/RegisterTypes";
+import { supabase } from '../SupabaseClient'; // Adjust the path as needed
+
 
 
 const validation = Yup.object().shape({
@@ -27,23 +29,35 @@ const RegisterPage: React.FC<Props> = () => {
 
   const handleRegister = async (form: RegisterFormsInputs) => {
     try {
-      const response = await axios.post('http://localhost:3002/register/register', form);
-
-      // Handle successful registration
+      // First, register the user in your backend
+      const response = await axios.post("http://localhost:3002/login/register", form);
+  
+      // Handle successful backend registration
       alert(response.data.message); // This will show the success message from the backend
-      navigate('/login'); // Redirect to login page after successful registration
+  
+      // Then, register the user with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+      });
+  
+      if (error) {
+        alert(`Supabase Error: ${error.message}`);
+      } else {
+        alert("Registration successful! Please check your email to confirm.");
+        navigate("/login"); // Redirect to the login page after successful registration
+      }
     } catch (error: any) {
-      // Handle error from the API
+      // Handle error from the backend API
       if (error.response) {
-        // Server-side error
         alert(`Error: ${error.response.data.error}`);
       } else {
-        // Network or other error
-        console.error('Error registering user:', error);
-        alert('An error occurred. Please try again.');
+        console.error("Error registering user:", error);
+        alert("An error occurred. Please try again.");
       }
     }
   };
+  
   return (
     <section
       className="h-screen flex items-center justify-center"
