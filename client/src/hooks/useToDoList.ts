@@ -27,12 +27,14 @@ export const useToDoList = () => {
           
           setTasks(taskData);
           setTasksBackup(taskData);
+          
         } catch (error) {
           console.error("Error fetching tasks:", error);
         } finally {
           setLoading(false);
         }
       };
+      
 
     useEffect(() => {
       fetchTasks();
@@ -46,7 +48,7 @@ export const useToDoList = () => {
           setTasks([...tasks, newTask  ]);
         } 
         
-        setTasksBackup([...tasksBackup, newTask]);
+        setTasksBackup([...tasks, newTask]);
 
         await axios.post("http://localhost:3002/tasks/insertTask", newTask);
         
@@ -68,25 +70,33 @@ export const useToDoList = () => {
         }
     }
 
+
+
     // Complete Tasks
     const toggleCompleteTask = async (task_id: string) => {
       try {
+        
         const taskToToggle = tasks.find((task) => task.task_id === task_id);
         if (!taskToToggle) return;
   
         const updatedCompletedStatus = !taskToToggle.completed;
-  
+        
         setTasks(tasks.map(task =>
           task.task_id === task_id ? {...task, completed: !task.completed} : task
-        ));
-        setTasksBackup(tasks.map(task => 
+        ))
+        setTasksBackup(tasksBackup.map(task => 
             task.task_id === task_id ? {...task, completed: !task.completed} : task
         ));
+
+        
 
         await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
           completed: updatedCompletedStatus,
         });
-  
+        
+        
+        
+
       } catch (error) {
         console.error("Error toggling task completion:", error);
       }
@@ -121,6 +131,8 @@ export const useToDoList = () => {
       } catch (error) {
         console.error("There was an error updating the task:", error);
       }
+
+      
     };
 
     return {
