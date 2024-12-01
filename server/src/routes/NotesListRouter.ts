@@ -16,7 +16,7 @@ const pool = new Pool({
 
 // Fetch all notes
 // In your Express route (backend)
-router.get('/getNotes', async (req, res) => {
+router.get('/getNotes', async (req: Request, res: Response) => {
     try {
         // Assuming you're using a database like PostgreSQL
         const result = await pool.query('SELECT * FROM notes');
@@ -29,7 +29,7 @@ router.get('/getNotes', async (req, res) => {
 
 
 // Insert a new note
-router.post('/insertNote', async (req, res) => {
+router.post('/insertNote', async (req: Request, res: Response) => {
     console.log('Request body:', req.body); // Log the request body
 
     const { title, content, color, created_date, created_time } = req.body;
@@ -76,35 +76,6 @@ router.delete('/deleteNote/:id', async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
-// Mark a note as important
-// router.patch('/markImportant/:note_id', async (req: Request, res: Response) => {
-//     const { note_id } = req.params;
-//     const { important } = req.body;
-
-//     if (important === undefined) {
-//         return res.status(400).json({ message: 'Missing important field' });
-//     }
-
-//     try {
-//         const query = `
-//             UPDATE notes 
-//             SET important = $1
-//             WHERE note_id = $2
-//             RETURNING *;
-//         `;
-//         const result = await pool.query(query, [important, note_id]);
-
-//         if (result.rowCount === 0) {
-//             return res.status(404).json({ message: 'Note not found' });
-//         }
-
-//         res.status(200).json(result.rows[0]);
-//     } catch (error) {
-//         console.error('Error updating note:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
 
 // Update a note
 router.patch('/updateNote/:id', async (req: Request, res: Response) => {
