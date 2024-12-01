@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, ChangeEvent, FormEvent, useRef, useEffect} from "react"
+import { useState, ChangeEvent, FormEvent, useRef, useEffect, useCallback} from "react"
 import {RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useToDoList } from "../hooks/useToDoList";
+import { useNavigate } from 'react-router-dom';
 
 import { ToDoListProps } from "../types/ToDoListTypes"
 
@@ -28,26 +29,30 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     const [isAnimatingDropDown, setIsAnimatingDropDown] = useState<boolean>(false); //para sa dropdown animation
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
 
+    const [taskMessage, setTaskMessage] = useState<string>("No active tasks available.");
+  
+    const navigate = useNavigate();
+
     const { 
         tasksBackup,
-        filterType, setFilterType,  
+        filterType, setFilterType, 
         tasks, setTasks,  
         addTask, deleteTask, toggleCompleteTask, saveEditedTask
     } = useToDoList();
 
-    // Refreshes Tasks
+    const updateTasks = useCallback(() => {
+        setTasks((prevTasks) =>
+            prevTasks.map((task) => {
+                return task;
+            })
+        );
+    }, []);
+
     useEffect(() => {
-        const interval = setInterval(() => {
-            setTasks((prevTasks) =>
-                prevTasks.map((task) => {
-                    return task;
-                
-             })
-            );
-        }, 1000);
+        const interval = setInterval(updateTasks, 1000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [updateTasks]);
 
 
     function taskDateTime(){ // returns a new Date with the set condition
@@ -79,7 +84,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
             completed: false, // the status of if it is complete or not
         }
-            
+
+        cancelEditing()
+        setIsEditing(false);
+
         if (taskDateTime() < new Date() && !(time === "--:-- --" && date == "mm/dd/yyyy")) {
             alert("Cannot set time in current or past");
             return;
@@ -109,8 +117,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     } 
 
     const handleTimeChange = (e:ChangeEvent<HTMLInputElement>) => {
-
-
         setTime(e.target.value); // stores the value of the time set
         const displaytime = new Date(new Date().toLocaleDateString() + " " + e.target.value + ":00").toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
         setdisplayTime(displaytime);
@@ -135,41 +141,54 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         }
     }
 
+    
     function filteredTasks(filterType: string) {
         const now = new Date();
-
-        let filteredTasks = tasksBackup;
-
+        let TasksMessage = taskMessage;
+        let FilteredTasks = tasksBackup;
+        
         switch (filterType) {
             case "noDate":
-                filteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0);
+                FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0&& !task.completed);
+                TasksMessage = "No tasks with no due date available.";
                 break;
             case "near":
-                filteredTasks = tasksBackup
-                .filter((task) => task.dueAt.getTime() > now.getTime())
-                .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
+                FilteredTasks = tasksBackup
+                    .filter((task) => task.dueAt.getTime() > now.getTime()&& !task.completed)
+                    .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
+                TasksMessage = "No near tasks available.";
                 break;
             case "later":
-                filteredTasks = tasksBackup
-                .filter((task) => task.dueAt.getTime() > now.getTime())
-                .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime());
+                FilteredTasks = tasksBackup
+                    .filter((task) => task.dueAt.getTime() > now.getTime() && !task.completed)
+                    .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime());
+                TasksMessage = "No tasks available for later.";
                 break;
             case "default":
-                filteredTasks = tasksBackup
+                FilteredTasks = tasksBackup.filter((task) => !task.completed);
+                TasksMessage = "No active tasks available.";
                 break;
             case "pastDue":
-                filteredTasks = tasksBackup.filter((task) =>task.dueAt.getTime() !== 0 && task.dueAt.getTime() < now.getTime());
+                FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() !== 0 && task.dueAt.getTime() < now.getTime()&& !task.completed);
+                TasksMessage = "No tasks past due.";
+                break;
+            case "completed":
+                FilteredTasks = tasksBackup.filter((task) => task.completed)
+                TasksMessage = "No completed tasks available.";
                 break;
             default:
-                filteredTasks = tasksBackup
+                FilteredTasks = tasksBackup.filter((task) => !task.completed);;
+                TasksMessage = "No active tasks available.";
                 break;
         }
-        
+    
+        setTaskMessage(TasksMessage);
         setFilterType(filterType);
-        setTasks(filteredTasks);
-        
+        setTasks(FilteredTasks);
+        setIsEditing(false);
+        cancelEditing();
     }
-
+    
     const startEditing = (index:number, text: string, date_time: Date) => {
         setEditIndex(index);
         setEditText(text);
@@ -265,7 +284,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             onClick={() => filteredTasks("pastDue")}>
                                 PastDue
                             </button>
-            
+
+                            <button 
+                            className={`px-4 py-2 rounded-md ${filterType === "completed" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}
+                            onClick={() => filteredTasks("completed")}>
+                                Completed
+                            </button>
                         <form 
                         onSubmit={handleAddTask} 
                         className="fixed text-black left-[10rem] top-[10rem] w-[84rem] bg-white  pt-3 pb-3 rounded-lg shadow-md"
@@ -284,7 +308,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             value = {task}
                             onChange={handleTextChange}
                             required
-                            />
+                            />  
                             
                             <label 
                             className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "text-transparent select-none pointer-events-none" : "" }`}>
@@ -312,7 +336,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             </label>
                         
                             <input 
-                            className="absolute right-[7rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                            className="absolute right-[6.8rem] top-[1.2rem] text-[1.2rem] w-[1.55rem] outline-none bg-transparent transform transition-transform duration-200 hover:scale-125 active:scale-90"
                             type="date" 
                             value={date}
                             onChange={handleDateChange}
@@ -329,11 +353,11 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                     {tasks.length === 0 ? (
-                        <h1 className="text-center text-gray-500 ml-[7rem] mt-[10.5rem] text-2xl">No tasks available.</h1>
+                        <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
                     ) : (
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
                             <ul>
-                                {tasks.map((task, index)=>
+                            {tasks.map((task, index) =>
                                     <li key={index}
                                     className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
@@ -345,7 +369,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                         checked={task.completed}
                                         onChange={() => completeToggle(task.task_id!)}
                                         />
-                                    
+
                                         {editIndex === index ? (
                                             <div>
                                                 <input 
@@ -373,7 +397,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
 
                                                 <input
                                                 type="date"
-                                                className="absolute right-[12rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                                                className="absolute right-[12.3rem] opacity-45 mt-[-0.2rem] w-[1.33rem] text-[1.2rem] translate-y-[-0.1rem] bg-transparent outline-none transform transition-transform duration-200 hover:scale-125 active:scale-90"
                                                 value={editDate}
                                                 onChange={handleDateEditChange}
                                                 />
@@ -460,7 +484,11 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             </li>
                         )}
                     </ul>
-                    <button className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700">View all</button>
+                    <button 
+                    className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                    onClick={() => navigate(`/ToDoList`)}>
+                        View all
+                    </button>
                 </div>
                 {tasks.length <= 4 && (
                     <div className="mt-4 text-center text-gray-500">No more tasks</div>
