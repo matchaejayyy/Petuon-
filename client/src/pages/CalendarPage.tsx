@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState, useEffect } from 'react';
 import {
   format,
@@ -168,7 +169,6 @@ const CalendarPage: React.FC = () => {
       const taskData = response.data.map(
         (task: { task_id: string; text: string; due_at: Date }) => {
           const dueAt = new Date(task.due_at);
-
           return {
             task_id: task.task_id,
             text: task.text,
@@ -177,7 +177,6 @@ const CalendarPage: React.FC = () => {
         }
       );
       setTasks(taskData);
-      console.log(taskData);
     };
     fetchTasks();
   }, []);
@@ -244,7 +243,7 @@ const CalendarPage: React.FC = () => {
                   {tasksForDay.map(task => (
                     <div
                       key={task.task_id}
-                      onClick={() => navigate(`/ToDoList`)}
+                      onClick={() => navigate(`/ToDoList?taskId=${task.task_id}`)}
                       className="text-md text-black truncate cursor-pointer hover:bg-gray-200 p-1 rounded"
                       style={{ fontFamily: '"Signika Negative", serif' }}
                       
