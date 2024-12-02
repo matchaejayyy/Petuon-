@@ -512,7 +512,14 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     </button>
                 </div>
                 {tasks.length <= 4 && (
-                    <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-4 text-center text-gray-500">No more tasks</div>
+                    <>
+                        {tasks.length === 0 && (
+                            <>
+                                <img src="src\assets\sleeping_penguin2.gif" alt="No notes available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
+                                <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
+                            </>
+                        )}
+                    </>
                 )}
             </>
         )   

@@ -237,7 +237,9 @@ const NotepadPage: React.FC = () => {
                             {/* Render Notes */}
                             {filteredNotes.length === 0 ? (
                                 <div className="text-center mt-4 ml-5 ">
-                                    <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-gray-500">No notes available.</p>
+                                    
+                                    <img src="src\assets\sleeping_penguin2.gif" alt="No notes available" className=" w-[17rem] h-[17rem] ml-[34rem] mt-[-13rem]" />
+                                    <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl ml-[36rem] mt-[-1rem] text-gray-500">No notes available.</p>
                                 </div>
                             ) : (
                                 filteredNotes.map((note) => (
