@@ -29,8 +29,8 @@ const NotepadPage: React.FC = () => {
             const response = await axios.get('http://localhost:3002/notes/getNotes');
             const notesWithDateTime = response.data.map((note: any) => ({
                 ...note,
-                createdDate: new Date(note.createdDate).toLocaleDateString(),
-                createdTime: new Date(note.createdDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+                // createdDate: new Date(note.createdDate).toLocaleDateString(),
+                // createdTime: new Date(note.createdDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
             }));
             setNotes(notesWithDateTime || []);
             console.log(notes);
@@ -152,9 +152,14 @@ const NotepadPage: React.FC = () => {
             }
             return true; // Default is "All"
         });
+
+        // Sort by id in descending order for "All" filter
+        if (filter === "All") {
+            filtered.sort((a, b) => b.id - a.id);
+        }
+
         return filtered;
     };
-    
 
     const filteredNotes = getFilteredNotes();
 
@@ -253,7 +258,7 @@ const NotepadPage: React.FC = () => {
                                         <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-gray-700 ml-3">
                                             {note.content.length > 20 ? `${note.content.slice(0, 20)}...` : note.content}
                                         </p>
-                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{new Date(note.created_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
+                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{new Date(`1970-01-01T${note.created_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); editNote(note.id); }}
                                             className="absolute top-7 right-3 text-black hover:text-[#719191]"

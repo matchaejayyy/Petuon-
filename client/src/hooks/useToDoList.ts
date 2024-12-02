@@ -12,6 +12,7 @@ export const useToDoList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("default");
   
+
     // Fetched Tasks
       const fetchTasks = async () => {
         setLoading(true);
@@ -49,6 +50,7 @@ export const useToDoList = () => {
         } 
         
         setTasksBackup([...tasks, newTask]);
+        
 
         await axios.post("http://localhost:3002/tasks/insertTask", newTask);
         
