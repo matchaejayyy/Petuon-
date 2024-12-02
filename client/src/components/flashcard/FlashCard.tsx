@@ -219,7 +219,6 @@ const deleteFlashcard = (index: number) => {
                   </button>
               </div>
             </div>
-
             <CreateFlashcard flashcards={flashcards} setFlashcards={setFlashcards} />
             <FlashcardList flashcards={flashcards} />
           </div>
@@ -241,4 +240,3 @@ const deleteFlashcard = (index: number) => {
   };
   
   export default FlashCard;
-

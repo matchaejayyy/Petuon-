@@ -3,7 +3,9 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
+
 import ToDoListRouter from "./routes/ToDoListRouter";
+import FlashcardRouter from './routes/FlashcardRoutes';
 import NotesListRouter from "./routes/NotesListRouter";
 
 dotenv.config();
@@ -17,7 +19,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/tasks', ToDoListRouter);
-app.use('/notes', NotesListRouter);
+
 
  // Start Server on port 3002
 app.listen(PORT, () => {
