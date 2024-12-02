@@ -379,14 +379,15 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     </div>
 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                        {loading ? (
-                             <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">fetching tasks...</h1>
-                        ) : tasks.length == 0 || filterArr.length == 0 ? ( 
-                            <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
-                        ) : null}
+                    {loading && (
+                        <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>
+                    )}
+                    {!loading && (tasks.length === 0 || filterArr.length === 0) && (
+                        <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">{taskMessage}</h1>
+                    )}
                         
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
-                        >
+                        >     
                             <ul>
                             {display.map((task, index) =>
                                     <motion.li key={index}
@@ -394,7 +395,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     initial={afterloading ? "hidden" : undefined}
                                     animate={afterloading ? "visible" : undefined}
                                     exit={afterloading ? "visible" : undefined}
-                                    transition={afterloading ? { duration: 0.05, delay: index * delayPerItem } : undefined}
+                                    transition={afterloading ? { duration: 0.2, delay: index * delayPerItem } : undefined}
                                     className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
@@ -524,17 +525,24 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     <button 
                     style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
                     onClick={() => navigate(`/ToDoList`)}>
-                        View all
+                        {
+                            tasks.length === 0
+                            ? 'Add a Task'
+                            : tasks.length > 5
+                            ? `View ${tasks.length - 5} more`
+                            : 'Add more tasks'
+                        }
                     </button>
                 </div>
-                {tasks.length <= 4 && (
+                {tasks.length > 0 && tasks.length <= 4 && (
+                    <>  
+                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
+                    </>
+                )}
+                {!loading && tasks.length === 0 && (
                     <>
-                        {tasks.length === 0 && (
-                            <>
-                                <img src="src\assets\sleeping_penguin2.gif" alt="No notes available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
-                                <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
-                            </>
-                        )}
+                        <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
+                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
                     </>
                 )}
             </>
