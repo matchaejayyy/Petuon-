@@ -5,9 +5,16 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBG.png";
 import axios, { AxiosError } from "axios";
-import { LoginFormsInputs, Props } from "../types/LoginTypes";
+// import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import { supabase } from "../SupabaseClient";
 
+
+export type Props = {};
+
+export type LoginFormsInputs = {
+  userName: string;
+  password: string;
+};
 // Validation schema
 const validationSchema = Yup.object().shape({
   userName: Yup.string().required("Username is required"),
@@ -17,6 +24,7 @@ const validationSchema = Yup.object().shape({
 const LoginPage: React.FC<Props> = () => {
   const [error, setError] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
+
 
   const {
     register,

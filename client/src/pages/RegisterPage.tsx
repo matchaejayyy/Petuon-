@@ -2,11 +2,20 @@
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-import LoginBG from "../assets/LoginBG.png";
+import LoginBG from "../assets/LoginBg.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { RegisterFormsInputs, Props } from "../types/RegisterTypes";
+// import { RegisterFormsInputs, Props } from "../types/RegisterTypes";
 import { supabase } from '../SupabaseClient'; // Adjust the path as needed
+
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+export type Props = {};
+
+export type RegisterFormsInputs = {
+  email: string;
+  userName: string;
+  password: string;
+};
 
 
 
@@ -30,7 +39,7 @@ const RegisterPage: React.FC<Props> = () => {
   const handleRegister = async (form: RegisterFormsInputs) => {
     try {
       // First, register the user in your backend
-      const response = await axios.post("http://localhost:3002/login/register", form);
+      const response = await axios.post("http://localhost:3002/register/register", form);
   
       // Handle successful backend registration
       alert(response.data.message); // This will show the success message from the backend
