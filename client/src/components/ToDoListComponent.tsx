@@ -36,11 +36,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     const navigate = useNavigate();
 
     const { 
+        afterloading,
         tasksBackup,
         filterType, setFilterType, 
         tasks, setTasks,  
         filterArr, setFilterArr,
-        loading,
+        loading, setAfterLoading,
         addTask, deleteTask, toggleCompleteTask, saveEditedTask
     } = useToDoList();
 
@@ -182,6 +183,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 break;
             case "completed":
                 FilteredTasks = tasksBackup.filter((task) => task.completed)
+                setAfterLoading(false)
                 TasksMessage = "No tasks completed.";
                 break;
             default:
@@ -266,7 +268,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     if (variant === "default") {
         return (
             <>  
-                <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8">
+                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ${afterloading ? 'disabled-container' : ''}`}>
                     <div>
                             <button 
                             className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
@@ -375,10 +377,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             <ul>
                             {display.map((task, index) =>
                                     <motion.li key={index}
-                                    variants={taskVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                                    variants={afterloading ? taskVariants: undefined}
+                                    initial={afterloading ? "hidden" : undefined}
+                                    animate={afterloading ? "visible" : undefined}
+                                    transition={afterloading ? { duration: 0.2, delay: index * 0.025 } : undefined}
                                     className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>

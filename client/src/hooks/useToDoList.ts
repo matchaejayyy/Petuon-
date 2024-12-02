@@ -12,7 +12,7 @@ export const useToDoList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("default");
   const [filterArr, setFilterArr] = useState<Task[]>([]);
-  
+  const [afterloading, setAfterLoading] = useState<boolean>(false);
 
     // Fetched Tasks
       const fetchTasks = async () => {
@@ -35,9 +35,18 @@ export const useToDoList = () => {
           console.error("Error fetching tasks:", error);
         } finally {
           setLoading(false);
+          setAfterLoading(true);
         }
       };
       
+      useEffect(() => {
+        if (afterloading) {
+          const timer = setTimeout(() => {
+            setAfterLoading(false);
+          return () => clearTimeout(timer);
+        }, 1000) 
+        }
+        });
 
     useEffect(() => {
       fetchTasks();
@@ -145,6 +154,7 @@ export const useToDoList = () => {
     };
 
     return {
+      afterloading,
       setTasks,
       setTasksBackup,
       setFilterType,
@@ -157,7 +167,8 @@ export const useToDoList = () => {
       toggleCompleteTask,
       saveEditedTask,
       filterArr,
-      setFilterArr
+      setFilterArr,
+      setAfterLoading
     }
 
    
