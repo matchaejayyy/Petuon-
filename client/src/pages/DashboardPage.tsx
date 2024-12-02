@@ -15,7 +15,7 @@ const DashboardPage = () => {
         </h1>
         <div className="flex flex-col justify-center items-center gap-4 mt-2.5 md:flex-row md:items-start">
           {/* Pets (First column) */}
-          <div className="bg-red-100 w-72 h-[328px] rounded-[1.5rem] md:w-[342px] md:h-[500px] lg:w-[470px] lg:h-[589px] xl:w-[753px] xl:h-[580px]">
+          <div className="bg-red-100 w-72 h-[328px] rounded-[1.5rem] md:w-[342px] md:h-[500px] lg:w-[470px] lg:h-[589px] xl:w-[45.5rem] xl:h-[37rem]">
             Pets
           </div>
 

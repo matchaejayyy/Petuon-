@@ -17,14 +17,14 @@ const Sidebar: React.FC = () => {
     <div>
       {/* Desktop Sidebar */}
       <div 
-        className="hidden lg:flex flex-col h-screen w-screen bg-cover bg-center bg-no-repeat bottom-0 z-10 fixed px-4 lg:z-0"
+        className="hidden lg:flex flex-col h-screen w-screen bg-cover bg-center bg-no-repeat bottom-0 fixed"
         style={{ backgroundImage: `url(${background})` }}>
-        <img src={logo} className="fixed left-0 top-[1rem] size-[6rem]" alt="Logo" />
-        <div className="flex flex-col items-start space-y-5 fixed mt-32 left-0 mb-5">
+        <img src={logo} className="fixed left-[0.1rem] top-[1rem] size-[8rem]" alt="Logo" />
+        <div className="flex flex-col items-start space-y-5 fixed top-40 left-4">
           <Link
             to="/"
-            className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>
-            <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191]" : "text-white"}`} />
+            className={`group pl-9 pr-16 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>
+            <LayoutDashboard size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
           </Link>
           <Link
             to="/Flashcard"
