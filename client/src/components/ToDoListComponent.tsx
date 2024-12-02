@@ -101,7 +101,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             return;
         }
 
-           
             setIsAnimatingDropDown(true);
             setTimeout(() => {
                 setIsAnimatingDropDown(false);
@@ -114,12 +113,22 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 });
             }
             
+            
             setTask(""); // resets the value of the Task
             setDate("mm/dd/yyyy");  // resets the value of the Date
             setTime("--:-- --"); // resets the value of the Time
             
             await addTask(newTask);
+            
     }
+    useEffect(() => { // when the task is added it will scroll to the last task
+        if (lastTaskRef.current) {
+            lastTaskRef.current.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+    }, [tasks]);
+    
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
         setDate(e.target.value) ;
@@ -265,10 +274,13 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
       };
 
+    const staggerTime = 1; // Total duration for all tasks to be rendered (in seconds)
+    const delayPerItem = staggerTime / display.length; // Time delay per task
+
     if (variant === "default") {
         return (
             <>  
-                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ${afterloading ? 'disabled-container' : ''}`}>
+                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ${afterloading ? "disabled-container" : ""}`}>
                     <div>
                             <button 
                             className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
@@ -369,9 +381,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                         {loading ? (
                              <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">fetching tasks...</h1>
-                        ) : tasks.length === 0 || filterArr.length == 0? ( 
+                        ) : tasks.length == 0 || filterArr.length == 0 ? ( 
                             <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
-                        ) : (
+                        ) : null}
+                        
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
                         >
                             <ul>
@@ -380,7 +393,8 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     variants={afterloading ? taskVariants: undefined}
                                     initial={afterloading ? "hidden" : undefined}
                                     animate={afterloading ? "visible" : undefined}
-                                    transition={afterloading ? { duration: 0.2, delay: index * 0.025 } : undefined}
+                                    exit={afterloading ? "visible" : undefined}
+                                    transition={afterloading ? { duration: 0.05, delay: index * delayPerItem } : undefined}
                                     className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
@@ -471,7 +485,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             
                             </ul>
                         </div>
-                    )}
                     </div>
                 </div>
             </>
@@ -480,7 +493,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         return (
             <>
                 <div>
-                    <h1>My Tasks</h1>
+                    <h1>
+                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="font-bold text-lg text-[#354F52] mt-[1rem] ml-[1rem] ">My Task</div>
+                        </h1>
                     <ul>
                     {tasks
                     .sort((a, b) => {
@@ -491,7 +506,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         }
                             return 0; 
                         }).slice(0, 5).map((task, index) => 
-                            <li key={index} className="border-t-2 mt-[1rem]">
+                            <li key={index} className="border-t-2 mt-[0.8rem]">
                                 <div className="">
                                     <input 
                                     className="ml-[0.7rem] mt-[0.7rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
@@ -507,13 +522,20 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         )}
                     </ul>
                     <button 
-                    className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                    style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
                     onClick={() => navigate(`/ToDoList`)}>
                         View all
                     </button>
                 </div>
                 {tasks.length <= 4 && (
-                    <div className="mt-4 text-center text-gray-500">No more tasks</div>
+                    <>
+                        {tasks.length === 0 && (
+                            <>
+                                <img src="src\assets\sleeping_penguin2.gif" alt="No notes available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
+                                <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
+                            </>
+                        )}
+                    </>
                 )}
             </>
         )   
