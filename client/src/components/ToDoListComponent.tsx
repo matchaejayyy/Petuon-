@@ -274,6 +274,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
       };
 
+    const staggerTime = 1; // Total duration for all tasks to be rendered (in seconds)
+    const delayPerItem = staggerTime / display.length; // Time delay per task
+
     if (variant === "default") {
         return (
             <>  
@@ -390,8 +393,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     variants={afterloading ? taskVariants: undefined}
                                     initial={afterloading ? "hidden" : undefined}
                                     animate={afterloading ? "visible" : undefined}
-                                    transition={afterloading ? { duration: 0.2, delay: index * 0.025 } : undefined}
-                                    className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-35px] opacity-100' : ''}`}
+                                    exit={afterloading ? "visible" : undefined}
+                                    transition={afterloading ? { duration: 0.05, delay: index * delayPerItem } : undefined}
+                                    className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
 
