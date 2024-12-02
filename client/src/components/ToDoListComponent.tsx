@@ -113,12 +113,22 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 });
             }
             
+            
             setTask(""); // resets the value of the Task
             setDate("mm/dd/yyyy");  // resets the value of the Date
             setTime("--:-- --"); // resets the value of the Time
             
             await addTask(newTask);
+            
     }
+    useEffect(() => { // when the task is added it will scroll to the last task
+        if (lastTaskRef.current) {
+            lastTaskRef.current.scrollIntoView({
+                behavior: "smooth",
+            });
+        }
+    }, [tasks]);
+    
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
         setDate(e.target.value) ;
