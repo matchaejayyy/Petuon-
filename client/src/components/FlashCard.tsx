@@ -68,7 +68,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
   />
   <button
     onClick={createFlashcard}
-    className="bg-[#657F83] text-white font-semibold h-16 w-16 shadow-xl rounded-full hover:bg-[#52796F] transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center transform hover:scale-110"
+    className="bg-[#657F83] text-white font-semibold h-16 w-16 shadow-xl rounded-full hover:bg-[#52796F] transition duration-200 hover:shadow-lg flex items-center justify-center transform hover:scale-110"
   >
     <ListPlus className="w-10 h-10 ml-2" />
   </button>
