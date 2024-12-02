@@ -379,10 +379,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     </div>
 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                    {loading && (
-                        <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>
-                    )}
-                    {!loading && (tasks.length === 0 || filterArr.length === 0) && (
+                    {loading ? (
+                        <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>   
+                     ) : (tasks.length === 0 || filterArr.length === 0) && (
                         <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">{taskMessage}</h1>
                     )}
                         
@@ -523,8 +522,8 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         )}
                     </ul>
                     <button 
-                     style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
-                    onClick={() => navigate(`/ToDoList`)}>
+                        style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                        onClick={() => navigate(`/ToDoList`)}>
                         {
                             tasks.length === 0
                             ? 'Add a Task'
@@ -534,12 +533,11 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         }
                     </button>
                 </div>
-                {tasks.length > 0 && tasks.length <= 4 && (
+                {tasks.length > 0 && tasks.length <= 4 ? (
                     <>  
                         <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
                     </>
-                )}
-                {!loading && tasks.length === 0 && (
+                ) : tasks.length === 0 && (
                     <>
                         <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
                         <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
