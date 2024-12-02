@@ -1,134 +1,165 @@
-/* eslint-disable no-case-declarations */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
-import {FilePen, Trash2, FilePlus } from "lucide-react";
+import { FilePen, Trash2, FilePlus } from "lucide-react";
 import WhiteContainer from "../components/WhiteContainer";
 import SideBar from "../components/SideBar";
+import Avatar from "../components/Avatar";
+import axios from "axios";
 import "react-quill/dist/quill.snow.css";
-import Avatar from '../components/Avatar'
-
-// Ang function para magkuha sang random pastel color para sa background sang notes
-const getRandomPastelColor = () => {
-    const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"];
-    const randomIndex = Math.floor(Math.random() * colors.length);
-    return colors[randomIndex];
-};
 
 const NotepadPage: React.FC = () => {
-    const [notes, setNotes] = useState<any[]>([]); // Para sa listahan sang notes
-    const [currentTitle, setCurrentTitle] = useState<string>(""); // Para sa current title sang note
-    const [currentNote, setCurrentNote] = useState<string>(""); // Para sa content sang note
-    const [editingNote, setEditingNote] = useState<number | null>(null); // Para sa pag-edit sang note
-    const [creatingNewNote, setCreatingNewNote] = useState<boolean>(false); // Flag kung nagahimo sang bago nga note
-    const [filter, setFilter] = useState<string>("All"); // Para sa filter sang notes
-    const [selectedNote, setSelectedNote] = useState<any | null>(null); // Para sa selected nga note
+    const [notes, setNotes] = useState<any[]>([]);
+    const [currentTitle, setCurrentTitle] = useState<string>("");
+    const [currentNote, setCurrentNote] = useState<string>("");
+    const [editingNote, setEditingNote] = useState<number | null>(null);
+    const [creatingNewNote, setCreatingNewNote] = useState<boolean>(false);
+    const [filter, setFilter] = useState<string>("All");
+    const [selectedNote, setSelectedNote] = useState<any | null>(null);
 
-    // Handler para sa changes sa editor
-    const handleEditorChange = (value: string) => setCurrentNote(value);
-
-    // Function para mag-save sang note
-    const saveNote = () => {
-        if (currentNote.trim() === "" || currentTitle.trim() === "") return;
-    
-        // Remove <h1>, <h2>, <h3>, and <p> tags (mga header)
-        const strippedNoteContent = currentNote
-            .replace(/<\/?(h1|h2|h3|p)>/g, '')  // This will remove <h1>, <h2>, <h3>, and <p> tags
-            .trim();  // Remove leading/trailing spaces
-        
-        const newNote = {
-            id: Date.now(),
-            title: currentTitle,
-            content: strippedNoteContent,
-            color: getRandomPastelColor(),
-            createdDate: new Date().toLocaleDateString(),
-            createdTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            timestamp: new Date().getTime(),
-        };
-    
-        const updatedNotes = editingNote !== null
-            ? notes.map((note) => note.id === editingNote ? newNote : note)
-            : [newNote, ...notes];
-    
-        setNotes(updatedNotes);
-        localStorage.setItem("notes", JSON.stringify(updatedNotes));
-        setCurrentNote("");
-        setCurrentTitle("");
-        setEditingNote(null);
-        setCreatingNewNote(false);
+    const getRandomPastelColor = () => {
+        const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"];
+        return colors[Math.floor(Math.random() * colors.length)];
     };
-    
 
-    // Function para mag-edit sang note
-    const editNote = (id: number) => {
-        const noteToEdit = notes.find((note) => note.id === id);
-        if (noteToEdit) {
-            setEditingNote(id);
-            setCurrentTitle(noteToEdit.title);
-            setCurrentNote(noteToEdit.content);
+    // Fetch notes from the Express backend using Axios
+    
+    const fetchNotes = async () => {
+        try {
+            
+            const response = await axios.get('http://localhost:3002/notes/getNotes');
+            const notesWithDateTime = response.data.map((note: any) => ({
+                ...note,
+                createdDate: new Date(note.createdDate).toLocaleDateString(),
+                createdTime: new Date(note.createdDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+            }));
+            setNotes(notesWithDateTime || []);
+            console.log(notes);
+        } catch (error) {
+            console.error("Error fetching notes:", error);
+            
         }
     };
 
-    // Function para mag-delete sang note
-    const deleteNote = (id: number) => {
-        const updatedNotes = notes.filter((note) => note.id !== id);
-        setNotes(updatedNotes);
-        localStorage.setItem("notes", JSON.stringify(updatedNotes));
-        setEditingNote(null);
-    };
-
-    // Function para mag-cancel sang edit or new note
-    const cancelEdit = () => {
-        setEditingNote(null);
-        setCreatingNewNote(false);
-        setCurrentNote("");
-        setCurrentTitle("");
-    };
-
-    // Function para mag-filter sang notes base sa selected filter
-    const getFilteredNotes = () => {
-        const now = new Date().getTime();
-        const oneDay = 24 * 60 * 60 * 1000;
-        const oneWeek = 7 * oneDay;
-        const oneMonth = 30 * oneDay;
-
-        const filterDate = (timestamp: number) => {
-            switch (filter) {
-                case "Today":
-                    return now - timestamp < oneDay;
-                case "Yesterday":
-                    return now - timestamp >= oneDay && now - timestamp < 2 * oneDay;
-                case "This Week":
-                    const startOfWeek = now - (now % oneWeek);
-                    return timestamp >= startOfWeek && timestamp <= now;
-                case "This Month":
-                    return now - timestamp < oneMonth;
-                default:
-                    return true;
+    // Save or update note
+    const saveNote = async () => {
+        if (currentTitle.trim() === "" || currentNote.trim() === "") {
+            console.error("Title or content is empty.");
+            return;
+        }
+    
+        const strippedNoteContent = currentNote.replace(/<\/?(h1|h2|h3|p|br)>/g, "").trim();
+        const newNote = {
+            title: currentTitle.trim(),
+            content: strippedNoteContent,
+            color: getRandomPastelColor(),
+            created_date: new Date().toISOString().split('T')[0], // '2024-12-01'
+            created_time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }), // '14:14:34'
+        };
+    
+        console.log("New note payload:", newNote); // Debugging log
+    
+        try {
+            let response;
+            if (editingNote) {
+                console.log('Updating note with ID:', editingNote); // Debugging log
+                response = await axios.patch(`http://localhost:3002/notes/updateNote/${editingNote}`, newNote);
+            
+            } else {
+                response = await axios.post("http://localhost:3002/notes/insertNote", newNote);
+            }
+    
+            console.log("Server response:", response.data); // Success log
+            await fetchNotes(); // Refresh notes list
+            resetForm(); // Clear the form after successful operation
+            } catch (error) {
+            console.error("Error saving note:", error); // Log error details
+            if (axios.isAxiosError(error)) {
+                console.error("Server responded with:", error.response?.data || "Unknown error");
+                }
             }
         };
 
-        return notes.filter((note) => filterDate(note.timestamp));
+    // Handle editing
+    const editNote = (id: number) => {
+        const noteToEdit = notes.find((note) => note.id === id); // Find the note to edit
+        if (noteToEdit) {
+            setEditingNote(id); // Set the current note as being edited
+            setCurrentTitle(noteToEdit.title); // Populate the form with existing note data
+            setCurrentNote(noteToEdit.content);
+        } else {
+            console.error(`Note with id ${id} not found.`);
+            
+        }
     };
 
-    const filteredNotes = getFilteredNotes();
+    // Delete a note
+    const deleteNote = async (id: number) => {
+        try {
+            await axios.delete(`http://localhost:3002/notes/deleteNote/${id}`);
+            await fetchNotes(); // Re-fetch the notes after deletion
+            window.location.reload(); // Reload the page after deletion
+        } catch (error) {
+            console.error("Error deleting note:", error);
+        }
+    };
 
-    // Function para mag-select sang note para makita ang details
+    // Reset form after save/edit
+    const resetForm = () => {
+        setCurrentTitle("");
+        setCurrentNote("");
+        setEditingNote(null);
+        setCreatingNewNote(false);
+    };
+
+
+    // Handle note selection
     const handleNoteClick = (note: any) => {
         setSelectedNote(note);
     };
 
-    // Function para mag-close sang detailed view sang note
+    // Close note view
     const closeNoteView = () => {
         setSelectedNote(null);
     };
 
-    // Load notes from localStorage on component mount
+    // Handle editor change
+    const handleEditorChange = (content: string) => {
+        setCurrentNote(content);
+    };
+
+    // Cancel edit or creation
+    const cancelEdit = () => {
+        resetForm();
+    };
+
+    // Filter notes based on criteria
+    const getFilteredNotes = () => {
+        const today = new Date();
+        const filtered = notes.filter((note) => {
+            const noteDate = new Date(note.created_date);
+            if (filter === "Today") {
+                return noteDate.toDateString() === today.toDateString();
+            } else if (filter === "Yesterday") {
+                const yesterday = new Date();
+                yesterday.setDate(today.getDate() - 1);
+                return noteDate.toDateString() === yesterday.toDateString();
+            } else if (filter === "This Week") {
+                const startOfWeek = new Date(today);
+                startOfWeek.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1)); // Start of the week (Monday)
+                return noteDate >= startOfWeek;
+            } else if (filter === "This Month") {
+                return noteDate.getMonth() === today.getMonth() && noteDate.getFullYear() === today.getFullYear();
+            }
+            return true; // Default is "All"
+        });
+        return filtered;
+    };
+    
+
+    const filteredNotes = getFilteredNotes();
+
     useEffect(() => {
-        const savedNotes = localStorage.getItem("notes");
-        if (savedNotes) {
-            setNotes(JSON.parse(savedNotes));
-        }
+        fetchNotes(); // Fetch notes on mount
     }, []);
 
     return (
@@ -215,14 +246,14 @@ const NotepadPage: React.FC = () => {
                                         }}
                                         onClick={() => handleNoteClick(note)}
                                     >
-                                        <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-xs text-black-500 ml-3 mt-3 ">{note.createdDate}</h4>
+                                        <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-xs text-black-500 ml-3 mt-3 ">{new Date(note.created_date).toLocaleDateString()}</h4>
                                         <h3 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="uppercase font-bold text-xl mb-1 ml-3 ">
                                             {note.title.length > 14 ? `${note.title.slice(0, 14)}...` : note.title}</h3>
                                         <hr className="border-t-2 border-black w-full mb-2" />
                                         <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-gray-700 ml-3">
                                             {note.content.length > 20 ? `${note.content.slice(0, 20)}...` : note.content}
                                         </p>
-                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }}className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{note.createdTime}</p>
+                                        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="font-serif text-xs text-black-500 absolute bottom-3 left-5">{new Date(note.created_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}</p>
                                         <button
                                             onClick={(e) => { e.stopPropagation(); editNote(note.id); }}
                                             className="absolute top-7 right-3 text-black hover:text-[#719191]"
