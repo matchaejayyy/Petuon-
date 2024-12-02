@@ -1,7 +1,7 @@
 import React from "react";
 import { Bell, User, Trophy, Moon, Settings} from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "../context/useAuth"; // Import useAuth for logout functionality
+import { useAuth } from "../contexts/useAuth"; // Import useAuth for logout functionality
 import logo from "../assets/petuon_logo.png";
 
 const TopContainer: React.FC = () => {

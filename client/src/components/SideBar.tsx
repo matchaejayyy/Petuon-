@@ -5,9 +5,13 @@ import logo from "../assets/petuon_logo.png";
 import background from '../assets/BG.png';
 
 const Sidebar: React.FC = () => {
-  const location = useLocation();
+    // Ginakuha ang location (kung diin ka na nga page) gamit ang useLocation para sa highlight sa sidebar
+    const location = useLocation(); 
 
-  const isActive = (path: string) => location.pathname === path;
+    // Muni nga function nagacheck kung pareho bala ang current nga path sa ginaklik nga link
+    const isActive = (path: string) => {
+        return location.pathname === path;  // Kung ang path pareho sa current nga page, nagabalik siya sang true
+    };
 
   return (
     <div>
@@ -53,7 +57,7 @@ const Sidebar: React.FC = () => {
           to="/"
           className={`flex flex-col items-center text-sm ${isActive("/") ? "text-primary-700" : "text-white"}`}>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
               isActive("/") ? "bg-white" : ""
             }`}>
             <LayoutDashboard className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
@@ -63,7 +67,7 @@ const Sidebar: React.FC = () => {
           to="/Flashcard"
           className={`flex flex-col items-center text-sm ${isActive("/Flashcard") ? "text-primary-700" : "text-white"}`}>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
               isActive("/Flashcard") ? "bg-white" : ""
             }`}>
             <WalletCards className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
@@ -73,7 +77,7 @@ const Sidebar: React.FC = () => {
           to="/Calendar"
           className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-primary-700" : "text-white"}`}>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
               isActive("/Calendar") ? "bg-white" : ""
             }`}>
             <CalendarRange className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
@@ -83,7 +87,7 @@ const Sidebar: React.FC = () => {
           to="/Notepad"
           className={`flex flex-col items-center text-sm ${isActive("/Notepad") ? "text-primary-700" : "text-white"}`}>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
               isActive("/Notepad") ? "bg-white" : ""
             }`}>
             <NotebookPen className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
@@ -93,7 +97,7 @@ const Sidebar: React.FC = () => {
           to="/ToDoList"
           className={`flex flex-col items-center text-sm ${isActive("/ToDoList") ? "text-primary-700" : "text-white"}`}>
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center ${
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
               isActive("/ToDoList") ? "bg-white" : ""
             }`}>
             <ListTodo className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
