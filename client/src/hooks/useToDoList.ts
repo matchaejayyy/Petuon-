@@ -11,6 +11,7 @@ export const useToDoList = () => {
   const [tasksBackup, setTasksBackup] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("default");
+  const [filterArr, setFilterArr] = useState<Task[]>([]);
   
 
     // Fetched Tasks
@@ -28,7 +29,8 @@ export const useToDoList = () => {
           
           setTasks(taskData);
           setTasksBackup(taskData);
-          
+          setFilterArr(taskData);
+
         } catch (error) {
           console.error("Error fetching tasks:", error);
         } finally {
@@ -44,9 +46,9 @@ export const useToDoList = () => {
     // Adding Tasks
     const addTask = async (newTask: Task) => {
       try {
-
+        
         if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
-          setTasks([...tasks, newTask  ]);
+          setTasks([...tasks, newTask  ])
         } 
         
         setTasksBackup([...tasks, newTask]);
@@ -64,7 +66,7 @@ export const useToDoList = () => {
       try {
           setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
-
+          setFilterArr((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`);
           
         } catch (error) {
@@ -89,15 +91,16 @@ export const useToDoList = () => {
         setTasksBackup(tasksBackup.map(task => 
             task.task_id === task_id ? {...task, completed: !task.completed} : task
         ));
-
+        setFilterArr(filterArr.map(task =>
+          task.task_id === task_id ? {...task, completed: !task.completed} : task
+        ))
         
 
         await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
           completed: updatedCompletedStatus,
         });
         
-        
-        
+    
 
       } catch (error) {
         console.error("Error toggling task completion:", error);
@@ -119,6 +122,10 @@ export const useToDoList = () => {
 
         setTasksBackup(tasksBackup.map(task =>
             task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
+        ));
+
+        setFilterArr(filterArr.map(task =>
+          task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
         ));
 
         if (trimmedText === "") {
@@ -148,7 +155,9 @@ export const useToDoList = () => {
       addTask,
       deleteTask,
       toggleCompleteTask,
-      saveEditedTask
+      saveEditedTask,
+      filterArr,
+      setFilterArr
     }
 
    

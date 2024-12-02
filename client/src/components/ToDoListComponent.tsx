@@ -6,6 +6,7 @@ import { useToDoList } from "../hooks/useToDoList";
 import { useNavigate } from 'react-router-dom';
 
 import { ToDoListProps } from "../types/ToDoListTypes"
+import { motion } from 'framer-motion';
 
 const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => {
     // Creates Date
@@ -30,21 +31,26 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
 
     const [taskMessage, setTaskMessage] = useState<string>("No active tasks available.");
-  
+
+
     const navigate = useNavigate();
 
     const { 
         tasksBackup,
         filterType, setFilterType, 
         tasks, setTasks,  
+        filterArr, setFilterArr,
+        loading,
         addTask, deleteTask, toggleCompleteTask, saveEditedTask
     } = useToDoList();
 
     const updateTasks = useCallback(() => {
         setTasks((prevTasks) =>
             prevTasks.map((task) => {
-                return task;
+                return task; 
+                
             })
+            
         );
     }, []);
 
@@ -76,6 +82,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     }
 
     const handleAddTask = async (e: FormEvent) => { // when form is submitted 
+        filteredTasks("default")
         e.preventDefault();
         const newTask = {
             task_id: uuidv4(),
@@ -84,7 +91,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
             completed: false, // the status of if it is complete or not
         }
-
+        
         cancelEditing()
         setIsEditing(false);
 
@@ -104,7 +111,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     block: "end", 
                 });
             }
-            
             
             setTask(""); // resets the value of the Task
             setDate("mm/dd/yyyy");  // resets the value of the Date
@@ -166,7 +172,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 TasksMessage = "No tasks available for later.";
                 break;
             case "default":
-                FilteredTasks = tasksBackup.filter((task) => !task.completed);
+                FilteredTasks = tasksBackup;
                 TasksMessage = "No active tasks available.";
                 break;
             case "pastDue":
@@ -178,14 +184,14 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 TasksMessage = "No tasks completed.";
                 break;
             default:
-                FilteredTasks = tasksBackup.filter((task) => !task.completed);;
+                FilteredTasks = tasksBackup;
                 TasksMessage = "No active tasks available.";
                 break;
         }
     
         setTaskMessage(TasksMessage);
         setFilterType(filterType);
-        setTasks(FilteredTasks);
+        setFilterArr(FilteredTasks);
         setIsEditing(false);
         cancelEditing();
     }
@@ -250,6 +256,11 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             return "Upcoming"
         }
     }
+    const display = filterType === "pastDue" || filterType === "completed" || filterType === "near" || filterType === "later" || filterType === "noDate" ? filterArr : tasks;
+    const taskVariants = {
+        hidden: { opacity: 0, y: 0 }, // Initial state: invisible and above
+        visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
+      };
 
     if (variant === "default") {
         return (
@@ -353,13 +364,20 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     </div>
 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                    {tasks.length === 0 ? (
-                        <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
-                    ) : (
-                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
+                        {loading ? (
+                             <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">fetching tasks...</h1>
+                        ) : tasks.length === 0 || filterArr.length == 0? ( 
+                            <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
+                        ) : (
+                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
+                        >
                             <ul>
-                            {tasks.map((task, index) =>
-                                    <li key={index}
+                            {display.map((task, index) =>
+                                    <motion.li key={index}
+                                    variants={taskVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{ duration: 0.3, delay: index * 0.1 }}
                                     className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
@@ -445,7 +463,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                             <Trash2 size={20}/>
                                         </button>
 
-                                    </li>
+                                    </motion.li>
                                 )}   
                             
                             </ul>
