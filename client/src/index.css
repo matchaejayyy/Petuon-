@@ -3,3 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+.animate-transform {
+    transform: translateY(-65px) !important; /* Ensures the translate stays applied */
+    transition: transform 0.5s initial;
+}
+
+.disabled-container {
+    pointer-events: none; /* Disables all user interactions */ /* Optional: add visual feedback */
+  }

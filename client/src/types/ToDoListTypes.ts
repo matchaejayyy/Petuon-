@@ -5,3 +5,7 @@ export interface Task { // Container for the each task element that it contains
     dueAt: Date
     completed: boolean
 }
+
+export interface ToDoListProps {
+    variant?: "default" | "compact";
+}

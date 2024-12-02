@@ -1,23 +1,13 @@
-import express, { Request, Response } from 'express';
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
+import { Request, Response } from 'express';
+import { pool, router } from '../database/CarmineDB'
 
-dotenv.config();
-
-const router = express.Router();
-
-const pool = new Pool({
-    host: process.env.PG_HOST || "aws-0-ap-southeast-1.pooler.supabase.com",
-    port: parseInt(process.env.PG_PORT || "6543"),
-    database: process.env.PG_DATABASE || "postgres",
-    user: process.env.PG_USER || "postgres.oizvoxoctozusoahxjos",
-    password: process.env.PG_PASSWORD || "Carmine_123456789!!!",
-});
+import { validateGetTask, validateInsertTask, validateDeleteTask, validateCompleteTask, validateUpdateTask } from '../middleware/ToDoListMiddleware';
 
 // Fetch all tasks
-router.get('/getTask', async (req: Request, res: Response) => {
+router.get('/getTask', validateGetTask, async (req: Request, res: Response) => {
     try {
         const result = await pool.query('SELECT * FROM tasks');
+
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -26,7 +16,7 @@ router.get('/getTask', async (req: Request, res: Response) => {
 });
 
 // Insert a new task
-router.post('/insertTask', async (req: Request, res: Response) => {
+router.post('/insertTask', validateInsertTask, async (req: Request, res: Response) => {
     try {
         const { task_id, text, createdAt, dueAt, completed } = req.body;
 
@@ -35,6 +25,7 @@ router.post('/insertTask', async (req: Request, res: Response) => {
             VALUES ($1, $2, $3, $4, $5)
             RETURNING *;
         `;
+        
         const values = [task_id, text, createdAt, dueAt, completed];
 
         const result = await pool.query(query, values);
@@ -46,7 +37,7 @@ router.post('/insertTask', async (req: Request, res: Response) => {
 });
 
 // Delete a task
-router.delete('/deleteTask/:task_id', async (req: Request, res: Response) => {
+router.delete('/deleteTask/:task_id', validateDeleteTask, async (req: Request, res: Response) => {
     try {
         const { task_id } = req.params;
 
@@ -59,7 +50,7 @@ router.delete('/deleteTask/:task_id', async (req: Request, res: Response) => {
 });
 
 // Mark a task as completed
-router.patch('/completeTask/:task_id', async (req: Request, res: Response) => {
+router.patch('/completeTask/:task_id', validateCompleteTask, async (req: Request, res: Response) => {
     try {
         const { task_id } = req.params;
         const { completed } = req.body;
@@ -81,7 +72,7 @@ router.patch('/completeTask/:task_id', async (req: Request, res: Response) => {
 });
 
 // Update a task
-router.patch('/updateTask/:task_id', async (req: Request, res: Response) => {
+router.patch('/updateTask/:task_id', validateUpdateTask, async (req: Request, res: Response) => {
     try {
         const { task_id } = req.params;
         const { text, dueAt } = req.body;
