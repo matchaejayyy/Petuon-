@@ -122,12 +122,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             
     }
     useEffect(() => { // when the task is added it will scroll to the last task
-        if (lastTaskRef.current) {
+        if (isAnimatingDropDown && lastTaskRef.current) {
             lastTaskRef.current.scrollIntoView({
                 behavior: "smooth",
             });
         }
-    }, [tasks]);
+    }, [tasks, isAnimatingDropDown]);
     
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
@@ -280,7 +280,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     if (variant === "default") {
         return (
             <>  
-                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ${afterloading ? "disabled-container" : ""}`}>
+                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-1 ${afterloading ? "disabled-container" : ""}`}>
                     <div>
                             <button 
                             className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
