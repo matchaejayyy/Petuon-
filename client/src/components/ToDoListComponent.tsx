@@ -122,12 +122,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             
     }
     useEffect(() => { // when the task is added it will scroll to the last task
-        if (lastTaskRef.current) {
+        if (isAnimatingDropDown && lastTaskRef.current) {
             lastTaskRef.current.scrollIntoView({
                 behavior: "smooth",
             });
         }
-    }, [tasks]);
+    }, [tasks, isAnimatingDropDown]);
     
 
     const handleDateChange = (e:ChangeEvent<HTMLInputElement>) => {
