@@ -18,7 +18,9 @@ const pool = new Pool({
 
 
 // Get all decks
-router.get('/decks', (req, res) => {
+router.get('/decks', async(req, res) => {
+  const result = await pool.query('SELECT * FROM decks');
+  res.status(200).json(result.rows);
   res.json({ message: 'Decks endpoint is working' });
 });
 
@@ -35,34 +37,12 @@ router.post("/decks", async (req, res) => {
 });
 
 // Add a flashcard to a deck
-router.post('/decks/:deckId/flashcards', async (req: Request, res: Response) => {
-  const { deckId } = req.params;
-  const { flashcards } = req.body;
-
-  try {
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      const insertFlashcardQuery = `
-        INSERT INTO flashcards (deck_id, question, answer)
-        VALUES ($1, $2, $3)
-      `;
-      for (const flashcard of flashcards) {
-        await client.query(insertFlashcardQuery, [deckId, flashcard.question, flashcard.answer]);
-      }
-      await client.query('COMMIT');
-      res.status(201).json({ message: 'Flashcards created successfully' });
-    } catch (error) {
-      await client.query('ROLLBACK');
-      console.error('Error creating flashcards:', error);
-      res.status(500).json({ error: 'Failed to create flashcards' });
-    } finally {
-      client.release();
-    }
-  } catch (error) {
-    console.error('Error connecting to the database:', error);
-    res.status(500).json({ error: 'Database connection error' });
-  }
+router.post('/insertCards', async (req: Request, res: Response) => {
+  const { question, answer } = req.body;
+  const query = 'INSERT INTO flashcards (question, answer) VALUES ($1, $2) RETURNING *';
+  const values = [question, answer]; 
+  const result = await pool.query(query, values);
+  res.status(201).json(result.rows[0]);
 });
 
 // Delete a deck

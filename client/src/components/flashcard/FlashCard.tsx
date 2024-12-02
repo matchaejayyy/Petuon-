@@ -6,8 +6,8 @@ import Avatar from '../Avatar';
 import { Flashcard} from "../../types/FlashCardTypes";
 import { QuizFlashcard } from "./quizPage";
 import { CreateFlashcard } from "./createflashcard";
-// import { v4 as uuidv4 } from 'uuid';
-// import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
+import axios from "axios";
 
   const FlashcardComponent: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -15,19 +15,24 @@ import { CreateFlashcard } from "./createflashcard";
   const [OnFirstPage, setOnFirstPage] = useState<boolean>(true)
   const [decks, setDecks] = useState<{ [key: string]: Flashcard[] }>({});
   const [DeckTitle, setDeckTitle] = useState<string>("");
+  const [currentDeckId, setCurrentDeckId] = useState<string | null>(null);
+
+  const API_BASE_URL = 'http://localhost:3002';
 
   useEffect(() => {
-    const storedDecks = localStorage.getItem("decks");
-    const storedFlashcards = localStorage.getItem("currentFlashcards");
-    if (storedDecks) {
-      setDecks(JSON.parse(storedDecks));
-    }
-    if (storedFlashcards) {
-      setFlashcards(JSON.parse(storedFlashcards));
-    }
+    const fetchDecks = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/flashcards/decks`);
+        setDecks(response.data);
+      } catch (error) {
+        console.error('Error fetching decks:', error);
+      }
+    };
+
+    fetchDecks();
   }, []);
 
-  const saveDeck = () => {
+  const saveDeck = async () => {
     if (!DeckTitle.trim()) {
       alert("Deck title cannot be empty.");
       return;
@@ -36,21 +41,36 @@ import { CreateFlashcard } from "./createflashcard";
       alert("You must add at least one flashcard before saving the deck.");
       return;
     }
-  
-    const updatedDecks = { ...decks, [DeckTitle]: flashcards };
-  setDecks(updatedDecks);
-  localStorage.setItem("decks", JSON.stringify(updatedDecks));
 
-  setDeckTitle("");
-  setFlashcards([]);
-  localStorage.removeItem("currentFlashcards"); 
-  setOnFirstPage(true);
-};
-const deleteFlashcard = (index: number) => {
-  const updatedFlashcards = flashcards.filter((_, i) => i !== index);
-  setFlashcards(updatedFlashcards);
-  localStorage.setItem("currentFlashcards", JSON.stringify(updatedFlashcards));
-};
+    const updatedDecks = { ...decks, [DeckTitle]: flashcards };
+    setDecks(updatedDecks);
+
+    try {
+      const newDeckId = uuidv4(); // Generate a unique deck ID
+      await axios.post(`${API_BASE_URL}/flashcards/decks`, { id: newDeckId, title: DeckTitle });
+      setCurrentDeckId(newDeckId);
+      await axios.post(`${API_BASE_URL}/flashcards/decks/${newDeckId}/flashcards`, { flashcards });
+      // Refresh decks after saving
+      const decksResponse = await axios.get(`${API_BASE_URL}/flashcards/decks`);
+      setDecks(decksResponse.data);
+      setDeckTitle('');
+      setFlashcards([]);
+    } catch (error) {
+      console.error('Error saving deck:', error);
+    }
+  };
+
+
+  const deleteFlashcard = async (index: number) => {
+    const updatedFlashcards = flashcards.filter((_, i) => i !== index);
+    setFlashcards(updatedFlashcards);
+
+    try {
+      await axios.delete(`${API_BASE_URL}/flashcards/${flashcards[index].id}`);
+    } catch (error) {
+      console.error('Error deleting flashcard:', error);
+    }
+  };
 
 
   const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
@@ -82,28 +102,36 @@ const deleteFlashcard = (index: number) => {
 
     const handleCreateNewDeck = () => {
       if (DeckTitle && flashcards.length > 0) {
-        saveDeck(); 
+      saveDeck(); 
       }
       setisReviewing(false);
       setOnFirstPage(false);
-      localStorage.removeItem("currentFlashcards");
       setDeckTitle(""); 
       setFlashcards([]); 
     };
 
-    const loadDeck = (title: string) => {
-      const selectedDeck = decks[title];
-      setFlashcards(selectedDeck || []);
+    const loadDeck = async (title: string) => {
+      try {
+      const response = await axios.get(`${API_BASE_URL}/flashcards/decks/${title}`);
+      const selectedDeck = response.data;
+      setFlashcards(selectedDeck.flashcards || []);
       setDeckTitle(title);
-      localStorage.setItem("currentFlashcards", JSON.stringify(selectedDeck || []));
       setOnFirstPage(false);
+      } catch (error) {
+      console.error('Error loading deck:', error);
+      }
     };
 
-    const deleteDeck = (title: string) => {
+    const deleteDeck = async (title: string) => {
       const updatedDecks = { ...decks };
       delete updatedDecks[title];
       setDecks(updatedDecks);
-      localStorage.setItem("decks", JSON.stringify(updatedDecks));
+
+      try {
+      await axios.delete(`${API_BASE_URL}/flashcards/decks/${title}`);
+      } catch (error) {
+      console.error('Error deleting deck:', error);
+      }
     };
 
     const colors = ["bg-[#FE9B72]", "bg-[#FFC973]", "bg-[#E5EE91]", "bg-[#B692FE]"];
@@ -219,7 +247,7 @@ const deleteFlashcard = (index: number) => {
                   </button>
               </div>
             </div>
-            <CreateFlashcard flashcards={flashcards} setFlashcards={setFlashcards} />
+            <CreateFlashcard flashcards={flashcards} setFlashcards={setFlashcards} deckId={null} />
             <FlashcardList flashcards={flashcards} />
           </div>
         )}

@@ -1,5 +1,5 @@
 export type Flashcard = {
-  id?: number; 
+  id?: string; 
   question: string;
   answer: string;
   deck_id?: number; 
@@ -7,6 +7,7 @@ export type Flashcard = {
 
 
 export type CreateFlashcardProps = {
+  deckId: string | null;
   flashcards: Flashcard[];
   setFlashcards: React.Dispatch<React.SetStateAction<Flashcard[]>>;
 };
