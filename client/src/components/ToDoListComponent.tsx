@@ -426,7 +426,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                                 onChange={handleTimeEditChange}
                                                 />
 
-                                                <button type="button" onClick={() => {setEditTime("--:-- --"); console.log(editTime);}}
+                                                <button type="button" onClick={() => {setEditTime("--:-- --");}}
 
                                                 className="absolute left-[59rem] opacity-45 text-[1.2rem] translate-y-[-0.3rem] z-50 mt-[0.3rem] transform transition-transform duration-400 hover:scale-125 active:rotate-[-360deg]"><RotateCcw size={20}/></button>
                                             
@@ -523,7 +523,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         )}
                     </ul>
                     <button 
-                    style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed bottom-[17rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                    style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed bottom-[15.6rem] mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
                     onClick={() => navigate(`/ToDoList`)}>
                         {
                             tasks.length === 0
