@@ -268,7 +268,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     if (variant === "default") {
         return (
             <>  
-                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ${afterloading ? 'disabled-container' : ''}`}>
+                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-8 ${afterloading ? "disabled-container" : ""}`}>
                     <div>
                             <button 
                             className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
@@ -369,9 +369,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                         {loading ? (
                              <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">fetching tasks...</h1>
-                        ) : tasks.length === 0 || filterArr.length == 0? ( 
+                        ) : tasks.length == 0 || filterArr.length == 0 ? ( 
                             <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
-                        ) : (
+                        ) : null}
+                        
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
                         >
                             <ul>
@@ -381,7 +382,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     initial={afterloading ? "hidden" : undefined}
                                     animate={afterloading ? "visible" : undefined}
                                     transition={afterloading ? { duration: 0.2, delay: index * 0.025 } : undefined}
-                                    className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
+                                    className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-35px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
 
@@ -471,7 +472,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             
                             </ul>
                         </div>
-                    )}
                     </div>
                 </div>
             </>
