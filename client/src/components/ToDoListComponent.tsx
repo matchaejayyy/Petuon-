@@ -6,6 +6,7 @@ import { useToDoList } from "../hooks/useToDoList";
 import { useNavigate } from 'react-router-dom';
 
 import { ToDoListProps } from "../types/ToDoListTypes"
+import { motion } from 'framer-motion';
 
 const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => {
     // Creates Date
@@ -39,6 +40,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         filterType, setFilterType, 
         tasks, setTasks,  
         filterArr, setFilterArr,
+        loading,
         addTask, deleteTask, toggleCompleteTask, saveEditedTask
     } = useToDoList();
 
@@ -256,6 +258,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         }
     }
     const display = filterType === "pastDue" || filterType === "completed" || filterType === "near" || filterType === "later" || filterType === "noDate" ? filterArr : tasks;
+    const taskVariants = {
+        hidden: { opacity: 0, y: 0 }, // Initial state: invisible and above
+        visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
+      };
 
     if (variant === "default") {
         return (
@@ -359,13 +365,20 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     </div>
 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                    {tasks.length === 0 || filterArr.length == 0? (
-                        <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
-                    ) : (
-                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2">
+                        {loading ? (
+                             <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">fetching tasks...</h1>
+                        ) : tasks.length === 0 || filterArr.length == 0? ( 
+                            <h1 className="text-center text-gray-500  mt-[10.5rem] text-2xl">{taskMessage}</h1>
+                        ) : (
+                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
+                        >
                             <ul>
                             {display.map((task, index) =>
-                                    <li key={index}
+                                    <motion.li key={index}
+                                    variants={taskVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                    transition={{ duration: 0.3, delay: index * 0.1 }}
                                     className={`bg-white mt-3 pt-4 pb-4 rounded-lg whitespace-nowrap  group flex shadow-md  hover:shadow-lg transition-transform duration-1000 ${isAnimatingDropDown ? 'transform translate-y-[-65px] opacity-100' : ''}`}
                                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
@@ -451,7 +464,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                             <Trash2 size={20}/>
                                         </button>
 
-                                    </li>
+                                    </motion.li>
                                 )}   
                             
                             </ul>

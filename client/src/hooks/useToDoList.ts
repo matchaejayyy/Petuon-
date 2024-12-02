@@ -12,6 +12,7 @@ export const useToDoList = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("default");
   const [filterArr, setFilterArr] = useState<Task[]>([]);
+  
 
     // Fetched Tasks
       const fetchTasks = async () => {
