@@ -8,3 +8,6 @@
     transition: transform 0.5s initial;
 }
 
+.disabled-container {
+    pointer-events: none; /* Disables all user interactions */ /* Optional: add visual feedback */
+  }
