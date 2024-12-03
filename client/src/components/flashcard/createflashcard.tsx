@@ -1,52 +1,47 @@
-import React, { useState,} from 'react';
-import { Flashcard, CreateFlashcardProps} from "../../types/FlashCardTypes";
-import { ListPlus } from 'lucide-react';
-// import { v4 as uuidv4 } from 'uuid';
+import React, { useState } from "react";
 import axios from "axios";
+import { Flashcard, CreateFlashcardProps } from "../../types/FlashCardTypes";
+import { ListPlus } from "lucide-react";
 
- 
-  export  const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashcards }) => {
+export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({
+  flashcards,
+  setFlashcards,
+  deckId, // Ensure the deckId is passed from the parent component
+}) => {
   const [question, setQuestion] = useState<string>("");
   const [answer, setAnswer] = useState<string>("");
-  const [flashcardCreated, setFlashcardCreated] = useState<boolean>(false);
-  
-  
 
   const handleQuestionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuestion(event.target.value);
-    setFlashcardCreated(false);
   };
 
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAnswer(event.target.value);
-    setFlashcardCreated(false);
   };
 
   const createFlashcard = async () => {
-
     if (question && answer) {
-      const newFlashcard: Flashcard = { question, answer };
-      console.log(newFlashcard);
       try {
-        const response = await axios.post(`http://localhost:3002/flashcards/insertCards`, newFlashcard);
-        if (response.status === 201) {
-          setFlashcards([...flashcards, newFlashcard]);
-          setQuestion('');
-          setAnswer('');
-          setFlashcardCreated(true);
-        } else {
-          setFlashcardCreated(false);
-        }
+        // Send the flashcard data to the backend
+        const response = await axios.post(
+          `http://localhost:3002/decks/${deckId}/flashcards`, 
+          {
+            question,
+            answer,
+          }
+        );
+
+        // Update the flashcards state with the new flashcard
+        setFlashcards([...flashcards, response.data]);
+
+        // Clear the input fields
+        setQuestion("");
+        setAnswer("");
       } catch (error) {
-        console.error('Error creating flashcard:', error);
-        setFlashcardCreated(false);
+        console.error("Error creating flashcard:", error);
       }
-    } else {
-      setFlashcardCreated(false);
     }
   };
-
-
 
   return (
     <div className="mt-[-2rem] flex flex-col md:flex-row justify-center items-center gap-10 p-4 ">
@@ -54,7 +49,7 @@ import axios from "axios";
         type="text"
         value={question}
         onChange={handleQuestionChange}
-        style={{ fontFamily: '"Signika Negative", sans-serif' }} 
+        style={{ fontFamily: '"Signika Negative", sans-serif' }}
         className="h-16 rounded-3xl w-full md:w-1/3 p-5 shadow-xl border-2 border-[#52796F] focus:outline-none focus:ring-2 focus:ring-[#52796F] focus:border-transparent placeholder-gray-300 text-white bg-[#657F83] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
         placeholder="Insert question"
       />
@@ -73,8 +68,5 @@ import axios from "axios";
         <ListPlus className="w-10 h-10 ml-2" />
       </button>
     </div>
-
-
   );
 };
-
