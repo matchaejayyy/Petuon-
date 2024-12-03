@@ -68,7 +68,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
   />
   <button
     onClick={createFlashcard}
-    className="bg-[#657F83] text-white font-semibold h-16 w-16 shadow-xl rounded-full hover:bg-[#52796F] transition duration-200 shadow-md hover:shadow-lg flex items-center justify-center transform hover:scale-110"
+    className="bg-[#657F83] text-white font-semibold h-16 w-16 shadow-xl rounded-full hover:bg-[#52796F] transition duration-200 hover:shadow-lg flex items-center justify-center transform hover:scale-110"
   >
     <ListPlus className="w-10 h-10 ml-2" />
   </button>
@@ -130,7 +130,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
             {flashcards.map((flashcard, index) => {
               const assignedColor = colors[index % colors.length];
               return (
-              <li key={index} className="w-2/3 mt-10 ml-[9rem] m-[7rem] relative transform transition-transform duration-200 hover:scale-105">
+              <li key={index} className="w-2/3 mt-10 ml-[7rem] m-[7rem] relative transform transition-transform duration-200 hover:scale-105">
                 <div style={{fontFamily: '"Signika Negative", sans-serif' }} className={`${assignedColor} rounded-2xl h-[20rem] w-full flex flex-col items-center justify-center overflow-auto relative shadow-lg`}>
                 <button
                   className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"

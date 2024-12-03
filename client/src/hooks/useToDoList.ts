@@ -11,7 +11,9 @@ export const useToDoList = () => {
   const [tasksBackup, setTasksBackup] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [filterType, setFilterType] = useState<string>("default");
-  
+  const [filterArr, setFilterArr] = useState<Task[]>([]);
+  const [afterloading, setAfterLoading] = useState<boolean>(false);
+
     // Fetched Tasks
       const fetchTasks = async () => {
         setLoading(true);
@@ -27,12 +29,24 @@ export const useToDoList = () => {
           
           setTasks(taskData);
           setTasksBackup(taskData);
+          setFilterArr(taskData);
+
         } catch (error) {
           console.error("Error fetching tasks:", error);
         } finally {
           setLoading(false);
+          setAfterLoading(true);
         }
       };
+      
+      useEffect(() => {
+        if (afterloading) {
+          const timer = setTimeout(() => {
+            setAfterLoading(false);
+          return () => clearTimeout(timer);
+        }, 1200) 
+        }
+        });
 
     useEffect(() => {
       fetchTasks();
@@ -41,12 +55,13 @@ export const useToDoList = () => {
     // Adding Tasks
     const addTask = async (newTask: Task) => {
       try {
-
+        
         if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
-          setTasks([...tasks, newTask  ]);
+          setTasks([...tasks, newTask  ])
         } 
         
-        setTasksBackup([...tasksBackup, newTask]);
+        setTasksBackup([...tasks, newTask]);
+        
 
         await axios.post("http://localhost:3002/tasks/insertTask", newTask);
         
@@ -60,7 +75,7 @@ export const useToDoList = () => {
       try {
           setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
-
+          setFilterArr((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`);
           
         } catch (error) {
@@ -68,25 +83,34 @@ export const useToDoList = () => {
         }
     }
 
+
+
     // Complete Tasks
     const toggleCompleteTask = async (task_id: string) => {
       try {
+        
         const taskToToggle = tasks.find((task) => task.task_id === task_id);
         if (!taskToToggle) return;
   
         const updatedCompletedStatus = !taskToToggle.completed;
-  
+        
         setTasks(tasks.map(task =>
           task.task_id === task_id ? {...task, completed: !task.completed} : task
-        ));
-        setTasksBackup(tasks.map(task => 
+        ))
+        setTasksBackup(tasksBackup.map(task => 
             task.task_id === task_id ? {...task, completed: !task.completed} : task
         ));
+        setFilterArr(filterArr.map(task =>
+          task.task_id === task_id ? {...task, completed: !task.completed} : task
+        ))
+        
 
         await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
           completed: updatedCompletedStatus,
         });
-  
+        
+    
+
       } catch (error) {
         console.error("Error toggling task completion:", error);
       }
@@ -109,6 +133,10 @@ export const useToDoList = () => {
             task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
         ));
 
+        setFilterArr(filterArr.map(task =>
+          task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
+        ));
+
         if (trimmedText === "") {
           deleteTask(task_id)
         }
@@ -121,9 +149,12 @@ export const useToDoList = () => {
       } catch (error) {
         console.error("There was an error updating the task:", error);
       }
+
+      
     };
 
     return {
+      afterloading,
       setTasks,
       setTasksBackup,
       setFilterType,
@@ -134,7 +165,10 @@ export const useToDoList = () => {
       addTask,
       deleteTask,
       toggleCompleteTask,
-      saveEditedTask
+      saveEditedTask,
+      filterArr,
+      setFilterArr,
+      setAfterLoading
     }
 
    

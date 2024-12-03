@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 
 import ToDoListRouter from "./routes/ToDoListRouter";
+import NotesListRouter from "./routes/NotesListRouter";
 
 dotenv.config();
 
@@ -14,14 +15,15 @@ const PORT = process.env.PORT || 3002;
 app.use(cors());
 app.use(bodyParser.json());
 
-
 // Routes
 app.use('/tasks', ToDoListRouter);
-
+app.use('/notes', NotesListRouter);
 
  // Start Server on port 3002
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   }
+ 
 )   
+
 
