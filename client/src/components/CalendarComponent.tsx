@@ -233,7 +233,7 @@ interface Tasks {
                       </div>
                   ))}
                 {tasksForDay.length > 2 && (
-                    <div className='fixed left-[11.2rem] top-[13.4rem] text-gray-600'>
+                    <div className=' left-[11.2rem] top-[13.4rem] text-gray-600'>
                         +{tasksForDay.length - 2} more task{tasksForDay.length - 2 > 1 ? 's' : ''}
                     </div>
                 )}

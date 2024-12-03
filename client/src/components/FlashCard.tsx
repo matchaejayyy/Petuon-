@@ -374,7 +374,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
                   onClick={handleCreateNewDeck}
                   className=" scale-125 flex items-center justify-center"
                 >
-                  <CopyPlus className="text-[#354F52] w-7 h-7 mt-[1rem] mr-[60rem] transform transition-transform duration-200 hover:scale-125" />
+                  <CopyPlus className="text-[#354F52] w-7 h-7 mt-[1rem] mr-[61.8rem] transform transition-transform duration-200 hover:scale-125" />
                 </button>
               </div>
             </div>
