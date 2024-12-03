@@ -522,7 +522,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         )}
                     </ul>
                     <button 
-                        style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                        style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  mt-[10rem] w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
                         onClick={() => navigate(`/ToDoList`)}>
                         {
                             tasks.length === 0
