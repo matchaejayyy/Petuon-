@@ -31,7 +31,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
 
     const [taskMessage, setTaskMessage] = useState<string>("No active tasks available.");
-
+    const [taskPos, setTaskPos] = useState<string>("left-[42rem]")
 
     const navigate = useNavigate();
 
@@ -169,35 +169,42 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             case "noDate":
                 FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0&& !task.completed);
                 TasksMessage = "No tasks with no due date available.";
+                setTaskPos("left-[38.5rem]")
                 break;
             case "near":
                 FilteredTasks = tasksBackup
                     .filter((task) => task.dueAt.getTime() > now.getTime()&& !task.completed)
                     .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
                 TasksMessage = "No near tasks available.";
+                setTaskPos("left-[42rem]")
                 break;
             case "later":
                 FilteredTasks = tasksBackup
                     .filter((task) => task.dueAt.getTime() > now.getTime() && !task.completed)
                     .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime());
+                    setTaskPos("left-[41rem]")
                 TasksMessage = "No tasks available for later.";
                 break;
             case "default":
                 FilteredTasks = tasksBackup;
                 TasksMessage = "No active tasks available.";
+                setTaskPos("left-[42rem]")
                 break;
             case "pastDue":
                 FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() !== 0 && task.dueAt.getTime() < now.getTime()&& !task.completed);
                 TasksMessage = "No tasks past due.";
+                setTaskPos("left-[44rem]")
                 break;
             case "completed":
                 FilteredTasks = tasksBackup.filter((task) => task.completed)
                 setAfterLoading(false)
                 TasksMessage = "No tasks completed.";
+                setTaskPos("left-[43.5rem]")
                 break;
             default:
                 FilteredTasks = tasksBackup;
                 TasksMessage = "No active tasks available.";
+                setTaskPos("left-[42rem]")
                 break;
         }
     
@@ -382,7 +389,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     {loading ? (
                         <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>   
                      ) : (tasks.length === 0 || filterArr.length === 0) && (
-                        <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">{taskMessage}</h1>
+                        <>
+                            <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[12rem] w-[10rem] h-[10rem] mx-auto" />
+                            <h1 className={`fixed text-center text-gray-500 mt-[21rem] text-2xl ${taskPos}`}>{taskMessage}</h1>
+                        </>
                     )}
                         
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
