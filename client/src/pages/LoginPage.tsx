@@ -3,7 +3,7 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import LoginBG from "../assets/LoginBG.png";
+import LoginBG from "../assets/LoginBg.png";
 import axios, { AxiosError } from "axios";
 // import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import { supabase } from "../SupabaseClient";
@@ -35,7 +35,7 @@ const LoginPage: React.FC<Props> = () => {
   });
 
   const handleLogin = async (form: LoginFormsInputs) => {
-    try {
+  try {
       // Try to log in using Supabase
       const { data, error } = await supabase.auth.signInWithPassword({
         email: form.userName, // Using email for login
@@ -74,6 +74,8 @@ const LoginPage: React.FC<Props> = () => {
       }
     }
   };
+
+  
   
 
   return (
