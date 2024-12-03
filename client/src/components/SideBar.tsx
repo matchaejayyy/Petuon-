@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
         className="hidden lg:flex flex-col h-screen w-screen bg-cover bg-center bg-no-repeat bottom-0 fixed"
         style={{ backgroundImage: `url(${background})` }}>
         <img src={logo} className="fixed left-[0.1rem] top-[1rem] size-[8rem]" alt="Logo" />
-        <div className="flex flex-col items-start space-y-5 fixed top-40 left-4">
+        <div className="flex flex-col items-start space-y-5 fixed top-[11rem] left-4">
           <Link
             to="/"
             className={`group pl-9 pr-16 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/") ? "bg-[#F6F6F6]" : ""}`}>

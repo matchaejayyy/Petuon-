@@ -268,13 +268,13 @@ interface Tasks {
         <div>
         <h1
           style={{ fontFamily: '"Crimson Pro", serif' }}
-          className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7"
+          className="text-[3rem] text-[#354F52] ftracking-normal mb-4 mt-7"
         >
           Calendar
         </h1>
         <div
           style={{ fontFamily: '"Signika Negative", sans-serif' }}
-          className="p-3 ml-[2rem] max-w-[1340px] mx-auto"
+          className="p-3  max-w-[1340px] mx-auto"
         >
           {renderHeader()}
           {renderDaysOfWeek()}

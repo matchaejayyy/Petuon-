@@ -126,7 +126,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
   
     const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
         return (
-            <ul className="h-[70vh] mr-[7rem] mt-[-1rem] flex flex-col items-center overflow-y-auto p-0 ">
+            <ul className="h-[70vh] mr-[7rem] -mt-[1rem] flex flex-col items-center overflow-y-auto p-0 [&::-webkit-scrollbar]:w-2 ">
             {flashcards.map((flashcard, index) => {
               const assignedColor = colors[index % colors.length];
               return (
@@ -323,12 +323,12 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
           {OnFirstPage ? (
             <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
               <h1
-                className="text-[#354F52] font-serif text-3xl m-10 mr-[77rem]"
+                className="text-[#354F52] font-serif text-3xl m-10 mr-[71rem]"
                 
               >
-                Saved Decks
+                SavedDecks
               </h1>
-              <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
+              <div className="w-[94vw] flex items-center justify-center relative ml-[9rem] mt-[-1.5rem] ">
               <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5 [&::-webkit-scrollbar]:w-2">
                   {Object.keys(decks).length === 0 ? (
                     <p
@@ -440,7 +440,7 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
       return (
         <>
           <WhiteContainer>
-          <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7">FlashCards</h1>
+          <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 mt-7">FlashCards</h1>
             <FlashcardComponent />
             <Avatar/>
           </WhiteContainer>
