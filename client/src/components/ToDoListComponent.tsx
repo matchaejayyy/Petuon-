@@ -31,7 +31,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"]; 
 
     const [taskMessage, setTaskMessage] = useState<string>("No active tasks available.");
-
+    const [taskPos, setTaskPos] = useState<string>("left-[42rem]")
 
     const navigate = useNavigate();
 
@@ -169,35 +169,42 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             case "noDate":
                 FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0&& !task.completed);
                 TasksMessage = "No tasks with no due date available.";
+                setTaskPos("left-[38.5rem]")
                 break;
             case "near":
                 FilteredTasks = tasksBackup
                     .filter((task) => task.dueAt.getTime() > now.getTime()&& !task.completed)
                     .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
                 TasksMessage = "No near tasks available.";
+                setTaskPos("left-[42rem]")
                 break;
             case "later":
                 FilteredTasks = tasksBackup
                     .filter((task) => task.dueAt.getTime() > now.getTime() && !task.completed)
                     .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime());
+                    setTaskPos("left-[41rem]")
                 TasksMessage = "No tasks available for later.";
                 break;
             case "default":
                 FilteredTasks = tasksBackup;
                 TasksMessage = "No active tasks available.";
+                setTaskPos("left-[42rem]")
                 break;
             case "pastDue":
                 FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() !== 0 && task.dueAt.getTime() < now.getTime()&& !task.completed);
                 TasksMessage = "No tasks past due.";
+                setTaskPos("left-[44rem]")
                 break;
             case "completed":
                 FilteredTasks = tasksBackup.filter((task) => task.completed)
                 setAfterLoading(false)
                 TasksMessage = "No tasks completed.";
+                setTaskPos("left-[43.5rem]")
                 break;
             default:
                 FilteredTasks = tasksBackup;
                 TasksMessage = "No active tasks available.";
+                setTaskPos("left-[42rem]")
                 break;
         }
     
@@ -382,7 +389,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     {loading ? (
                         <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>   
                      ) : (tasks.length === 0 || filterArr.length === 0) && (
-                        <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">{taskMessage}</h1>
+                        <>
+                            <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[12rem] w-[10rem] h-[10rem] mx-auto" />
+                            <h1 className={`fixed text-center text-gray-500 mt-[21rem] text-2xl ${taskPos}`}>{taskMessage}</h1>
+                        </>
                     )}
                         
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
@@ -495,7 +505,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 <div>
                     <h1>
                         <div style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="font-bold text-lg text-[#354F52] mt-[1rem] ml-[1rem] ">My Task</div>
-                        </h1>
+                    </h1>
+                   
+                    {loading ? (
+                        <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="fixed text-center text-gray-500 left-[23rem] top-[15.5rem] text-2xl">Fetching tasks...</h1>   
+                    ) : (
+                    <>
                     <ul>
                     {tasks
                     .sort((a, b) => {
@@ -521,28 +536,30 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             </li>
                         )}
                     </ul>
-                    <button 
-                        style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  mt-4 w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
-                        onClick={() => navigate(`/ToDoList`)}>
-                        {
-                            tasks.length === 0
-                            ? 'Add a Task'
-                            : tasks.length > 5
-                            ? `View ${tasks.length - 5} more`
-                            : 'Add more tasks'
-                        }
-                    </button>
+                       {tasks.length > 0 && tasks.length <= 4 ? (
+                        <>  
+                            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
+                        </>
+                        ) : tasks.length === 0 && (
+                            <>
+                                <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
+                                <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
+                            </>
+                        )}
+                        <button 
+                            style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  top-[25rem] w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                            onClick={() => navigate(`/ToDoList`)}>
+                            {
+                                tasks.length === 0
+                                ? 'Add a Task'
+                                : tasks.length > 5
+                                ? `View ${tasks.length - 5} more`
+                                : 'Add more tasks'
+                            }
+                        </button>
+                    </>
+                    )}
                 </div>
-                {tasks.length > 0 && tasks.length <= 4 ? (
-                    <>  
-                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
-                    </>
-                ) : tasks.length === 0 && (
-                    <>
-                        <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
-                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
-                    </>
-                )}
             </>
         )   
     }
