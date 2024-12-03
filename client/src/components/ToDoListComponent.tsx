@@ -495,7 +495,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 <div>
                     <h1>
                         <div style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="font-bold text-lg text-[#354F52] mt-[1rem] ml-[1rem] ">My Task</div>
-                        </h1>
+                    </h1>
+                   
+                    {loading ? (
+                        <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="fixed text-center text-gray-500 left-[23rem] top-[15.5rem] text-2xl">Fetching tasks...</h1>   
+                    ) : (
+                    <>
                     <ul>
                     {tasks
                     .sort((a, b) => {
@@ -521,28 +526,30 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             </li>
                         )}
                     </ul>
-                    <button 
-                        style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  mt-[10rem] w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
-                        onClick={() => navigate(`/ToDoList`)}>
-                        {
-                            tasks.length === 0
-                            ? 'Add a Task'
-                            : tasks.length > 5
-                            ? `View ${tasks.length - 5} more`
-                            : 'Add more tasks'
-                        }
-                    </button>
+                       {tasks.length > 0 && tasks.length <= 4 ? (
+                        <>  
+                            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
+                        </>
+                        ) : tasks.length === 0 && (
+                            <>
+                                <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
+                                <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
+                            </>
+                        )}
+                        <button 
+                            style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  top-[25rem] w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                            onClick={() => navigate(`/ToDoList`)}>
+                            {
+                                tasks.length === 0
+                                ? 'Add a Task'
+                                : tasks.length > 5
+                                ? `View ${tasks.length - 5} more`
+                                : 'Add more tasks'
+                            }
+                        </button>
+                    </>
+                    )}
                 </div>
-                {tasks.length > 0 && tasks.length <= 4 ? (
-                    <>  
-                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
-                    </>
-                ) : tasks.length === 0 && (
-                    <>
-                        <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[2rem] w-[10rem] h-[10rem] mx-auto" />
-                        <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[-1rem] text-center text-lg text-gray-500">No more tasks</div>
-                    </>
-                )}
             </>
         )   
     }
