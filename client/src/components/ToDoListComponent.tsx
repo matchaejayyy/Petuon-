@@ -533,7 +533,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     onChange={() => completeToggle(task.task_id!)}
                                     />
 
-                                    <span style={{ fontFamily: '"Signika Negative", sans-serif' }}className="absolute font-semibold text-lg ml-3 -mt[0.6rem]">{task.text}</span>
+                                    <span style={{ fontFamily: '"Signika Negative", sans-serif' }}className="absolute text-[#354F52] font-semibold text-lg ml-3 -mt[0.6rem]">{task.text}</span>
                                     <span 
                                     style={{ fontFamily: '"Signika Negative", sans-serif', color: displayStatus(task.dueAt) === "Today" ? "maroon" : "black" }} 
                                     className=" ml-[27rem] font-semibold ">
@@ -554,7 +554,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             </>
                         )}
                         <button 
-                            style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  top-[25rem] w-[35rem] bg-[#354F52] text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-[#52796f]"
+                            style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  top-[25rem] w-[35rem] bg-[#354F52] text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-[#52796f]  "
                             onClick={() => navigate(`/ToDoList`)}>
                             {
                                 tasks.length === 0
