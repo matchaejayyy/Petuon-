@@ -410,7 +410,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
 
                                         <input 
-                                        className="absolute left-[1rem] mt-0 translate-y-[0.1rem] peer appearance-none w-5 h-5  rounded-full bg-white checked:bg-[#719191] transition-colors cursor-pointer"
+                                        className="absolute left-[1rem] mt-0 translate-y-[0.1rem] peer appearance-none w-5 h-5 rounded-full bg-white checked:bg-[#719191] s cursor-pointer transform transition-transform duration-300 hover:scale-110 active:scale-50"
                                         type="checkbox"
                                         checked={task.completed}
                                         onChange={() => completeToggle(task.task_id!)}
@@ -527,7 +527,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             <li key={index} className="border-b-2 mt-[0.9rem]"> 
                                 <div className="">
                                     <input 
-                                    className="ml-[0.7rem] mb-[0.4rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
+                                    className="ml-[0.9rem] mb-[0.4rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full shadow-lg bg-white checked:bg-[#719191] checked:border-[#719191] cursor-pointer transform transition-transform duration-300 hover:scale-110 active:scale-50"
                                     type="checkbox"
                                     checked={task.completed}
                                     onChange={() => completeToggle(task.task_id!)}
