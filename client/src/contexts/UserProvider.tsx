@@ -33,44 +33,40 @@ export const UserProvider = ({ children }: Props) => {
   useEffect(() => {
     const initializeSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-
-        if (session) {
-          setUser(session.user);
-          setToken(session.access_token);
-        } else {
-          const savedToken = localStorage.getItem("token");
-          if (savedToken) {
-            // Decode token to check expiry
-            const decodedToken = jwt_decode<DecodedToken>(savedToken); // Typecast as DecodedToken
-            const currentTime = Math.floor(Date.now() / 1000);
-
-            // If token is expired, log out user
-            if (decodedToken.exp < currentTime) {
-              localStorage.removeItem("token");
-              setToken(null);
-            } else {
-              setToken(savedToken);
-            }
+        const savedToken = localStorage.getItem("token");
+        if (savedToken) {
+          const decodedToken = jwt_decode<DecodedToken>(savedToken);
+          const currentTime = Math.floor(Date.now() / 1000);
+          if (decodedToken.exp < currentTime) {
+            console.warn("Token expired, logging out...");
+            logout(); // Call logout if token is expired
+          } else {
+            setToken(savedToken);
           }
+        } else {
+          setToken(null);
         }
       } catch (error) {
-        console.error("Error initializing session:", error);
+        console.error("Error during session initialization:", error);
       }
     };
-
+  
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null);
-      setToken(session?.access_token || null);
-      if (!session) navigate("/login");
+      if (session) {
+        setUser(session.user);
+        setToken(session.access_token);
+      } else {
+        logout();
+      }
     });
-
+  
     initializeSession();
-
+  
     return () => {
       data?.subscription.unsubscribe();
     };
   }, [navigate]);
+  
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -79,7 +75,15 @@ export const UserProvider = ({ children }: Props) => {
     navigate("/");
   };
 
-  const isLoggedIn = () => !!user;
+  const isLoggedIn = () => {
+    if (token) {
+      const decodedToken = jwt_decode<DecodedToken>(token); // Decode token
+      const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+      return decodedToken.exp > currentTime; // Token is valid if it's not expired
+    }
+    return !!user; // Fallback to user presence
+  };
+  
 
   return (
     <UserContext.Provider value={{ user, token, logout, isLoggedIn }}>

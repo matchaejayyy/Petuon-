@@ -10,9 +10,15 @@ const ProtectedRoute = ({ children }: Props) => {
   const location = useLocation();
   const { isLoggedIn } = useAuth();
 
+  console.log("Navigating to:", location.pathname);
+  console.log("Is logged in:", isLoggedIn())
+  
+
   // If the user is not logged in or the token is expired, redirect them to the login page
   if (!isLoggedIn()) {
+    console.log("User is not logged in. Redirecting to login.");
     return <Navigate to="/login" state={{ from: location }} />;
+    
   }
 
   return <>{children}</>;
