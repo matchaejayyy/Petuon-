@@ -227,7 +227,7 @@ const NotepadPage: React.FC = () => {
 
                     /* Notes List */
                     <div className="mt-0 -ml-6">
-                    <div className="overflow-x-auto p-6 [&::-webkit-scrollbar-track]:bg-gray-100 -mt-2">
+                    <div className="overflow-x-auto p-6 -mt-2">
                         <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-2 gap-x-5 w-max  ">
                             {/* New Note Button */}
                             <div
