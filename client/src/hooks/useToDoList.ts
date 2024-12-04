@@ -14,6 +14,8 @@ export const useToDoList = () => {
   const [filterArr, setFilterArr] = useState<Task[]>([]);
   const [afterloading, setAfterLoading] = useState<boolean>(false);
 
+  const [completedTasks, setCompletedTasks] = useState<Task[]>([])
+
     // Fetched Tasks
       const fetchTasks = async () => {
         setLoading(true);
@@ -26,11 +28,18 @@ export const useToDoList = () => {
             dueAt: new Date(task.due_at),
             completed: task.completed,
           }));
-          
-          setTasks(taskData);
+          const response1 = await axios.get('http://localhost:3002/tasks/getCompelteTask');
+          const taskData1 = response1.data.map((task: {task_id: string, text: string, created_at: Date, due_at: Date, completed: boolean }) => ({
+            task_id: task.task_id,
+            text: task.text,
+            createdAt: new Date(task.created_at),
+            dueAt: new Date(task.due_at),
+            completed: task.completed,
+          }));
+          setCompletedTasks(taskData1)
+          setTasks(taskData); 
           setTasksBackup(taskData);
           setFilterArr(taskData);
-
         } catch (error) {
           console.error("Error fetching tasks:", error);
         } finally {
@@ -54,6 +63,7 @@ export const useToDoList = () => {
 
     // Adding Tasks
     const addTask = async (newTask: Task) => {
+      console.log(completedTasks)
       try {
         
         if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
@@ -76,6 +86,7 @@ export const useToDoList = () => {
           setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           setFilterArr((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+          setCompletedTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
           await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`);
           
         } catch (error) {
@@ -88,8 +99,7 @@ export const useToDoList = () => {
     // Complete Tasks
     const toggleCompleteTask = async (task_id: string) => {
       try {
-        
-        const taskToToggle = tasks.find((task) => task.task_id === task_id);
+        const taskToToggle = (filterType === "completed" ? filterArr : tasks).find((task) => task.task_id === task_id)
         if (!taskToToggle) return;
   
         const updatedCompletedStatus = !taskToToggle.completed;
@@ -103,6 +113,23 @@ export const useToDoList = () => {
         setFilterArr(filterArr.map(task =>
           task.task_id === task_id ? {...task, completed: !task.completed} : task
         ))
+        if (updatedCompletedStatus) {
+          setTimeout(() => {
+            setCompletedTasks((prevCompletedTasks) => [
+              ...prevCompletedTasks,
+              { ...taskToToggle, completed: true }
+            ]);
+            setTasks((prevTasks) => prevTasks.filter(task => task.task_id !== task_id));
+            setTasksBackup((prevTasksBackup) => prevTasksBackup.filter(task => task.task_id !== task_id));
+            setFilterArr((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
+          },1000);
+        } else {
+          setTasks((prevCompletedTasks) => [
+            ...prevCompletedTasks,
+            { ...taskToToggle, completed: false }
+          ]);
+          setCompletedTasks((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
+        }
         
 
         await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
@@ -168,7 +195,8 @@ export const useToDoList = () => {
       saveEditedTask,
       filterArr,
       setFilterArr,
-      setAfterLoading
+      setAfterLoading,
+      completedTasks
     }
 
    

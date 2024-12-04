@@ -42,7 +42,8 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         tasks, setTasks,  
         filterArr, setFilterArr,
         loading, setAfterLoading,
-        addTask, deleteTask, toggleCompleteTask, saveEditedTask
+        addTask, deleteTask, toggleCompleteTask, saveEditedTask,
+        completedTasks,
     } = useToDoList();
 
     const updateTasks = useCallback(() => {
@@ -164,7 +165,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         const now = new Date();
         let TasksMessage = taskMessage;
         let FilteredTasks = tasksBackup;
-        
         switch (filterType) {
             case "noDate":
                 FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0&& !task.completed);
@@ -186,7 +186,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 TasksMessage = "No tasks available for later.";
                 break;
             case "default":
-                FilteredTasks = tasksBackup;
+                FilteredTasks = tasksBackup
                 TasksMessage = "No active tasks available.";
                 setTaskPos("left-[42rem]")
                 break;
@@ -196,7 +196,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 setTaskPos("left-[44rem]")
                 break;
             case "completed":
-                FilteredTasks = tasksBackup.filter((task) => task.completed)
+                FilteredTasks = completedTasks
                 setAfterLoading(false)
                 TasksMessage = "No tasks completed.";
                 setTaskPos("left-[43.5rem]")
@@ -207,7 +207,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 setTaskPos("left-[42rem]")
                 break;
         }
-    
+
         setTaskMessage(TasksMessage);
         setFilterType(filterType);
         setFilterArr(FilteredTasks);
@@ -275,7 +275,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             return "Upcoming"
         }
     }
-    const display = filterType === "pastDue" || filterType === "completed" || filterType === "near" || filterType === "later" || filterType === "noDate" ? filterArr : tasks;
+
+
+    const display = filterType === "pastDue"  || filterType === "near" || filterType === "later" || filterType === "noDate" || filterType === "completed" ? filterArr :  tasks;
     const taskVariants = {
         hidden: { opacity: 0, y: 0 }, // Initial state: invisible and above
         visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
@@ -388,12 +390,12 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                     {loading ? (
                         <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>   
-                     ) : (tasks.length === 0 || filterArr.length === 0) && (
+                     ) : display.length === 0 ? (
                         <>
                             <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[12rem] w-[10rem] h-[10rem] mx-auto" />
                             <h1 className={`fixed text-center text-gray-500 mt-[21rem] text-2xl ${taskPos}`}>{taskMessage}</h1>
                         </>
-                    )}
+                    ): null}
                         
                         <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
                         >     
