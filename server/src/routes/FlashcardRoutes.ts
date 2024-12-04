@@ -6,15 +6,28 @@ dotenv.config(); // Ensure environment variables are loaded
 
 const router = express.Router();
 
-// >>>> Define the server's endpoints
-
 // Get all decks
-router.get('/decks', async (req: Request, res: Response) => {
+router.get('/getDecks', async (req: Request, res: Response) => {
   try {
     const result = await pool.query('SELECT * FROM decks');
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error fetching decks:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.post('/insertDecks', async (req: Request, res: Response) => {
+  const { deck_id, title } = req.body;
+
+  try {
+    const query = 'INSERT INTO decks (deck_id, title) VALUES ($1, $2) RETURNING *';
+    const values = [deck_id, title];
+
+    const result = await pool.query(query, values);
+    res.status(201).json(result.rows[0]); // Return the new deck
+  } catch (error) {
+    console.error('Error adding deck:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -45,7 +58,7 @@ router.get('/decks/:deckId', async (req, res) => {
   const deckId = req.params.deckId;
   
   // Fetch deck by ID
-  const deck = await pool.query('SELECT * FROM decks WHERE id = $1', [deckId]);
+  const deck = await pool.query('SELECT * FROM decks WHERE deck_id = $1', [deckId]);
 
   // Check if deck exists
   if (deck.rows.length > 0) {
@@ -56,9 +69,6 @@ router.get('/decks/:deckId', async (req, res) => {
     res.status(404).send('Deck not found');
   }
 });
-
-
-
 
 
 router.get('/decks/:deckId/flashcards', async (req: Request, res: Response) => {
@@ -98,18 +108,7 @@ router.get('/currentFlashcards', (req: Request, res: Response) => {
 
 // Create a new deck
 // Add a new deck
-router.post('/decks', async (req: Request, res: Response) => {
-  const { title } = req.body;
 
-  try {
-      const query = 'INSERT INTO decks (title) VALUES ($1) RETURNING *';
-      const result = await pool.query(query, [title]);
-      res.status(201).json(result.rows[0]);
-  } catch (error) {
-      console.error('Error adding deck:', error);
-      res.status(500).send('Internal Server Error');
-  }
-});                                       
 
 // Add a flashcard to a deck
 router.post('/insertCard', async (req: Request, res: Response) => {

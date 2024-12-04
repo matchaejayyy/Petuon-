@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 
 // Routes
 app.use('/tasks', ToDoListRouter);
-app.use('/flashcards', FlashcardRouter);
+app.use('/cards', FlashcardRouter);
 
 
  // Start Server on port 3002
