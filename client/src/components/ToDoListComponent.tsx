@@ -545,7 +545,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     </ul>
                        {tasks.length > 0 && tasks.length <= 4 ? (
                         <>  
-                            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[2rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
+                            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[0.5rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
                         </>
                         ) : tasks.length === 0 && (
                             <>
