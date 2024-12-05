@@ -5,6 +5,7 @@ import axios from "axios";
 
 // Import Task Interface
 import { Task } from "../types/ToDoListTypes"
+import { Filter } from "lucide-react";
 
 export const useToDoList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -16,6 +17,7 @@ export const useToDoList = () => {
 
   const [completedTasks, setCompletedTasks] = useState<Task[]>([])
   const [afterMark, setAfterMark] = useState<boolean>(false)
+  const [shouldUpdateFilter, setShouldUpdateFilter] = useState(false);
 
     // Fetched Tasks
       const fetchTasks = async () => {
@@ -140,7 +142,9 @@ export const useToDoList = () => {
             },800);
           }
         } else {
+          
           setTimeout(() => {
+            setShouldUpdateFilter(true)
             setTasks((prevCompletedTasks) => [
               ...prevCompletedTasks,
               { ...taskToToggle, completed: false }
@@ -153,21 +157,51 @@ export const useToDoList = () => {
               ...prevCompletedTasks,
               { ...taskToToggle, completed: false }
             ]);
+  
             setCompletedTasks((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
           },800);
         }
-        
-
+    
         await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
           completed: updatedCompletedStatus,
         });
         
-    
-
       } catch (error) {
         console.error("Error toggling task completion:", error);
       }
     }
+
+    useEffect(() => {
+      if (!shouldUpdateFilter) return;
+      const now = new Date();
+    
+      // Filter tasks based on filterType
+      if (filterType === "noDate") {
+        setFilterArr(tasksBackup.filter((task) => task.dueAt.getTime() === 0 && !task.completed));
+      } else if (filterType === "near") {
+        setFilterArr(
+          tasksBackup
+            .filter((task) => task.dueAt.getTime() > now.getTime() && !task.completed)
+            .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime())
+        );
+      } else if (filterType === "later") {
+        setFilterArr(
+          tasksBackup
+            .filter((task) => task.dueAt.getTime() > now.getTime() && !task.completed)
+            .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime())
+        );
+      } else if (filterType === "pastDue") {
+        setFilterArr(
+          tasksBackup
+            .filter((task) => task.dueAt.getTime() !== 0 && task.dueAt.getTime() < now.getTime() && !task.completed)
+            .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime())
+        );
+      } else {
+        setFilterArr(tasksBackup); // Default: show all tasks
+      }
+
+      setShouldUpdateFilter(false);
+    }, [filterType, tasksBackup]);
 
     // Saved Edited Tasks
     const saveEditedTask = async (
@@ -193,7 +227,7 @@ export const useToDoList = () => {
         ));
 
         if (filterType == "completed") {
-          const task = filterArr.find(task => task.task_id === task_id);
+          const task = completedTasks.find(task => task.task_id === task_id);
           if (task) {
             const isDateTimeMismatched = task.dueAt.getTime() !== updatedDueAt.getTime();
             if (isDateTimeMismatched) {
