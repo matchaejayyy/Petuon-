@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';  // Removed BrowserRouter import
-import Dashboard from './pages/DashboardPage';
-import Calendar from './pages/CalendarPage';
-import Flashcard from './components/FlashCard';
-import ToDoList from './pages/ToDoListPage';
-import Notepad from './pages/NotepadPage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import { UserProvider } from './contexts/useAuth'; // Ensure correct import path
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Dashboard from "./pages/DashboardPage";
+import Calendar from "./pages/CalendarPage";
+import Flashcard from "./components/FlashCard";
+import ToDoList from "./pages/ToDoListPage";
+import Notepad from "./pages/NotepadPage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import { UserProvider, useAuth } from "./contexts/UserProvider";
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-  useEffect(() => {
-    // Check login status from localStorage
-    const loggedInStatus = localStorage.getItem('isLoggedIn') === 'true';
-    setIsLoggedIn(loggedInStatus);
-  }, []);
+  const { isLoggedIn } = useAuth();
 
   return (
-    <UserProvider setIsLoggedIn={setIsLoggedIn}>
+    <UserProvider>
       <Routes>
-        {isLoggedIn ? (
-          // Authenticated Routes
+        {isLoggedIn() ? (
           <>
             <Route path="/" element={<Dashboard />} />
             <Route path="/Calendar" element={<Calendar />} />
@@ -32,7 +25,6 @@ const App: React.FC = () => {
             <Route path="*" element={<Navigate to="/" />} />
           </>
         ) : (
-          // Unauthenticated Routes
           <>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
