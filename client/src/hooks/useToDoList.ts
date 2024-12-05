@@ -77,9 +77,12 @@ export const useToDoList = () => {
 
     // Adding Tasks
     const addTask = async (newTask: Task) => {
-      console.log(completedTasks)
       try {
-        
+        if (loading) {
+          alert("cannot add task in the moment....")
+          return;
+        }
+
         if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
           setTasks([...tasks, newTask  ])
         } 
