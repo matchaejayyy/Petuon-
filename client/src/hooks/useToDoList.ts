@@ -213,7 +213,7 @@ export const useToDoList = () => {
       updatedDueAt: Date
     ) => {
       try {
-        const taskToToggle = (filterType === "completed" ? filterArr : tasks).find((task) => task.task_id === task_id)
+        const taskToToggle = (filterType === "pastDue"  || filterType === "near" || filterType === "later" || filterType === "noDate"? filterArr : filterType === "completed" ? completedTasks : tasks).find((task) => task.task_id === task_id)
         console.log(taskToToggle)
         const trimmedText = updatedText.trim();
 
@@ -226,6 +226,10 @@ export const useToDoList = () => {
         ));
 
         setFilterArr(filterArr.map(task =>
+          task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
+        ));
+
+        setCompletedTasks(completedTasks.map(task =>
           task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
         ));
 
