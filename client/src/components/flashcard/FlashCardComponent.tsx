@@ -20,10 +20,7 @@ const FlashcardComponent: React.FC = () => {
  
   const [DeckTitle, setDeckTitle] = useState<string>("");
   const [deckId, setDeckId] = useState<string | null>(null);
-  const flashCardId = deckId;
   
-  
-
 
   useEffect(() => {
     const fetchDecks = async () => {
@@ -38,9 +35,29 @@ const FlashcardComponent: React.FC = () => {
         console.error("Error fetching decks:", error);
       }
     };
-
-    fetchDecks();
+    const fetchFlashcards = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3002/cards/getFlashcards`);
+        const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string }) => ({
+          question: flashcard.question,
+          answer: flashcard.answer,
+          flashcard_id: flashcard.flashcard_id,
+        }));
+        setFlashcards(flashcardData)
+      } catch (error) {
+        console.error("Error fetching flashcards:", error);
+      }
+    }
+    fetchDecks(); 
+    fetchFlashcards();
   }, []);
+
+  useEffect(() => {
+    if (deckId) {
+      console.log(`Updated deckId: ${deckId}`);
+    }
+  }, [deckId]);
+
 
   const saveDeck = async () => {
     if (!DeckTitle.trim()) {
@@ -72,27 +89,25 @@ const FlashcardComponent: React.FC = () => {
     setFlashcards([]);
   };
 
-  // Example frontend request
-  const loadDeck = async (deckId: number) => {
+  const loadDeck = async (deck_id: string) => {
     try {
+      setDeckId(deck_id)
       setisReviewing(false)
       setOnFirstPage(false)
-      handleCreateNewDeck()
-      setDeckId(deckId)
-       console.log(deckId)
+      setFlashcards([])
+       console.log(`deckID: ${deckId}`)
+       console.log(`deck_ID: ${deck_id}`)
     } catch (error) {
         console.error('Error loading deck:', error);
     }
 };
 
-  const deleteDeck = async (id: number) => {
-    const updatedDecks = { ...decks };
-    delete updatedDecks[id];
+  const deleteDeck = async (id: string) => {
+    const updatedDecks = decks.filter(deck => deck.deck_id !== id);
     setDecks(updatedDecks);
-    window.location.reload();
 
     try {
-      await axios.delete(`${API_BASE_URL}/flashcards/decks/${id}`);
+      await axios.delete(`http://localhost:3002/decks/${id}`);
     } catch (error) {
       console.error("Error deleting deck:", error);
     }
@@ -159,13 +174,13 @@ const FlashcardComponent: React.FC = () => {
                   No decks saved yet. Create one to get started!
                 </p>
               ) : (
-                decks.map(({ title, id }, index) => {
+                decks.map(({ title, deck_id}, index) => {
                   const assignedColor = colors[index % colors.length];
 
                   return (
                     <li key={title} className="w-full">
                       <div
-                        onClick={() => {loadDeck(id); setDeckId(id)}}
+                        onClick={() => {loadDeck(deck_id)}}
                         className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
                       >
                         <h1
@@ -180,7 +195,7 @@ const FlashcardComponent: React.FC = () => {
                           className="absolute bottom-3 right-3  h-8 w-8 rounded-full flex items-center justify-center "
                           onClick={(e) => {
                             e.preventDefault();
-                            deleteDeck(id);
+                            deleteDeck(deck_id);
                           }}
                         >
                           <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
@@ -249,7 +264,7 @@ const FlashcardComponent: React.FC = () => {
                 Start Learning!
               </button>
               <button
-                onClick={() => {setOnFirstPage(true); setDeckId(null);}}
+                onClick={() => setOnFirstPage(true)}
                 className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
               >
                 <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />
@@ -259,7 +274,7 @@ const FlashcardComponent: React.FC = () => {
           <CreateFlashcard
             flashcards={flashcards}
             setFlashcards={setFlashcards}
-            flashCardId={flashCardId}
+            flashCardId={deckId}          
           />
           <FlashcardList flashcards={flashcards} />
         </div>

@@ -1,13 +1,13 @@
 export interface Flashcard {
-  id: number;
   question: string;
   answer: string;
+  flashcard_id: string | null;
 }
 
 export interface CreateFlashcardProps {
   flashcards: Flashcard[];
   setFlashcards: React.Dispatch<React.SetStateAction<Flashcard[]>>;
-  flashCardId: string | null; // Add this to pass the deck ID dynamically
+  flashCardId: string | null; 
 }
 
 // Structure of a saved deck, including the `id` and `flashcards` it contains
@@ -16,17 +16,6 @@ export type Deck = {
   title: string;
 };
 
-
-export type SaveDeckResponse = {
-  success: boolean;
-  message: string;
-};
-
-
-export type DeleteFlashcardResponse = {
-  success: boolean;
-  message: string;
-};
 
 export interface quizFlashcardProps {
   setOnFirstPage: React.Dispatch<React.SetStateAction<boolean>>;
