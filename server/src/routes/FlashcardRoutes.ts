@@ -17,14 +17,26 @@ router.get('/getDecks', async (req: Request, res: Response) => {
   }
 });
 
-//get all flashcards
+
+// Get flashcards for a specific deck
 router.get('/getFlashcards', async (req: Request, res: Response) => {
+  const { deck_id } = req.query;
+
   try {
-      const result = await pool.query('SELECT * FROM flashcards');
-      res.status(200).json(result.rows);
+    let query = 'SELECT * FROM flashcards';
+    const values: string[] = [];
+
+    // Filter by deck_id if provided
+    if (deck_id) {
+      query += ' WHERE flashcard_id = $1';
+      values.push(deck_id as string);
+    }
+
+    const result = await pool.query(query, values);
+    res.status(200).json(result.rows);
   } catch (error) {
-      console.error('Error fetching flashcards:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error fetching flashcards:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -47,16 +59,16 @@ router.post('/insertDecks', async (req: Request, res: Response) => {
 
 // Add a flashcard to a deck
 router.post('/insertCard', async (req: Request, res: Response) => {
-  const { question, answer, flashcard_id } = req.body;
+  const { question, answer, flashcard_id, unique_flashcard_id} = req.body;
   console.log(req.body)
 
-  if (!question || !answer || !flashcard_id) {
+  if (!question || !answer || !flashcard_id || !unique_flashcard_id) {
     return res.status(400).send('Question, answer, and deck_id are required');
   }
 
   try {
-    const query = 'INSERT INTO flashcards (question, answer, flashcard_id) VALUES ($1, $2, $3) RETURNING *';
-    const values = [question, answer, flashcard_id];
+    const query = 'INSERT INTO flashcards (question, answer, flashcard_id, unique_flashcard_id) VALUES ($1, $2, $3, $4) RETURNING *';
+    const values = [question, answer, flashcard_id, unique_flashcard_id];
     const result = await pool.query(query, values);
     res.status(201).json(result.rows[0]);
   } catch (error) {
@@ -67,30 +79,32 @@ router.post('/insertCard', async (req: Request, res: Response) => {
 
 
 // Delete a deck
-router.delete('/deleteDeck', async (req: Request, res: Response) => {
+router.delete('/deleteDeck/:deckId', async (req: Request, res: Response) => {
   const { deckId } = req.params;
 
   try {
-    await pool.query('DELETE FROM decks WHERE id = $1', [deckId]);
-    res.sendStatus(204);
+    await pool.query('DELETE FROM flashcards WHERE flashcard_id = $1', [deckId]);
+    await pool.query('DELETE FROM decks WHERE deck_id = $1', [deckId]);
+    res.sendStatus(204); // No Content
   } catch (error) {
-    console.error('Error deleting deck:', error);
-    res.status(500).send('Internal Server Error');
+    console.error(`Error deleting deck with ID ${deckId}:`, error);
+    res.status(500).send('Failed to delete deck');
   }
 });
+
 
 // Delete a flashcard
-router.delete('/flashcards/:flashcardId', async (req: Request, res: Response) => {
-  const { flashcardId } = req.params;
-
+router.delete('/deleteFlashcard/:unique_flashcard_id', async (req: Request, res: Response) => {
+  const { unique_flashcard_id } = req.params;
+  console.log(unique_flashcard_id);
   try {
-    await pool.query('DELETE FROM flashcards WHERE id = $1', [flashcardId]);
-    res.sendStatus(204);
+    await pool.query('DELETE FROM flashcards WHERE unique_flashcard_id = $1', [unique_flashcard_id]);
+    console.log(`Flashcard with ID ${unique_flashcard_id} deleted`);
+    res.sendStatus(204); // No Content
   } catch (error) {
-    console.error('Error deleting flashcard:', error);
-    res.status(500).send('Internal Server Error');
+    console.error(`Error deleting flashcard with ID ${unique_flashcard_id}:`, error);
+    res.status(500).send('Failed to delete flashcard');
   }
 });
-
 
 export default router;

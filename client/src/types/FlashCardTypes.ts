@@ -2,6 +2,7 @@ export interface Flashcard {
   question: string;
   answer: string;
   flashcard_id: string | null;
+  unique_flashcard_id: string;
 }
 
 export interface CreateFlashcardProps {

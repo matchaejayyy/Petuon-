@@ -38,10 +38,11 @@ const FlashcardComponent: React.FC = () => {
     const fetchFlashcards = async () => {
       try {
         const response = await axios.get(`http://localhost:3002/cards/getFlashcards`);
-        const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string }) => ({
+        const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string;  unique_flashcard_id: string}) => ({
           question: flashcard.question,
           answer: flashcard.answer,
           flashcard_id: flashcard.flashcard_id,
+          unique_flashcard_id: flashcard.unique_flashcard_id,
         }));
         setFlashcards(flashcardData)
       } catch (error) {
@@ -91,31 +92,45 @@ const FlashcardComponent: React.FC = () => {
 
   const loadDeck = async (deck_id: string) => {
     try {
-      setDeckId(deck_id)
-      setisReviewing(false)
-      setOnFirstPage(false)
-      setFlashcards([])
-       console.log(`deckID: ${deckId}`)
-       console.log(`deck_ID: ${deck_id}`)
+      setDeckId(deck_id);
+      setisReviewing(false);
+      setOnFirstPage(false);
+  
+      // Fetch flashcards specific to the selected deck
+      const response = await axios.get(`http://localhost:3002/cards/getFlashcards`, {
+        params: { deck_id },
+      });
+  
+      const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string }) => ({
+        question: flashcard.question,
+        answer: flashcard.answer,
+        flashcard_id: flashcard.flashcard_id,
+      }));
+  
+      setFlashcards(flashcardData);
     } catch (error) {
-        console.error('Error loading deck:', error);
+      console.error('Error loading deck:', error);
     }
-};
-
-  const deleteDeck = async (id: string) => {
-    const updatedDecks = decks.filter(deck => deck.deck_id !== id);
-    setDecks(updatedDecks);
-
+  };
+  
+  const deleteDeck = async (deckId: string) => {
     try {
-      await axios.delete(`http://localhost:3002/decks/${id}`);
+      await axios.delete(`http://localhost:3002/cards/deleteDeck/${deckId}`);
+      const updatedDecks = decks.filter(deck => deck.deck_id !== deckId);
+      setDecks(updatedDecks);
     } catch (error) {
       console.error("Error deleting deck:", error);
     }
   };
+  
 
-  const deleteFlashcard = async (index: number) => {
-    const updatedFlashcards = flashcards.filter((_, i) => i !== index);
-    setFlashcards(updatedFlashcards);
+  const deleteFlashcard = async (unique_flashcard_id: string) => {
+    try {
+      await axios.delete(`http://localhost:3002/cards/deleteFlashcard/${unique_flashcard_id}`);
+      setFlashcards(flashcards.filter(flashcard => flashcard.unique_flashcard_id !== unique_flashcard_id));
+    } catch (error) {
+      console.error("Error deleting flashcard:", error);
+    }
   };
 
   const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({
@@ -136,7 +151,13 @@ const FlashcardComponent: React.FC = () => {
               >
                 <button
                   className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
-                  onClick={() => deleteFlashcard(index)}
+                  onClick={() => {
+                    if (flashcard.unique_flashcard_id) {
+                      deleteFlashcard(flashcard.unique_flashcard_id); // Check that unique_flashcard_id is not undefined
+                    } else {
+                      console.error("Flashcard unique_flashcard_id is undefined");
+                    }
+                  }}
                 >
                   <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
                 </button>

@@ -2,6 +2,7 @@ import React, { useState,} from 'react';
 import { Flashcard, CreateFlashcardProps} from "../../types/FlashCardTypes";
 import { ListPlus } from 'lucide-react';
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
  
 export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashcards, flashCardId }) => {
   const [question, setQuestion] = useState<string>("");
@@ -19,18 +20,19 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
 
   const createFlashcard = async() => {
     if (question && answer) {
-      const newFlashcard: Flashcard = { question, answer, flashcard_id};
+      const unique_flashcard_id = uuidv4();
+      const newFlashcard: Flashcard = { question, answer, flashcard_id, unique_flashcard_id};
       const updatedFlashcards = [...flashcards, newFlashcard];
       setFlashcards(updatedFlashcards);
-      console.log(`question: ${question}, answer: ${answer}, flashcardid: ${flashcard_id}`);
+      console.log(`question: ${question}, answer: ${answer}, flashcardid: ${flashcard_id}, uniqueId: ${unique_flashcard_id}`);
       try {
         const flashcardData: Flashcard = {
-          question, answer, flashcard_id
+          question, answer, flashcard_id, unique_flashcard_id
         };  
         const response = await axios.post('http://localhost:3002/cards/insertCard', 
           flashcardData
         );
-        console.log(`Flashcard created: id: ${flashcard_id}`, response);
+        console.log(`Flashcard created: id: ${flashcard_id}, uniqueId: ${unique_flashcard_id}`, response);
       }
       catch (error) {
         console.error('Error creating flashcard:', error);
@@ -41,8 +43,6 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
       alert('Please enter a question and answer');
     }
   };
-
-
 
   return (
     <div className="mt-[-2rem] flex flex-col md:flex-row justify-center items-center gap-10 p-4 ">

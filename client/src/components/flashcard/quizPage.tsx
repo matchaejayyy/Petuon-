@@ -12,15 +12,17 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage }) 
   useEffect(() => {
     const fetchFlashcards = async () => {
       try {
-        const response = await axios.get("/api/flashcards");
-        const shuffledCards = shuffleArray(response.data as Flashcard[]);
-        setTempFlashcards(shuffledCards);
-        setCurrentIndex(0);
-        setShowAnswer(false);
+        const response = await axios.get(`http://localhost:3002/cards/getFlashcards`);
+        const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string }) => ({
+          question: flashcard.question,
+          answer: flashcard.answer,
+          flashcard_id: flashcard.flashcard_id,
+        }));
+        setTempFlashcards(flashcardData)
       } catch (error) {
         console.error("Error fetching flashcards:", error);
       }
-    };
+    }
 
     fetchFlashcards();
   }, []);
