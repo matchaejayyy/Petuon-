@@ -1,9 +1,10 @@
-import WhiteContainer from "../components/WhiteContainer";
+import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
-import Avatar from "../components/Avatar";
-import Clock from "../components/Clock";
-
+import Avatar from '../components/Avatar'
+import Clock from '../components/Clock'
 import ToDoListComponent from "../components/ToDoListComponent"
+
+
 
 const ToDoListPage = () => {
 
@@ -15,20 +16,10 @@ const ToDoListPage = () => {
                 <ToDoListComponent/>
                 <Avatar/>
             </WhiteContainer>
+            
             <Sidebar/> 
         </>
     )
 }
 
 export default ToDoListPage
-
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, WalletCards, CalendarRange, NotebookPen, ListTodo } from "lucide-react";
 import logo from "../assets/petuon_logo.png";
-import background from '../assets/BG.png';
+import background from '../assets/LoginBg.png';
 
 const Sidebar: React.FC = () => {
     // Ginakuha ang location (kung diin ka na nga page) gamit ang useLocation para sa highlight sa sidebar
