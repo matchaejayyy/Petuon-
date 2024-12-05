@@ -37,7 +37,7 @@ const RegisterPage: React.FC = () => {
         user_email: form.user_email,
         user_name: form.user_name,
       };
-      console.log(formData)
+    
       const response = await axios.post("http://localhost:3002/register/registerUser", formData)
       // Handle successful backend registration
       alert(response.data.message); // This will show the success message from the backend
@@ -47,8 +47,6 @@ const RegisterPage: React.FC = () => {
         email: form.user_email,
         password: form.user_password,
       });
-
-      
 
       if (error) {
         alert(`Supabase Error: ${error.message}`);

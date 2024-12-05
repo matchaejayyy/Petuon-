@@ -8,11 +8,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'Carmine_1';
 
 // Login route
 router.post('/userLogin', async (req: Request, res: Response): Promise<void> => {
-  const { userName, password }: { userName: string; password: string } = req.body;
+  const { user_name, user_password } = req.body;
 
   try {
     // Validate input
-    if (!userName || !password) {
+    if (!user_name || !user_password) {
       res.status(400).json({ message: "Username and password are required." });
       return;
     }
@@ -20,7 +20,7 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
     // Check if user exists in DB
     const userQuery = await pool.query(
       `SELECT * FROM users WHERE user_name = $1`,
-      [userName]
+      [user_name]
     );
     const user = userQuery.rows[0];
     if (!user) {
@@ -29,7 +29,7 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
     }
 
     // Check if password matches
-    const passwordMatch = await bcrypt.compare(password, user.user_password);
+    const passwordMatch = await bcrypt.compare(user_password, user.user_password);
     if (!passwordMatch) {
       res.status(401).json({ message: "Invalid username or password" });
       return;
@@ -41,7 +41,6 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     );
-
     // Respond with token and user info
     res.status(200).json({
       message: "Login successful",
