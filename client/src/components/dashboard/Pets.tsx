@@ -20,7 +20,7 @@ const Pets = () => {
 
     const getPetImage = () => {
         if (progress < 30) {
-            return "src/assets/unicorn_unhached_eating.gif";
+            return "src/assets/unicorn_hatched_eating.gif";
         } else if (progress < 70) {
             return "src/assets/unicorn.gif";
         } else {
