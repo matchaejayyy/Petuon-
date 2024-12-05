@@ -1,21 +1,7 @@
-import express, { Request, Response } from 'express';
-import { Pool } from 'pg';
+import { Request, Response } from 'express';
+import { pool, router } from '../database/CarmineDB'
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-
-dotenv.config();
-
-const router = express.Router();
-
-// Database connection
-const pool = new Pool({
-  host: process.env.PG_HOST || "aws-0-ap-southeast-1.pooler.supabase.com",
-  port: parseInt(process.env.PG_PORT || "6543", 10),
-  database: process.env.PG_DATABASE || "postgres",
-  user: process.env.PG_USER || "postgres.oizvoxoctozusoahxjos",
-  password: process.env.PG_PASSWORD || "Carmine_123456789!!!",
-});
 
 // JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'Carmine_1';
