@@ -44,7 +44,8 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         loading, setAfterLoading,
         addTask, deleteTask, toggleCompleteTask, saveEditedTask,
         completedTasks,
-        afterMark
+        afterMark,
+        taskInputDisable
     } = useToDoList();
 
     const updateTasks = useCallback(() => {
@@ -289,7 +290,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     if (variant === "default") {
         return (
             <>  
-                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-1 ${afterloading ? "disabled-container" : ""}`}>
+                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-1`}>
                     <div>
                             <button 
                             className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
@@ -397,7 +398,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         </>
                     ): null}
                         
-                        <div className={`w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2 ${afterMark ? "disabled-container" : ""}`}
+                        <div className={`w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2`}
                         >     
                             <ul>
                             {display.map((task, index) =>
@@ -416,6 +417,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                         type="checkbox"
                                         checked={task.completed}
                                         onChange={() => completeToggle(task.task_id!)}
+                                        disabled={taskInputDisable === task.task_id && afterMark} 
                                         />
 
                                         {editIndex === index ? (

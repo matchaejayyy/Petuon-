@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-constant-condition */
 /* eslint-disable no-constant-binary-expression */
 import { useState, useEffect } from "react";
@@ -5,7 +6,7 @@ import axios from "axios";
 
 // Import Task Interface
 import { Task } from "../types/ToDoListTypes"
-import { Filter } from "lucide-react";
+// import { Filter } from "lucide-react";
 
 export const useToDoList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -18,6 +19,7 @@ export const useToDoList = () => {
   const [completedTasks, setCompletedTasks] = useState<Task[]>([])
   const [afterMark, setAfterMark] = useState<boolean>(false)
   const [shouldUpdateFilter, setShouldUpdateFilter] = useState(false);
+  const [taskInputDisable, setTaskInputDisable] = useState<string>("")
 
     // Fetched Tasks
       const fetchTasks = async () => {
@@ -129,6 +131,7 @@ export const useToDoList = () => {
           task.task_id === task_id ? {...task, completed: !task.completed} : task
         ))
         setAfterMark(true);
+        setTaskInputDisable(taskToToggle.task_id)
         if (updatedCompletedStatus) {
           if (filterType != "completed") {
             setTimeout(() => {
@@ -267,6 +270,7 @@ export const useToDoList = () => {
       setAfterLoading,
       completedTasks,
       afterMark,
+      taskInputDisable,
     }
 
    
