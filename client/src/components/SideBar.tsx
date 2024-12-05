@@ -32,14 +32,14 @@ const Sidebar: React.FC = () => {
             <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Flashcard") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
           </Link>
           <Link
-            to="/Calendar"
-            className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Calendar") ? "bg-[#F6F6F6]" : ""}`}>
-            <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
-          </Link>
-          <Link
             to="/Notepad"
             className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Notepad") ? "bg-[#F6F6F6]" : ""}`}>
             <NotebookPen size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Notepad") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+          </Link>
+          <Link
+            to="/Calendar"
+            className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/Calendar") ? "bg-[#F6F6F6]" : ""}`}>
+            <CalendarRange size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/Calendar") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
           </Link>
           <Link
             to="/ToDoList"
@@ -74,16 +74,6 @@ const Sidebar: React.FC = () => {
           </div>
         </Link>
         <Link
-          to="/Calendar"
-          className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-primary-700" : "text-white"}`}>
-          <div
-            className={`w-16 h-16 rounded-full flex items-center justify-center ${
-              isActive("/Calendar") ? "bg-white" : ""
-            }`}>
-            <CalendarRange className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
-          </div>
-        </Link>
-        <Link
           to="/Notepad"
           className={`flex flex-col items-center text-sm ${isActive("/Notepad") ? "text-primary-700" : "text-white"}`}>
           <div
@@ -91,6 +81,16 @@ const Sidebar: React.FC = () => {
               isActive("/Notepad") ? "bg-white" : ""
             }`}>
             <NotebookPen className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
+        </Link>
+        <Link
+          to="/Calendar"
+          className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
+              isActive("/Calendar") ? "bg-white" : ""
+            }`}>
+            <CalendarRange className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
           </div>
         </Link>
         <Link
