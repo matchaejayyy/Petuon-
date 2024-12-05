@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 router.post('/register', async (req: Request, res: Response) => {
     const { email, userName, password } = req.body;
     try {
-        // Validate input
+        
         if (!email || !userName || !password) {
             return res.status(400).json({ error: 'All fields are required.' });
         }

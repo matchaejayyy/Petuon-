@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET || 'Carmine_1';
 
 // Login route
-router.post('/login', async (req: Request, res: Response): Promise<void> => {
+router.post('/userLogin', async (req: Request, res: Response): Promise<void> => {
   const { userName, password }: { userName: string; password: string } = req.body;
 
   try {

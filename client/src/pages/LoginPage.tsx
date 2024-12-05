@@ -1,28 +1,16 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import React, { useState } from "react";
-// import * as Yup from "yup";
-// import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBg.png";
-import axios, { AxiosError } from "axios";
-// import { LoginFormsInputs, Props } from "../types/LoginTypes";
+import axios from "axios";
 import { supabase } from "../SupabaseClient";
+import { LoginFormsInputs, Props } from "../types/LoginTypes";
 
 
-export type Props = {};
-
-export type LoginFormsInputs = {
-  userName: string;
-  password: string;
-};
-// Validation schema
-// const validationSchema = Yup.object().shape({
-//   userName: Yup.string().required("Username is required"),
-//   password: Yup.string().required("Password is required"),
-// });
 
 const LoginPage: React.FC<Props> = () => {
-  const [error, setError] = useState<string | null>(null); // Track error message
+  const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
 
 
@@ -47,7 +35,7 @@ const LoginPage: React.FC<Props> = () => {
         alert("Supabase: Invalid username or password. Trying backend...");
 
         // If Supabase login fails, try backend login
-        const response = await axios.post("http://localhost:3002/login", {
+        const response = await axios.post("http://localhost:3002/login/userLogin", {
           userName: form.userName,
           password: form.password,
         });
@@ -70,9 +58,6 @@ const LoginPage: React.FC<Props> = () => {
       }
     }
   };
-
-  
-  
 
   return (
     <section

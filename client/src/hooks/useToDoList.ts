@@ -3,10 +3,8 @@
 /* eslint-disable no-constant-binary-expression */
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-// Import Task Interface
 import { Task } from "../types/ToDoListTypes"
-// import { Filter } from "lucide-react";
+
 
 export const useToDoList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -33,7 +31,7 @@ export const useToDoList = () => {
             dueAt: new Date(task.due_at),
             completed: task.completed,
           }));
-          const response1 = await axios.get('http://localhost:3002/tasks/getCompelteTask');
+          const response1 = await axios.get('http://localhost:3002/tasks/getCompletedTask');
           const taskData1 = response1.data.map((task: {task_id: string, text: string, created_at: Date, due_at: Date, completed: boolean }) => ({
             task_id: task.task_id,
             text: task.text,
@@ -243,6 +241,7 @@ export const useToDoList = () => {
             if (isDateTimeMismatched) {
               toggleCompleteTask(task_id);
             }
+            
           }
         }
 
