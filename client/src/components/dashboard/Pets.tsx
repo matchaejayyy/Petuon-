@@ -20,9 +20,9 @@ const Pets = () => {
 
     const getPetImage = () => {
         if (progress < 30) {
-            return "src/assets/Penguin.gif";
+            return "src/assets/unicorn_unhached_eating.gif";
         } else if (progress < 70) {
-            return "src/assets/Penguin1.gif";
+            return "src/assets/unicorn.gif";
         } else {
             return "src/assets/sleeping_penguin2.gif";
         }
@@ -44,7 +44,7 @@ const Pets = () => {
                 <img
                     src={getPetImage()}
                     alt="Pet"
-                    className="w-64 h-64 md:w-96 md:h-96 object-contain transition-all duration-500"
+                    className="w-10 h-64 md:w-96 md:h-96 object-contain transition-all duration-500"
                 />
                 <progress
                     id="progressBar"
