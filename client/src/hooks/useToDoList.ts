@@ -87,7 +87,7 @@ export const useToDoList = () => {
         
         setTasksBackup([...tasks, newTask]);
         
-
+        console.log(newTask)
         await axios.post("http://localhost:3002/tasks/insertTask", newTask);
         
       } catch (error) {

@@ -7,22 +7,19 @@ import axios from "axios";
 import { supabase } from "../SupabaseClient";
 import { LoginFormsInputs, Props } from "../types/LoginTypes";
 
-
-
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
-
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormsInputs>({
-    // resolver: yupResolver(validationSchema),
+   
   });
 
-  
+
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
       const { data, error } = await supabase
