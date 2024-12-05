@@ -74,16 +74,6 @@ const Sidebar: React.FC = () => {
           </div>
         </Link>
         <Link
-          to="/Calendar"
-          className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-primary-700" : "text-white"}`}>
-          <div
-            className={`w-16 h-16 rounded-full flex items-center justify-center ${
-              isActive("/Calendar") ? "bg-white" : ""
-            }`}>
-            <CalendarRange className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
-          </div>
-        </Link>
-        <Link
           to="/Notepad"
           className={`flex flex-col items-center text-sm ${isActive("/Notepad") ? "text-primary-700" : "text-white"}`}>
           <div
@@ -91,6 +81,16 @@ const Sidebar: React.FC = () => {
               isActive("/Notepad") ? "bg-white" : ""
             }`}>
             <NotebookPen className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
+          </div>
+        </Link>
+        <Link
+          to="/Calendar"
+          className={`flex flex-col items-center text-sm ${isActive("/Calendar") ? "text-primary-700" : "text-white"}`}>
+          <div
+            className={`w-16 h-16 rounded-full flex items-center justify-center ${
+              isActive("/Calendar") ? "bg-white" : ""
+            }`}>
+            <CalendarRange className="w-8 h-8 md:w-12 md:h-12" strokeWidth={1.5} />
           </div>
         </Link>
         <Link
