@@ -3,7 +3,7 @@ import { pool, router } from '../database/CarmineDB'
 
 import { validateGetTask, validateInsertTask, validateDeleteTask, validateCompleteTask, validateUpdateTask } from '../middleware/ToDoListMiddleware';
 
-// Fetch all tasks
+// Fetch all uncompleted tasks
 router.get('/getTask', validateGetTask, async (req: Request, res: Response) => {
     try {
         const result = await pool.query('SELECT * FROM tasks WHERE completed = false');
@@ -14,6 +14,8 @@ router.get('/getTask', validateGetTask, async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+// Fetch all completed tasks
 router.get('/getCompelteTask', async (req: Request, res: Response) => {
     try {  
         const result = await pool.query('SELECT * FROM tasks WHERE completed = true');

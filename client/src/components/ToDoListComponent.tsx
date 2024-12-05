@@ -44,6 +44,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         loading, setAfterLoading,
         addTask, deleteTask, toggleCompleteTask, saveEditedTask,
         completedTasks,
+        afterMark
     } = useToDoList();
 
     const updateTasks = useCallback(() => {
@@ -196,7 +197,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 setTaskPos("left-[44rem]")
                 break;
             case "completed":
-                FilteredTasks = completedTasks
                 setAfterLoading(false)
                 TasksMessage = "No tasks completed.";
                 setTaskPos("left-[43.5rem]")
@@ -277,7 +277,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     }
 
 
-    const display = filterType === "pastDue"  || filterType === "near" || filterType === "later" || filterType === "noDate" || filterType === "completed" ? filterArr :  tasks;
+    const display = filterType === "pastDue"  || filterType === "near" || filterType === "later" || filterType === "noDate"? filterArr : filterType === "completed" ? completedTasks : tasks
     const taskVariants = {
         hidden: { opacity: 0, y: 0 }, // Initial state: invisible and above
         visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
@@ -387,7 +387,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         </form>
                     </div>
 
-                    <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+                    <div  className={`font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8`}  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                     {loading ? (
                         <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>   
                      ) : display.length === 0 ? (
@@ -397,7 +397,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         </>
                     ): null}
                         
-                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
+                        <div className={`w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2 ${afterMark ? "disabled-container" : ""}`}
                         >     
                             <ul>
                             {display.map((task, index) =>

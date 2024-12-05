@@ -15,6 +15,7 @@ export const useToDoList = () => {
   const [afterloading, setAfterLoading] = useState<boolean>(false);
 
   const [completedTasks, setCompletedTasks] = useState<Task[]>([])
+  const [afterMark, setAfterMark] = useState<boolean>(false)
 
     // Fetched Tasks
       const fetchTasks = async () => {
@@ -50,12 +51,21 @@ export const useToDoList = () => {
       
       useEffect(() => {
         if (afterloading) {
-          const timer = setTimeout(() => {
-            setAfterLoading(false);
-          return () => clearTimeout(timer);
-        }, 1200) 
+            const timer = setTimeout(() => {
+              setAfterLoading(false);
+            return () => clearTimeout(timer);
+          }, 1200) 
         }
-        });
+      });
+
+       useEffect(() => {
+        if (afterMark) {
+            const timer = setTimeout(() => {
+              setAfterMark(false);
+            return () => clearTimeout(timer);
+          }, 1200) 
+        }
+      });
 
     useEffect(() => {
       fetchTasks();
@@ -99,7 +109,7 @@ export const useToDoList = () => {
     // Complete Tasks
     const toggleCompleteTask = async (task_id: string) => {
       try {
-        const taskToToggle = (filterType === "completed" ? filterArr : tasks).find((task) => task.task_id === task_id)
+        const taskToToggle = (filterType === "pastDue"  || filterType === "near" || filterType === "later" || filterType === "noDate"? filterArr : filterType === "completed" ? completedTasks : tasks).find((task) => task.task_id === task_id)
         if (!taskToToggle) return;
   
         const updatedCompletedStatus = !taskToToggle.completed;
@@ -113,22 +123,38 @@ export const useToDoList = () => {
         setFilterArr(filterArr.map(task =>
           task.task_id === task_id ? {...task, completed: !task.completed} : task
         ))
+        setCompletedTasks(completedTasks.map(task =>
+          task.task_id === task_id ? {...task, completed: !task.completed} : task
+        ))
+        setAfterMark(true);
         if (updatedCompletedStatus) {
-          setTimeout(() => {
-            setCompletedTasks((prevCompletedTasks) => [
-              ...prevCompletedTasks,
-              { ...taskToToggle, completed: true }
-            ]);
-            setTasks((prevTasks) => prevTasks.filter(task => task.task_id !== task_id));
-            setTasksBackup((prevTasksBackup) => prevTasksBackup.filter(task => task.task_id !== task_id));
-            setFilterArr((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
-          },1000);
+          if (filterType != "completed") {
+            setTimeout(() => {
+              setCompletedTasks((prevCompletedTasks) => [
+                ...prevCompletedTasks,
+                { ...taskToToggle, completed: true }
+              ]);
+              setTasks((prevTasks) => prevTasks.filter(task => task.task_id !== task_id));
+              setTasksBackup((prevTasksBackup) => prevTasksBackup.filter(task => task.task_id !== task_id));
+              setFilterArr((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
+            },800);
+          }
         } else {
-          setTasks((prevCompletedTasks) => [
-            ...prevCompletedTasks,
-            { ...taskToToggle, completed: false }
-          ]);
-          setCompletedTasks((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
+          setTimeout(() => {
+            setTasks((prevCompletedTasks) => [
+              ...prevCompletedTasks,
+              { ...taskToToggle, completed: false }
+            ]);
+            setTasksBackup((prevCompletedTasks) => [
+              ...prevCompletedTasks,
+              { ...taskToToggle, completed: false }
+            ]);
+            setFilterArr((prevCompletedTasks) => [
+              ...prevCompletedTasks,
+              { ...taskToToggle, completed: false }
+            ]);
+            setCompletedTasks((prevFilterArr) => prevFilterArr.filter(task => task.task_id !== task_id));
+          },800);
         }
         
 
@@ -150,6 +176,8 @@ export const useToDoList = () => {
       updatedDueAt: Date
     ) => {
       try {
+        const taskToToggle = (filterType === "completed" ? filterArr : tasks).find((task) => task.task_id === task_id)
+        console.log(taskToToggle)
         const trimmedText = updatedText.trim();
 
         setTasks(tasks.map(task =>
@@ -164,6 +192,16 @@ export const useToDoList = () => {
           task.task_id === task_id ? {...task, text: updatedText, dueAt: updatedDueAt} : task
         ));
 
+        if (filterType == "completed") {
+          const task = filterArr.find(task => task.task_id === task_id);
+          if (task) {
+            const isDateTimeMismatched = task.dueAt.getTime() !== updatedDueAt.getTime();
+            if (isDateTimeMismatched) {
+              toggleCompleteTask(task_id);
+            }
+          }
+        }
+
         if (trimmedText === "") {
           deleteTask(task_id)
         }
@@ -176,10 +214,7 @@ export const useToDoList = () => {
       } catch (error) {
         console.error("There was an error updating the task:", error);
       }
-
-      
     };
-
     return {
       afterloading,
       setTasks,
@@ -196,7 +231,8 @@ export const useToDoList = () => {
       filterArr,
       setFilterArr,
       setAfterLoading,
-      completedTasks
+      completedTasks,
+      afterMark,
     }
 
    
