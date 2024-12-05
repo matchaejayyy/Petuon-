@@ -170,20 +170,22 @@ const NotepadPage: React.FC = () => {
     return (
         <>
             <WhiteContainer>
-                <h1  style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7"> My Notes</h1>
+                <h1  style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[3rem] text-[#354F52] ftracking-normal mb-4 mt-7"> My Notes</h1>
 
                 {/* Filter Buttons */}
-                <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3 ml-8 ">
-                    <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>All</button>
-                    <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "font-serif font-bold bg-[#657F83] text-white " : "bg-none"} hover:scale-110 `}>Today</button>
-                    <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>Yesterday</button>
-                    <button onClick={() => setFilter("This Week")} className={`px-4 py-2 rounded-md ${filter === "This Week" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>This Week</button>
-                    <button onClick={() => setFilter("This Month")} className={`px-4 py-2 rounded-md ${filter === "This Month" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110 `}>This Month</button>
-                </div>
+                {editingNote === null && !creatingNewNote && selectedNote === null && (
+                    <div className="font-serif font-bold text-[#354F52] flex space-x-2 mt-[-15px] mb-0 my-3">
+                        <button onClick={() => setFilter("All")} className={`px-4 py-2 rounded-md ${filter === "All" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}>All</button>
+                        <button onClick={() => setFilter("Today")} className={`px-4 py-2 rounded-md ${filter === "Today" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}>Today</button>
+                        <button onClick={() => setFilter("Yesterday")} className={`px-4 py-2 rounded-md ${filter === "Yesterday" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}>Yesterday</button>
+                        <button onClick={() => setFilter("This Week")} className={`px-4 py-2 rounded-md ${filter === "This Week" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}>This Week</button>
+                        <button onClick={() => setFilter("This Month")} className={`px-4 py-2 rounded-md ${filter === "This Month" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110`}>This Month</button>
+                    </div>
+                )}
 
                 {/* Notes Editor or Full Note View */}
                 {editingNote !== null || creatingNewNote ? (
-                    <div className="bg-white p-6 rounded-lg shadow-lg relative mb-4 my-5 ml-8 overflow-y-auto max-h-[36rem] w-full md:w-[80rem]">
+                    <div className="bg-white p-6 rounded-lg shadow-lg relative mb-4 my-5 overflow-y-auto max-h-[36rem] w-full md:w-[84rem]">
                         <h2 className="text-lg font-semibold">{editingNote ? "Edit Note" : "Create New Note"}</h2>
                         {editingNote && (
                             <button onClick={() => deleteNote(editingNote)} className="absolute top-5 right-5 text-red-500 hover:text-red-700">
@@ -202,13 +204,19 @@ const NotepadPage: React.FC = () => {
                         <ReactQuill value={currentNote} onChange={handleEditorChange} theme="snow" />
                         <div className="mt-4 flex justify-between">
                             <button onClick={cancelEdit} className="px-4 py-2 bg-gray-400 text-white rounded-md hover:bg-gray-500">Cancel</button>
-                            <button onClick={saveNote} className="px-4 py-2 bg-[#354F52] text-white rounded-md hover:bg-blue-700">
+                            <button onClick={() => {
+                                if (currentTitle.trim() === "" || currentNote.trim() === "") {
+                                    alert("Title must be filled.");
+                                } else {
+                                    saveNote();
+                                }
+                            }} className="px-4 py-2 bg-[#354F52] text-white rounded-md hover:bg-blue-700">
                                 {editingNote ? "Save Changes" : "Save Note"}
                             </button>
                         </div>  
                     </div>
                 ) : selectedNote ? (
-                    <div className="bg-white p-6 rounded-lg shadow-lg relative mb-4 my-5 ml-8 overflow-y-auto max-h-[36rem] w-full md:w-[80rem]">
+                    <div className="bg-white p-6 rounded-lg shadow-lg relative mb-4 my-5  overflow-y-auto max-h-[36rem] w-full md:w-[84rem]">
                         <h2 className="text-lg font-semibold">{selectedNote.title}</h2>
                         <button onClick={closeNoteView} className="absolute top-3 right-5 text-red-500 hover:text-red-700">Close</button>
                         <div className="mt-4">
@@ -218,12 +226,12 @@ const NotepadPage: React.FC = () => {
                 ) : (
 
                     /* Notes List */
-                    <div className="mt-6 px-3 ">
-                    <div className="overflow-x-auto ">
-                        <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-1 w-max  ">
+                    <div className="mt-0 -ml-6">
+                    <div className="overflow-x-auto p-6 -mt-2">
+                        <div className="grid grid-rows-[repeat(2,minmax(0,1fr))] grid-flow-col gap-y-2 gap-x-5 w-max  ">
                             {/* New Note Button */}
                             <div
-                                className="border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20,"
+                                className="border rounded-3xl cursor-pointer shadow-lg hover:shadow-xl flex flex-col items-center justify-center mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20,"
                                 onClick={() => setCreatingNewNote(true)}
                                 style={{ 
                                     width: "16rem", // Set consistent width
@@ -238,14 +246,14 @@ const NotepadPage: React.FC = () => {
                             {filteredNotes.length === 0 ? (
                                 <div className="text-center mt-4 ml-5 ">
                                     
-                                    <img src="src\assets\sleeping_penguin2.gif" alt="No notes available" className=" w-[17rem] h-[17rem] ml-[34rem] mt-[-13rem]" />
-                                    <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl ml-[36rem] mt-[-1rem] text-gray-500">No notes available.</p>
+                                    <img src="src\assets\sleeping_penguin2.gif" alt="No notes available" className=" w-[15rem] h-[15rem] ml-[34rem] mt-[-13rem]" />
+                                    <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl ml-[36rem] mt-[-1.5rem] text-gray-500">No notes available.</p>
                                 </div>
                             ) : (
                                 filteredNotes.map((note) => (
                                     <div
                                         key={note.id}
-                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer  ml-5 mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20"
+                                        className="border rounded-3xl shadow-lg hover:shadow-xl relative cursor-pointer mb-2 transform transition-transform duration-200 hover:scale-105 active:scale-20"
                                         style={{ 
                                             width: "16rem", // Set consistent width
                                             minHeight: "16rem", // Set consistent height
