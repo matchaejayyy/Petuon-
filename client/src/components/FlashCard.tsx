@@ -331,12 +331,10 @@ const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, setFlashc
               <div className="w-[94vw] flex items-center justify-center relative ml-[9rem] mt-[-1.5rem] ">
               <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5 [&::-webkit-scrollbar]:w-2">
                   {Object.keys(decks).length === 0 ? (
-                    <p
-                      className="text-2xl text-gray-500 text-center col-span-full "
-                      style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                    >
-                      No decks saved yet. Create one to get started!
-                    </p>
+                    <div className="flex flex-col items-center justify-center">
+                      <img src="src/assets/sleeping_penguin2.gif" alt="No notes available" className="w-[15rem] h-[15rem] ml-[65rem] mt-[3.5rem]" />
+                      <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-gray-500 -mt-[1.5rem] -mr-[67rem]">No notes available.</p>
+                    </div>
                   ) : (
                     Object.keys(decks).map((title, index) => {
                       const assignedColor = colors[index % colors.length];

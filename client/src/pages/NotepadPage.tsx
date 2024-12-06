@@ -220,7 +220,9 @@ const NotepadPage: React.FC = () => {
                         <h2 className="text-lg font-semibold">{selectedNote.title}</h2>
                         <button onClick={closeNoteView} className="absolute top-3 right-5 text-red-500 hover:text-red-700">Close</button>
                         <div className="mt-4">
-                            <ReactQuill value={selectedNote.content} readOnly={true} theme="snow" />
+                            <ReactQuill value={selectedNote.content} readOnly={true} theme="snow" modules={{ toolbar: false }} />
+
+                            
                         </div>
                     </div>
                 ) : (
