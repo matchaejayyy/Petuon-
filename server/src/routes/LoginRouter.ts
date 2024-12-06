@@ -37,10 +37,11 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user.user_id, userName: user.user_name },
+      { user_id: user.user_id, user_name: user.user_name },
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     );
+    console.log(token)
     // Respond with token and user info
     res.status(200).json({
       message: "Login successful",

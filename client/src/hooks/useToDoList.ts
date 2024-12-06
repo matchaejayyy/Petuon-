@@ -23,6 +23,7 @@ export const useToDoList = () => {
       const fetchTasks = async () => {
         setLoading(true);
         try {
+          
           const response = await axios.get('http://localhost:3002/tasks/getTask');
           const taskData = response.data.map((task: {task_id: string, text: string, created_at: Date, due_at: Date, completed: boolean }) => ({
             task_id: task.task_id,

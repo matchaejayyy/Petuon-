@@ -6,8 +6,7 @@ export const validateGetActiveTask = async (req: Request, res: Response, next: N
         const result = await pool.query('SELECT * FROM tasks WHERE completed=false');
         
         if (result.rows.length === 0) {
-            console.log("No tasks found in the database");
-            return res.status(404).json({ message: "No active tasks found" });
+                console.log("No tasks found in the database");
         }
 
         console.log("Active tasks found in the database");
@@ -24,7 +23,6 @@ export const validateGetCompletedTask = async (req: Request, res: Response, next
          
          if (result.rows.length === 0) {
              console.log("No completed tasks found in the database");
-             return res.status(404).json({ message: "No completed tasks found" });
          }
  
          console.log("Completed tasks found in the database");
