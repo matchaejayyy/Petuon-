@@ -24,6 +24,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/node": "^22.10.1",
     "@types/pg": "^8.11.10",

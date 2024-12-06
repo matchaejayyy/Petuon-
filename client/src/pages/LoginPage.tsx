@@ -1,55 +1,26 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import React, { useState } from "react";
-// import * as Yup from "yup";
-// import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBg.png";
-import axios, { AxiosError } from "axios";
-// import { LoginFormsInputs, Props } from "../types/LoginTypes";
-import { supabase } from "../SupabaseClient";
-
-
-export type Props = {};
-
-export type LoginFormsInputs = {
-  userName: string;
-  password: string;
-};
-// Validation schema
-// const validationSchema = Yup.object().shape({
-//   userName: Yup.string().required("Username is required"),
-//   password: Yup.string().required("Password is required"),
-// });
+import axios from "axios";
+import { LoginFormsInputs, Props } from "../types/LoginTypes";
 
 const LoginPage: React.FC<Props> = () => {
-  const [error, setError] = useState<string | null>(null); // Track error message
+  const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
-
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormsInputs>({
-    // resolver: yupResolver(validationSchema),
-  });
+  } = useForm<LoginFormsInputs>();
 
-  
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("user_name", form.userName)
-        .single();
-
-      if (!data || error) {
-        alert("Supabase: Invalid username or password. Trying backend...");
-
-        // If Supabase login fails, try backend login
-        const response = await axios.post("http://localhost:3002/login", {
-          userName: form.userName,
-          password: form.password,
+        const response = await axios.post("http://localhost:3002/login/userLogin", {
+          user_name: form.user_name,
+          user_password: form.user_password,
         });
 
         if (response.data.token) {
@@ -57,11 +28,10 @@ const LoginPage: React.FC<Props> = () => {
           localStorage.setItem("token", response.data.token);
           alert("Login successful! Redirecting to dashboard...");
           navigate("/dashboard");
+        } else {
+          alert("Login successful with Supabase!");
+          navigate("/dashboard");
         }
-      } else {
-        alert("Login successful with Supabase!");
-        navigate("/dashboard");
-      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Error connecting to the server.");
@@ -70,9 +40,6 @@ const LoginPage: React.FC<Props> = () => {
       }
     }
   };
-
-  
-  
 
   return (
     <section
@@ -107,9 +74,9 @@ const LoginPage: React.FC<Props> = () => {
                   id="username"
                   className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   placeholder="Username"
-                  {...register("userName")}
+                  {...register("user_name")}
                 />
-                {errors.userName && <p className="text-white">{errors.userName.message}</p>}
+                {errors.user_name && <p className="text-white">{errors.user_name.message}</p>}
               </div>
               <div>
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
@@ -120,9 +87,9 @@ const LoginPage: React.FC<Props> = () => {
                   id="password"
                   placeholder="••••••••"
                   className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  {...register("password")}
+                  {...register("user_password")}
                 />
-                {errors.password && <p className="text-white">{errors.password.message}</p>}
+                {errors.user_password && <p className="text-white">{errors.user_password.message}</p>}
               </div>
               <div className="flex justify-center items-center">
                 <button

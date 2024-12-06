@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import Dashboard from '../pages/DashboardPage';
-import Calendar from '../pages/CalendarPage';
-import Flashcard from '../components/FlashCard';
-import ToDoList from '../pages/ToDoListPage';
-import Notepad from '../pages/NotepadPage';
-import LoginPage from '../pages/LoginPage';
-import RegisterPage from '../pages/RegisterPage';
+import Dashboard from '../src/pages/DashboardPage';
+import Calendar from '../src/pages/CalendarPage';
+import Flashcard from '../src/components/FlashCard';
+import ToDoList from '../src/pages/ToDoListPage';
+import Notepad from '../src/pages/NotepadPage';
+import LoginPage from '../src/pages/LoginPage';
+import RegisterPage from '../src/pages/RegisterPage';
 
 const RoutesComponent: React.FC = () => {
   return (
@@ -24,7 +24,7 @@ const RoutesComponent: React.FC = () => {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/calendar" element={<Calendar />} />
         <Route path="/flashcard" element={<Flashcard />} />
-        <Route path="/todo" element={<ToDoList />} />
+        <Route path="/todolist" element={<ToDoList />} />
         <Route path="/notepad" element={<Notepad />} />
 
         {/* Catch-all Route for invalid paths */}

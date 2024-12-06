@@ -1,22 +1,39 @@
 import { Request, Response, NextFunction } from 'express';
 import { pool } from '../database/CarmineDB'
 
-export const validateGetTask = async (req: Request, res: Response, next: NextFunction) => {
+export const validateGetActiveTask = async (req: Request, res: Response, next: NextFunction) => {
    try {
-        const result = await pool.query('SELECT * FROM tasks');
+        const result = await pool.query('SELECT * FROM tasks WHERE completed=false');
         
         if (result.rows.length === 0) {
             console.log("No tasks found in the database");
-            return res.status(404).json({ message: "No tasks found" });
+            return res.status(404).json({ message: "No active tasks found" });
         }
 
-        console.log("Tasks found in the database");
+        console.log("Active tasks found in the database");
         next(); 
     } catch (error) {
         console.error('Error checking for tasks:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
+
+export const validateGetCompletedTask = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+         const result = await pool.query('SELECT * FROM tasks WHERE completed=true');
+         
+         if (result.rows.length === 0) {
+             console.log("No completed tasks found in the database");
+             return res.status(404).json({ message: "No completed tasks found" });
+         }
+ 
+         console.log("Completed tasks found in the database");
+         next(); 
+     } catch (error) {
+         console.error('Error checking for tasks:', error);
+         res.status(500).json({ message: 'Internal server error' });
+     }
+ }
 
 export const validateInsertTask = async (req: Request, res: Response, next: NextFunction) => {
     try {

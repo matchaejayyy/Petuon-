@@ -1,32 +1,18 @@
-import express, { Request, Response } from 'express';
-import { Pool } from 'pg';
+import { Request, Response } from 'express';
+import { pool, router } from '../database/CarmineDB'
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
-
-dotenv.config();
-
-const router = express.Router();
-
-// Database connection
-const pool = new Pool({
-  host: process.env.PG_HOST || "aws-0-ap-southeast-1.pooler.supabase.com",
-  port: parseInt(process.env.PG_PORT || "6543", 10),
-  database: process.env.PG_DATABASE || "postgres",
-  user: process.env.PG_USER || "postgres.oizvoxoctozusoahxjos",
-  password: process.env.PG_PASSWORD || "Carmine_123456789!!!",
-});
 
 // JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'Carmine_1';
 
 // Login route
-router.post('/login', async (req: Request, res: Response): Promise<void> => {
-  const { userName, password }: { userName: string; password: string } = req.body;
+router.post('/userLogin', async (req: Request, res: Response): Promise<void> => {
+  const { user_name, user_password } = req.body;
 
   try {
     // Validate input
-    if (!userName || !password) {
+    if (!user_name || !user_password) {
       res.status(400).json({ message: "Username and password are required." });
       return;
     }
@@ -34,7 +20,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     // Check if user exists in DB
     const userQuery = await pool.query(
       `SELECT * FROM users WHERE user_name = $1`,
-      [userName]
+      [user_name]
     );
     const user = userQuery.rows[0];
     if (!user) {
@@ -43,7 +29,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     }
 
     // Check if password matches
-    const passwordMatch = await bcrypt.compare(password, user.user_password);
+    const passwordMatch = await bcrypt.compare(user_password, user.user_password);
     if (!passwordMatch) {
       res.status(401).json({ message: "Invalid username or password" });
       return;
@@ -55,7 +41,6 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     );
-
     // Respond with token and user info
     res.status(200).json({
       message: "Login successful",

@@ -1,13 +1,12 @@
 import { Request, Response } from 'express';
 import { pool, router } from '../database/CarmineDB'
 
-import { validateGetTask, validateInsertTask, validateDeleteTask, validateCompleteTask, validateUpdateTask } from '../middleware/ToDoListMiddleware';
+import {validateGetCompletedTask, validateGetActiveTask, validateInsertTask, validateDeleteTask, validateCompleteTask, validateUpdateTask } from '../middleware/ToDoListMiddleware';
 
-// Fetch all tasks
-router.get('/getTask', validateGetTask, async (req: Request, res: Response) => {
+// Fetch all uncompleted tasks
+router.get('/getTask', validateGetActiveTask, async (req: Request, res: Response) => {
     try {
-        const result = await pool.query('SELECT * FROM tasks');
-
+        const result = await pool.query('SELECT * FROM tasks WHERE completed = false');
         res.status(200).json(result.rows);
     } catch (error) {
         console.error('Error fetching tasks:', error);
@@ -15,6 +14,16 @@ router.get('/getTask', validateGetTask, async (req: Request, res: Response) => {
     }
 });
 
+// Fetch all completed tasks
+router.get('/getCompletedTask', validateGetCompletedTask, async (req: Request, res: Response) => {
+    try {  
+        const result = await pool.query('SELECT * FROM tasks WHERE completed = true');
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 // Insert a new task
 router.post('/insertTask', validateInsertTask, async (req: Request, res: Response) => {
     try {
