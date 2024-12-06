@@ -11,14 +11,12 @@ export const validateGetTask = async (
 
     if (result.rows.length === 0) {
       console.log("No tasks found in the database");
-      return res.status(404).json({ message: "No tasks found" });
     }
 
     console.log("Tasks found in the database");
     next();
   } catch (error) {
-    console.error("Error checking for tasks:", error);
-    res.status(500).json({ message: "Internal server error" });
+
   }
 };
 
