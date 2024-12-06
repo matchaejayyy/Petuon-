@@ -6,4 +6,3 @@ export type RegisterFormsInputs = {
   userName: string;
   password: string;
 };
-

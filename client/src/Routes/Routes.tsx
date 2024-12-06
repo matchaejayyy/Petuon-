@@ -1,13 +1,18 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 
-import Dashboard from '../pages/DashboardPage';
-import Calendar from '../pages/CalendarPage';
-import Flashcard from '../components/FlashCard';
-import ToDoList from '../pages/ToDoListPage';
-import Notepad from '../pages/NotepadPage';
-import LoginPage from '../pages/LoginPage';
-import RegisterPage from '../pages/RegisterPage';
+import Dashboard from "../pages/DashboardPage";
+import Calendar from "../pages/CalendarPage";
+import Flashcard from "../components/FlashCard";
+import ToDoList from "../pages/ToDoListPage";
+import Notepad from "../pages/NotepadPage";
+import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
 
 interface RoutersProps {
   isLoggedIn: boolean;

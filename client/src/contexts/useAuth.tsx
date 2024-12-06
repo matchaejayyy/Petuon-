@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { UserProfile } from "../model/User";
 import { useNavigate } from "react-router-dom";
-import { loginAPI, registerAPI } from "../services/AuthService";
+import { loginAPI, registerAPI } from "../Services/AuthService";
 import { toast } from "react-toastify";
 import React from "react";
 import axios from "axios";
@@ -39,7 +39,7 @@ export const UserProvider = ({ children }: Props) => {
   const registerUser = async (
     email: string,
     username: string,
-    password: string
+    password: string,
   ) => {
     await registerAPI(email, username, password)
       .then((res) => {
@@ -50,13 +50,13 @@ export const UserProvider = ({ children }: Props) => {
             email: res?.data.email,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
+          setToken(res.data.token!);
           setUser(userObj!);
           toast.success("Login Success!");
           navigate("/search");
         }
       })
-      .catch((e) => toast.warning("Server error occured"));
+      .catch(() => toast.warning("Server error occured"));
   };
 
   const loginUser = async (username: string, password: string) => {
@@ -69,13 +69,13 @@ export const UserProvider = ({ children }: Props) => {
             email: res?.data.email,
           };
           localStorage.setItem("user", JSON.stringify(userObj));
-          setToken(res?.data.token!);
+          setToken(res.data.token!);
           setUser(userObj!);
           toast.success("Login Success!");
           navigate("/search");
         }
       })
-      .catch((e) => toast.warning("Server error occured"));
+      .catch(() => toast.warning("Server error occured"));
   };
 
   const isLoggedIn = () => {

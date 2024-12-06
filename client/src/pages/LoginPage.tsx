@@ -30,7 +30,7 @@ const LoginPage: React.FC<Props> = () => {
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     const userExists = users.find(
       (user: LoginFormsInputs) =>
-        user.userName === form.userName && user.password === form.password
+        user.userName === form.userName && user.password === form.password,
     );
 
     if (userExists) {
@@ -45,19 +45,21 @@ const LoginPage: React.FC<Props> = () => {
 
   return (
     <section
-      className="h-screen flex items-center justify-center"
+      className="flex h-screen items-center justify-center"
       style={{
         backgroundImage: `url(${LoginBG})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-
-      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
-      <div className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0" style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}>
-          <div className="p-10 space-y-6 md:space-y-8 sm:p-12">
+      <div className="mx-auto mr-20 flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+        <div
+          className="w-full rounded-lg shadow sm:max-w-lg md:mb-20 xl:p-0"
+          style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
+        >
+          <div className="space-y-6 p-10 sm:p-12 md:space-y-8">
             <h2 className="text-4xl font-bold text-white">Welcome!</h2>
-            <p className="text-left font-light text-white mb-5">
+            <p className="mb-5 text-left font-light text-white">
               Ready to learn smarter? Log in to access your dashboard!
             </p>
             <form
@@ -67,14 +69,14 @@ const LoginPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="username"
-                  className="block mb-2 text-sm font-medium text-white dark:text-white"
+                  className="mb-2 block text-sm font-medium text-white dark:text-white"
                 >
                   Username
                 </label>
                 <input
                   type="text"
                   id="username"
-                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm"
                   placeholder="Username"
                   {...register("userName")}
                 />
@@ -85,7 +87,7 @@ const LoginPage: React.FC<Props> = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-white dark:text-white"
+                  className="mb-2 block text-sm font-medium text-white dark:text-white"
                 >
                   Password
                 </label>
@@ -93,7 +95,7 @@ const LoginPage: React.FC<Props> = () => {
                   type="password"
                   id="password"
                   placeholder="••••••••"
-                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm"
                   {...register("password")}
                 />
                 {errors.password && (
@@ -103,25 +105,25 @@ const LoginPage: React.FC<Props> = () => {
               <div className="flex items-center justify-between">
                 <a
                   href="#"
-                  className="text-sm text-white font-medium text-primary-600 hover:underline dark:text-primary-500"
+                  className="text-primary-600 dark:text-primary-500 text-sm font-medium text-white hover:underline"
                 >
                   Forgot password?
                 </a>
               </div>
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <button
                   type="submit"
-                  className="bg-[#719191] justify-center hover:bg-gray-700 text-white font-bold py-2 px-8 rounded-3xl"
+                  className="justify-center rounded-3xl bg-[#719191] px-8 py-2 font-bold text-white hover:bg-gray-700"
                 >
                   Log in
                 </button>
               </div>
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <p className="text-sm font-light text-white">
                   Don’t have an account yet?{" "}
                   <Link
                     to="/register"
-                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
                   >
                     Sign up
                   </Link>
