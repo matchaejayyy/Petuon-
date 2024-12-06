@@ -42,7 +42,10 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         tasks, setTasks,  
         filterArr, setFilterArr,
         loading, setAfterLoading,
-        addTask, deleteTask, toggleCompleteTask, saveEditedTask
+        addTask, deleteTask, toggleCompleteTask, saveEditedTask,
+        completedTasks,
+        afterMark,
+        taskInputDisable
     } = useToDoList();
 
     const updateTasks = useCallback(() => {
@@ -164,7 +167,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
         const now = new Date();
         let TasksMessage = taskMessage;
         let FilteredTasks = tasksBackup;
-        
         switch (filterType) {
             case "noDate":
                 FilteredTasks = tasksBackup.filter((task) => task.dueAt.getTime() === 0&& !task.completed);
@@ -186,7 +188,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 TasksMessage = "No tasks available for later.";
                 break;
             case "default":
-                FilteredTasks = tasksBackup;
+                FilteredTasks = tasksBackup
                 TasksMessage = "No active tasks available.";
                 setTaskPos("left-[42rem]")
                 break;
@@ -196,7 +198,6 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 setTaskPos("left-[44rem]")
                 break;
             case "completed":
-                FilteredTasks = tasksBackup.filter((task) => task.completed)
                 setAfterLoading(false)
                 TasksMessage = "No tasks completed.";
                 setTaskPos("left-[43.5rem]")
@@ -207,7 +208,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                 setTaskPos("left-[42rem]")
                 break;
         }
-    
+
         setTaskMessage(TasksMessage);
         setFilterType(filterType);
         setFilterArr(FilteredTasks);
@@ -275,7 +276,9 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
             return "Upcoming"
         }
     }
-    const display = filterType === "pastDue" || filterType === "completed" || filterType === "near" || filterType === "later" || filterType === "noDate" ? filterArr : tasks;
+
+
+    const display = filterType === "pastDue"  || filterType === "near" || filterType === "later" || filterType === "noDate"? filterArr : filterType === "completed" ? completedTasks : tasks
     const taskVariants = {
         hidden: { opacity: 0, y: 0 }, // Initial state: invisible and above
         visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
@@ -287,7 +290,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
     if (variant === "default") {
         return (
             <>  
-                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-1 ${afterloading ? "disabled-container" : ""}`}>
+                <div className={`font-serif font-bold text-[#354F52] flex space-x-2 mt-[-4rem] mb-0 my-3 ml-1`}>
                     <div>
                             <button 
                             className={`px-4 py-2 rounded-md ${filterType === "default" ? "font-serif font-bold bg-[#657F83] text-white" : "bg-none"} hover:scale-110"}`}
@@ -385,17 +388,17 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         </form>
                     </div>
 
-                    <div  className="font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8"  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+                    <div  className={`font-normal flex space-x-2 mt-[-15px] mb-0 my-3 ml-8`}  style={{ fontFamily: '"Signika Negative", sans-serif' }}>
                     {loading ? (
                         <h1 className="text-center text-gray-500 mt-[10.5rem] text-2xl">Fetching tasks...</h1>   
-                     ) : (tasks.length === 0 || filterArr.length === 0) && (
+                     ) : display.length === 0 ? (
                         <>
                             <img src="src\assets\sleeping_penguin2.gif" alt="No tasks available" className="mt-[12rem] w-[10rem] h-[10rem] mx-auto" />
                             <h1 className={`fixed text-center text-gray-500 mt-[21rem] text-2xl ${taskPos}`}>{taskMessage}</h1>
                         </>
-                    )}
+                    ): null}
                         
-                        <div className="w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2"
+                        <div className={`w-[84.4rem] h-[28rem] fixed left-[10rem] top-[14rem] rounded-lg overflow-auto [&::-webkit-scrollbar]:w-2`}
                         >     
                             <ul>
                             {display.map((task, index) =>
@@ -410,10 +413,11 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                                     ref={index === tasks.length - 1 ? lastTaskRef : null}>
 
                                         <input 
-                                        className="absolute left-[1rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-1 border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
+                                        className="absolute left-[1rem] mt-0 translate-y-[0.1rem] peer appearance-none w-5 h-5 rounded-full bg-white checked:bg-[#719191] s cursor-pointer transform transition-transform duration-300 hover:scale-110 active:scale-50"
                                         type="checkbox"
                                         checked={task.completed}
                                         onChange={() => completeToggle(task.task_id!)}
+                                        disabled={taskInputDisable === task.task_id && afterMark} 
                                         />
 
                                         {editIndex === index ? (
@@ -506,10 +510,13 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                     <h1>
                         <div style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="font-bold text-lg text-[#354F52] mt-[1rem] ml-[1rem] ">My Task</div>
                     </h1>
+
+                    <div className="border-b-2 mt-[0.8rem]"></div>
                    
                     {loading ? (
                         <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="fixed text-center text-gray-500 left-[23rem] top-[15.5rem] text-2xl">Fetching tasks...</h1>   
                     ) : (
+                        
                     <>
                     <ul>
                     {tasks
@@ -521,24 +528,28 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                         }
                             return 0; 
                         }).slice(0, 5).map((task, index) => 
-                            <li key={index} className="border-t-2 mt-[0.8rem]">
+                            <li key={index} className="border-b-2 mt-[0.9rem]"> 
                                 <div className="">
                                     <input 
-                                    className="ml-[0.7rem] mt-[0.7rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full bg-white checked:bg-[#719191] checked:border-black transition-colors cursor-pointer"
+                                    className="ml-[0.9rem] mb-[0.4rem] translate-y-[0.1rem] peer appearance-none w-5 h-5 border-[0.05rem] border-black rounded-full shadow-lg bg-white checked:bg-[#719191] checked:border-[#719191] cursor-pointer transform transition-transform duration-300 hover:scale-110 active:scale-50"
                                     type="checkbox"
                                     checked={task.completed}
                                     onChange={() => completeToggle(task.task_id!)}
                                     />
 
-                                    <span className="absolute ml-9 mt-[0.7rem]">{task.text}</span>
-                                    <span className="ml-[25rem]">{displayStatus(task.dueAt)}</span>
+                                    <span style={{ fontFamily: '"Signika Negative", sans-serif' }}className="absolute text-[#354F52] font-semibold text-lg ml-3 -mt[0.6rem]">{task.text}</span>
+                                    <span 
+                                    style={{ fontFamily: '"Signika Negative", sans-serif', color: displayStatus(task.dueAt) === "Today" ? "maroon" : "black" }} 
+                                    className=" ml-[27rem] font-semibold ">
+                                        {displayStatus(task.dueAt)}
+                                    </span>
                                 </div>
                             </li>
                         )}
                     </ul>
                        {tasks.length > 0 && tasks.length <= 4 ? (
                         <>  
-                            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[1rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
+                            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-[0.5rem] text-center text-lg text-gray-500"> {tasks.length === 1 ? '1 more task left' : `${tasks.length} more tasks left`}</div>
                         </>
                         ) : tasks.length === 0 && (
                             <>
@@ -547,7 +558,7 @@ const ToDoListComponent: React.FC<ToDoListProps>  = ({variant = "default" }) => 
                             </>
                         )}
                         <button 
-                            style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  top-[25rem] w-[35rem] bg-teal-600 text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-teal-700"
+                            style={{ fontFamily: '"Signika Negative", sans-serif' }} className="fixed  top-[25rem] w-[35rem] bg-[#354F52] text-white py-2 rounded-br-[1.5rem] rounded-bl-[1.5rem] hover:bg-[#52796f]  "
                             onClick={() => navigate(`/ToDoList`)}>
                             {
                                 tasks.length === 0

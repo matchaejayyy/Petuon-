@@ -74,7 +74,7 @@ interface Tasks {
         </button>
   
         <div
-          className="mt-[-7rem] relative font-serif font-bold text-[#354F52] text-4xl cursor-pointer transform transition-transform duration-200 hover:scale-105 active:scale-90"
+          className="mt-[-7rem] relative font-serif font-bold text-[#354F52] text-4xl cursor-pointer transform transition-transform duration-200 hover:scale-105 "
           onClick={toggleDropdown}
         >
           <span>{format(currentMonth, 'MMMM yyyy')}</span>
@@ -225,21 +225,21 @@ interface Tasks {
                       <div
                       key={task.task_id}
                       style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                      className={`ml-[0.5rem] text-md truncate ${
+                      className={`ml-[0.5rem] text-lg truncate ${
                         new Date(task.dueAt) < new Date() ? 'text-red-600 glow-red' : 'text-blue-600'
                       }`}
                       >
                       {task.text}
                       </div>
                   ))}
-                {tasksForDay.length > 2 && (
+                {tasksForDay.length > 1 && (
                     <div className=' left-[11.2rem] top-[13.4rem] text-gray-600'>
-                        +{tasksForDay.length - 2} more task{tasksForDay.length - 2 > 1 ? 's' : ''}
+                        +{tasksForDay.length - 1} more task{tasksForDay.length - 2 > 1 ? 's' : ''}
                     </div>
                 )}
 
                 {expandedDay === formattedFullDate && (
-                  <div className="mt-2 bg-white border shadow-lg rounded-md p-2 z-10 max-h-20 overflow-y-auto [&::-webkit-scrollbar]:w-2">
+                  <div className="absolute mt-2 bg-white border shadow-lg rounded-md p-2 z-10 max-h-20 w-[10rem] overflow-y-auto [&::-webkit-scrollbar]:w-2">
                     {tasksForDay.map(task => (
                       <div
                         key={task.task_id}
