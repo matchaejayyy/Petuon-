@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 
 import ToDoListRouter from "./routes/ToDoListRouter";
 import NotesListRouter from "./routes/NotesListRouter";
+import PetsRouter from "./routes/PetsRouter"
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(bodyParser.json());
 // Routes
 app.use('/tasks', ToDoListRouter);
 app.use('/notes', NotesListRouter);
+app.use('/pets', PetsRouter)
 
  // Start Server on port 3002
 app.listen(PORT, () => {
@@ -25,5 +27,4 @@ app.listen(PORT, () => {
   }
  
 )   
-
 
