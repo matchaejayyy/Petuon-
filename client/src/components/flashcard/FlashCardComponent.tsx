@@ -1,4 +1,4 @@
-import { BookmarkMinus, CircleArrowLeft, CopyPlus, FolderPlus, Minus} from "lucide-react";
+import { BookmarkMinus, CircleArrowLeft, FolderPlus, Minus} from "lucide-react";
 import SideBar from "../SideBar";
 import WhiteContainer from "../WhiteContainer";
 import React, { useState, useEffect } from "react";
@@ -10,6 +10,7 @@ import { QuizFlashcard } from "./quizPage";
 
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+
 
 const FlashcardComponent: React.FC = () => {
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -80,15 +81,15 @@ const FlashcardComponent: React.FC = () => {
     }
   };
 
-  const handleCreateNewDeck = () => {
-    if (DeckTitle) {
-      saveDeck();
-    }
-    setisReviewing(false);
-    setOnFirstPage(false);
-    setDeckTitle("");
-    setFlashcards([]);
-  };
+  // const handleCreateNewDeck = () => {
+  //   if (DeckTitle) {
+  //     saveDeck();
+  //   }
+  //   setisReviewing(false);
+  //   setOnFirstPage(false);
+  //   setDeckTitle("");
+  //   setFlashcards([]);
+  // };
 
   const loadDeck = async (deck_id: string) => {
     try {
@@ -186,6 +187,22 @@ const FlashcardComponent: React.FC = () => {
     <>
       {OnFirstPage ? (
         <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
+          <div className=" h-24 w-full mt-20 flex items-center ">
+          <h1 className="text-[#354F52] font-serif text-3xl ">
+            Create a new Deck
+          </h1>
+            <input
+                type="text"
+                value={DeckTitle}
+                onChange={(e) => setDeckTitle(e.target.value)}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+                placeholder="Title"
+              />
+              <button onClick={saveDeck} className="flex  ">
+                <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
+              </button>
+          </div>
           <h1 className="text-[#354F52] font-serif text-3xl m-10 mr-[77rem]">
             Saved Decks
           </h1>
@@ -233,12 +250,12 @@ const FlashcardComponent: React.FC = () => {
             </ul>
           </div>
           <div className="fixed top-[6rem] right-[3.9rem]">
-            <button
+            {/* <button
               onClick={handleCreateNewDeck}
               className=" scale-125 flex items-center justify-center"
             >
               <CopyPlus className="text-[#354F52] w-7 h-7 mt-[1rem] mr-[60rem] transform transition-transform duration-200 hover:scale-125" />
-            </button>
+            </button> */}
           </div>
         </div>
       ) : isReviewing ? (
@@ -270,26 +287,15 @@ const FlashcardComponent: React.FC = () => {
               Create Flashcards!
             </h1>
             <div className="flex justify-center items-center">
-              <input
-                type="text"
-                value={DeckTitle}
-                onChange={(e) => setDeckTitle(e.target.value)}
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
-                placeholder="Title"
-              />
-              <button onClick={saveDeck} className="flex  ">
-                <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
-              </button>
               <button
-                onClick={() => setisReviewing(true)}
+                onClick={() => {setisReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
                 className="bg-[#657F83] text-white h-16 w-36 rounded-3xl m-10 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
               >
-                Start Learning!
+                Review Deck
               </button>
               <button
-                onClick={() => setOnFirstPage(true)}
+                onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
                 className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
               >
                 <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />

@@ -1,31 +1,18 @@
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { quizFlashcardProps, Flashcard } from "../../types/FlashCardTypes";
 import { useState, useEffect } from "react";
-import axios from "axios";
 
-export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage }) => {
+export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, flashcards }) => {
   const [tempFlashcards, setTempFlashcards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
   const [QuizFinished, setQuizFinished] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchFlashcards = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3002/cards/getFlashcards`);
-        const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string }) => ({
-          question: flashcard.question,
-          answer: flashcard.answer,
-          flashcard_id: flashcard.flashcard_id,
-        }));
-        setTempFlashcards(flashcardData)
-      } catch (error) {
-        console.error("Error fetching flashcards:", error);
-      }
+    if (flashcards && flashcards.length > 0) {
+      setTempFlashcards(shuffleArray(flashcards));
     }
-
-    fetchFlashcards();
-  }, []);
+  }, [flashcards]); 
 
   function shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
@@ -41,15 +28,18 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage }) 
     setTempFlashcards(shuffled);
     setCurrentIndex(0);
     setShowAnswer(false);
+    setQuizFinished(false);
   };
 
   const handleNextFlashcard = () => {
     if (currentIndex < tempFlashcards.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setShowAnswer(false);
+    } else {
       setQuizFinished(true);
     }
   };
+  
 
   const handlePreviousFlashcard = () => {
     if (currentIndex > 0) {
@@ -106,7 +96,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage }) 
               onClick={() => setOnFirstPage(true)}
               style={{ fontFamily: '"Signika Negative", sans-serif' }} className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-5 ml-[7rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
             >
-              Go to Flashcards
+              Go to Decks
             </button>
           </div>
         </div>
@@ -116,7 +106,8 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage }) 
             className="bg-[#FE9B72] rounded-2xl p-5 w-full text-center cursor-pointer flex flex-col justify-center items-center h-full shadow-lg"
             onClick={() => setShowAnswer((prev) => !prev)}
           >
-            <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-6xl mb-5">{currentFlashcard.question}</h2>
+            <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-6xl mb-5">
+              {currentFlashcard ? currentFlashcard.question : 'Loading...'}</h2>
             <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className={`text-3xl ${showAnswer ? "text-black" : "text-gray-400"}`}>
               {showAnswer ? currentFlashcard.answer : "Tap to show answer"}
             </p>
