@@ -5,7 +5,9 @@ import dotenv from "dotenv";
 
 import LoginRouter from './routes/LoginRouter';
 import RegisterRouter from "./routes/RegisterRouter";
+
 import ToDoListRouter from "./routes/ToDoListRouter";
+import FlashcardRouter from './routes/FlashcardRoutes';
 import NotesListRouter from "./routes/NotesListRouter";
 
 dotenv.config();
@@ -22,7 +24,7 @@ app.use('/tasks', ToDoListRouter);
 app.use('/notes', NotesListRouter);
 app.use('/register', RegisterRouter)
 app.use('/login', LoginRouter);
-
+app.use('/cards', FlashcardRouter);
 
 // Start Server on port 3002
 app.listen(PORT, () => {
