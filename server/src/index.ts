@@ -7,6 +7,7 @@ import LoginRouter from './routes/LoginRouter';
 import RegisterRouter from "./routes/RegisterRouter";
 import ToDoListRouter from "./routes/ToDoListRouter";
 import NotesListRouter from "./routes/NotesListRouter";
+import AvatarRouter from "./routes/AvatarRouter"
 
 dotenv.config();
 
@@ -22,7 +23,7 @@ app.use('/tasks', ToDoListRouter);
 app.use('/notes', NotesListRouter);
 app.use('/register', RegisterRouter)
 app.use('/login', LoginRouter);
-
+app.use('/avatar', AvatarRouter);
 
 // Start Server on port 3002
 app.listen(PORT, () => {
