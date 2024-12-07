@@ -23,6 +23,7 @@ router.get("/getNotes", authenticateToken, async (req: Request, res: Response) =
 
 // Insert a new note
 router.post("/insertNote", authenticateToken, async (req: Request, res: Response) => {
+
   console.log("Request body:", req.body); // Log the request body
 
   const { title, content, color, created_date, created_time } = req.body;
@@ -63,17 +64,22 @@ router.delete("/deleteNote/:id", authenticateToken, async (req: Request, res: Re
     return res.status(400).json({ message: "Missing note_id" });
   }
 
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized: No user information" });
+  }
+
+  const userId = req.user.user_id;
+
   try {
     // Use the correct column name ("id") in the SQL query
     const result = await pool.query(
-      "DELETE FROM notes WHERE id = $1 RETURNING *;",
-      [id],
+      "DELETE FROM notes WHERE id = $1 AND user_id = $2 RETURNING *;",
+      [id, userId],
     );
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "Note not found" });
     }
-
     res
       .status(200)
       .json({ message: "Note deleted", deletedNote: result.rows[0] });
@@ -88,6 +94,12 @@ router.patch("/updateNote/:id", authenticateToken, async (req: Request, res: Res
   const { id } = req.params;
   const { title, content, updatedAt } = req.body;
 
+  if (!req.user) {
+    return res.status(401).json({ message: 'Unauthorized: No user information' });
+  }
+
+  const userId = req.user.user_id;
+
   // Validate input
   if (!title || !content) {
     return res.status(400).json({ message: "Title and content are required." });
@@ -97,10 +109,10 @@ router.patch("/updateNote/:id", authenticateToken, async (req: Request, res: Res
     const query = `
             UPDATE notes 
             SET title = $1, content = $2, updated_at = $3
-            WHERE id = $4
+            WHERE id = $4 AND user_id = $5
             RETURNING *;
         `;
-    const values = [title, content, updatedAt || new Date().toISOString(), id];
+    const values = [title, content, updatedAt || new Date().toISOString(), id, userId];
 
     const result = await pool.query(query, values);
 
