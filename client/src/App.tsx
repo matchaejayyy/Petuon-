@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/DashboardPage";
 import Calendar from "./pages/CalendarPage";
-import Flashcard from "./components/FlashCard";
+import Flashcard from "./pages/FlashCardPage";
 import ToDoList from "./pages/ToDoListPage";
 import Notepad from "./pages/NotepadPage";
 import LoginPage from "./pages/LoginPage";
