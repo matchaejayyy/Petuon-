@@ -40,7 +40,7 @@ const Sidebar: React.FC = () => {
           <Link
             to="/flashcard"
             className={`group pl-9 pr-11 pt-[1.2rem] pb-[1.2rem] rounded-tl-3xl rounded-bl-3xl hover:bg-[#F6F6F6] transition-colors duration-300 ${isActive("/flashcard") ? "bg-[#F6F6F6]" : ""}`}>
-            <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("flashcard") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
+            <WalletCards size={32} className={`group-hover:text-[#719191] duration-300 ${isActive("/flashcard") ? "text-[#719191] scale-150" : "text-white transform transition-transform duration-200 hover:scale-125 active:scale-50"}`} />
           </Link>
           <Link
             to="/notepad"

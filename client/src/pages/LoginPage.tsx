@@ -28,10 +28,7 @@ const LoginPage: React.FC<Props> = () => {
           localStorage.setItem("token", response.data.token);
           alert("Login successful! Redirecting to dashboard...");
           navigate("/dashboard");
-        } else {
-          alert("Login successful with Supabase!");
-          navigate("/dashboard");
-        }
+        } 
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Error connecting to the server.");
