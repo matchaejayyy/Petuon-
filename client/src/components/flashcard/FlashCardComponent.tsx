@@ -1,8 +1,8 @@
 import { BookmarkMinus, CircleArrowLeft, FolderPlus, Minus} from "lucide-react";
-import SideBar from "../SideBar";
-import WhiteContainer from "../WhiteContainer";
 import React, { useState, useEffect } from "react";
-import Avatar from "../Avatar";
+// import SideBar from "../SideBar";
+// import WhiteContainer from "../WhiteContainer";
+// import Avatar from "../Avatar";
 
 import { Deck, Flashcard } from "../../types/FlashCardTypes";
 import { CreateFlashcard } from "./createflashcard";
@@ -314,22 +314,5 @@ const FlashcardComponent: React.FC = () => {
   );
 };
 
-const FlashCard = () => {
-  return (
-    <>
-      <WhiteContainer>
-        <h1
-          style={{ fontFamily: '"Crimson Pro", serif' }}
-          className="text-[3rem] text-[#354F52] ftracking-normal mb-4 ml-8 mt-7"
-        >
-          FlashCards
-        </h1>
-        <FlashcardComponent />
-        <Avatar />
-      </WhiteContainer>
-      <SideBar />
-    </>
-  );
-};
 
-export default FlashCard;
+export default FlashcardComponent;

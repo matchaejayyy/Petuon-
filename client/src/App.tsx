@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Dashboard from './pages/DashboardPage';
 import Calendar from './pages/CalendarPage';
-import Flashcard from './components/flashcard/FlashCardComponent';
+import Flashcard from './pages/FlashCardPage';
 import ToDoList from './pages/ToDoListPage';
 import Notepad from './pages/NotepadPage';
 
