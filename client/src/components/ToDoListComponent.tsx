@@ -677,6 +677,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                           type="checkbox"
                           checked={task.completed}
                           onChange={() => completeToggle(task.task_id!)}
+                          disabled={taskInputDisable === task.task_id && afterMark}
                         />
 
                         <span

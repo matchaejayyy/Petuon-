@@ -3,10 +3,8 @@
 /* eslint-disable no-constant-binary-expression */
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Task } from "../types/ToDoListTypes"
 
-// Import Task Interface
-import { Task } from "../types/ToDoListTypes";
-// import { Filter } from "lucide-react";
 
 export const useToDoList = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -20,12 +18,22 @@ export const useToDoList = () => {
   const [afterMark, setAfterMark] = useState<boolean>(false);
   const [shouldUpdateFilter, setShouldUpdateFilter] = useState(false);
   const [taskInputDisable, setTaskInputDisable] = useState<string>("");
-
+  const token = localStorage.getItem('token');
   // Fetched Tasks
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3002/tasks/getTask");
+      if (!token) {
+        throw new Error('No token found');
+      }
+      console.log(token)
+      const response = await axios.get("http://localhost:3002/tasks/getTask",  {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      console.log(response.data)
       const taskData = response.data.map(
         (task: {
           task_id: string;
@@ -42,8 +50,11 @@ export const useToDoList = () => {
         }),
       );
       const response1 = await axios.get(
-        "http://localhost:3002/tasks/getCompelteTask",
-      );
+        "http://localhost:3002/tasks/getCompleteTask",{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+      });
       const taskData1 = response1.data.map(
         (task: {
           task_id: string;
@@ -101,19 +112,17 @@ export const useToDoList = () => {
         return;
       }
 
-      if (
-        filterType === "default" ||
-        "later" ||
-        "near" ||
-        "noDue" ||
-        "pastDue"
-      ) {
-        setTasks([...tasks, newTask]);
-      }
+      if (filterType === "default" || "later" || "near" || "noDue" || "pastDue") {
+        setTasks([...tasks, newTask  ])
+      } 
 
       setTasksBackup([...tasks, newTask]);
 
-      await axios.post("http://localhost:3002/tasks/insertTask", newTask);
+      await axios.post("http://localhost:3002/tasks/insertTask", newTask, {
+        headers: {
+          Authorization: `Bearer ${token}` // Include the token for authentication
+        }
+      }); 
     } catch (error) {
       console.error("Error adding task:", error);
     }
@@ -122,19 +131,20 @@ export const useToDoList = () => {
   // Delete Tasks
   const deleteTask = async (task_id: string) => {
     try {
-      setTasks((prevTasks) =>
-        prevTasks.filter((task) => task.task_id !== task_id),
-      );
-      setTasksBackup((prevTasks) =>
-        prevTasks.filter((task) => task.task_id !== task_id),
-      );
-      setFilterArr((prevTasks) =>
-        prevTasks.filter((task) => task.task_id !== task_id),
-      );
-      setCompletedTasks((prevTasks) =>
-        prevTasks.filter((task) => task.task_id !== task_id),
-      );
-      await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`);
+      setTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+
+      setTasksBackup((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+
+      setFilterArr((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+
+      setCompletedTasks((prevTasks) => prevTasks.filter((task) => task.task_id !== task_id));
+      
+      await axios.delete(`http://localhost:3002/tasks/deleteTask/${task_id}`, {
+        headers: {
+          Authorization: `Bearer ${token}` 
+        }
+      });
+      
     } catch (error) {
       console.error("Error deleting task:", error);
     }
@@ -157,34 +167,18 @@ export const useToDoList = () => {
 
       const updatedCompletedStatus = !taskToToggle.completed;
 
-      setTasks(
-        tasks.map((task) =>
-          task.task_id === task_id
-            ? { ...task, completed: !task.completed }
-            : task,
-        ),
-      );
-      setTasksBackup(
-        tasksBackup.map((task) =>
-          task.task_id === task_id
-            ? { ...task, completed: !task.completed }
-            : task,
-        ),
-      );
-      setFilterArr(
-        filterArr.map((task) =>
-          task.task_id === task_id
-            ? { ...task, completed: !task.completed }
-            : task,
-        ),
-      );
-      setCompletedTasks(
-        completedTasks.map((task) =>
-          task.task_id === task_id
-            ? { ...task, completed: !task.completed }
-            : task,
-        ),
-      );
+      setTasks(tasks.map(task =>
+        task.task_id === task_id ? {...task, completed: !task.completed} : task
+      ))
+      setTasksBackup(tasksBackup.map(task => 
+          task.task_id === task_id ? {...task, completed: !task.completed} : task
+      ));
+      setFilterArr(filterArr.map(task =>
+        task.task_id === task_id ? {...task, completed: !task.completed} : task
+      ))
+      setCompletedTasks(completedTasks.map(task =>
+        task.task_id === task_id ? {...task, completed: !task.completed} : task
+      ))
       setAfterMark(true);
       setTaskInputDisable(taskToToggle.task_id);
       if (updatedCompletedStatus) {
@@ -227,9 +221,15 @@ export const useToDoList = () => {
         }, 800);
       }
 
-      await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`, {
-        completed: updatedCompletedStatus,
-      });
+      await axios.patch(`http://localhost:3002/tasks/completeTask/${task_id}`,
+        {
+          completed: updatedCompletedStatus, 
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          }
+        });
     } catch (error) {
       console.error("Error toggling task completion:", error);
     }
@@ -347,10 +347,18 @@ export const useToDoList = () => {
         deleteTask(task_id);
       }
 
-      await axios.patch(`http://localhost:3002/tasks/updateTask/${task_id}`, {
-        text: trimmedText,
-        dueAt: updatedDueAt,
-      });
+      await axios.patch(
+        `http://localhost:3002/tasks/updateTask/${task_id}`,
+        {
+          text: trimmedText,          
+          dueAt: updatedDueAt,        
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}` 
+          }
+        }
+      );
     } catch (error) {
       console.error("There was an error updating the task:", error);
     }

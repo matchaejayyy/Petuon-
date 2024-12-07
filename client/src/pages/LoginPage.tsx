@@ -1,45 +1,41 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import React from "react";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import LoginBG from "../assets/LoginBG.png";
-
-type Props = {};
-
-type LoginFormsInputs = {
-  userName: string;
-  password: string;
-};
-
-const validation = Yup.object().shape({
-  userName: Yup.string().required("Username is required"),
-  password: Yup.string().required("Password is required"),
-});
+import LoginBG from "../assets/LoginBg.png";
+import axios from "axios";
+import { LoginFormsInputs, Props } from "../types/LoginTypes";
 
 const LoginPage: React.FC<Props> = () => {
+  const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormsInputs>({ resolver: yupResolver(validation) });
+  } = useForm<LoginFormsInputs>();
 
-  const handleLogin = (form: LoginFormsInputs) => {
-    const users = JSON.parse(localStorage.getItem("users") || "[]");
-    const userExists = users.find(
-      (user: LoginFormsInputs) =>
-        user.userName === form.userName && user.password === form.password,
-    );
+  const handleLogin = async (form: LoginFormsInputs) => {
+    try {
+        const response = await axios.post("http://localhost:3002/login/userLogin", {
+          user_name: form.user_name,
+          user_password: form.user_password,
+        });
+        console.log(response.data.token)
+        if (response.data.token) {
+          // Store JWT token in localStorage for persistent sessions
+          localStorage.setItem("token", response.data.token);
+          alert("Login successful! Redirecting to dashboard...");
 
-    if (userExists) {
-      localStorage.setItem("isLoggedIn", "true");
-      alert("Login successful! Redirecting to dashboard...");
-      navigate("/dashboard"); // Redirect to the dashboard
-      window.location.reload(); // This will force a page refresh after navigation
-    } else {
-      alert("Invalid username or password");
+          navigate("/dashboard");
+        } 
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "Error connecting to the server.");
+      } else {
+        alert("An unexpected error occurred.");
+      }
     }
   };
 
@@ -52,25 +48,23 @@ const LoginPage: React.FC<Props> = () => {
         backgroundPosition: "center",
       }}
     >
-      <div className="mx-auto mr-20 flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+      <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div
-          className="w-full rounded-lg shadow sm:max-w-lg md:mb-20 xl:p-0"
+          className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0"
           style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
         >
-          <div className="space-y-6 p-10 sm:p-12 md:space-y-8">
+          <div className="p-10 space-y-6 md:space-y-8 sm:p-12">
             <h2 className="text-4xl font-bold text-white">Welcome!</h2>
             <p className="mb-5 text-left font-light text-white">
               Ready to learn smarter? Log in to access your dashboard!
             </p>
+            {error && <p className="text-red-500">{error}</p>}
             <form
               className="space-y-4 md:space-y-6"
               onSubmit={handleSubmit(handleLogin)}
             >
               <div>
-                <label
-                  htmlFor="username"
-                  className="mb-2 block text-sm font-medium text-white dark:text-white"
-                >
+                <label htmlFor="username" className="block mb-2 text-sm font-medium text-white">
                   Username
                 </label>
                 <input
@@ -78,37 +72,22 @@ const LoginPage: React.FC<Props> = () => {
                   id="username"
                   className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm"
                   placeholder="Username"
-                  {...register("userName")}
+                  {...register("user_name")}
                 />
-                {errors.userName && (
-                  <p className="text-white">{errors.userName.message}</p>
-                )}
+                {errors.user_name && <p className="text-white">{errors.user_name.message}</p>}
               </div>
               <div>
-                <label
-                  htmlFor="password"
-                  className="mb-2 block text-sm font-medium text-white dark:text-white"
-                >
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
                   Password
                 </label>
                 <input
                   type="password"
                   id="password"
                   placeholder="••••••••"
-                  className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm"
-                  {...register("password")}
+                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  {...register("user_password")}
                 />
-                {errors.password && (
-                  <p className="text-white">{errors.password.message}</p>
-                )}
-              </div>
-              <div className="flex items-center justify-between">
-                <a
-                  href="#"
-                  className="text-primary-600 dark:text-primary-500 text-sm font-medium text-white hover:underline"
-                >
-                  Forgot password?
-                </a>
+                {errors.user_password && <p className="text-white">{errors.user_password.message}</p>}
               </div>
               <div className="flex items-center justify-center">
                 <button
