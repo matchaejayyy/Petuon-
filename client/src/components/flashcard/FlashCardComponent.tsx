@@ -101,17 +101,20 @@ const FlashcardComponent: React.FC = () => {
         params: { deck_id },
       });
   
-      const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string }) => ({
+      const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string; unique_flashcard_id: string }) => ({
         question: flashcard.question,
         answer: flashcard.answer,
         flashcard_id: flashcard.flashcard_id,
+        unique_flashcard_id: flashcard.unique_flashcard_id,
       }));
   
-      setFlashcards(flashcardData);
+      setFlashcards(flashcardData); // Update state with new flashcards
     } catch (error) {
-      console.error('Error loading deck:', error);
+      console.error("Error loading deck:", error);
+      setFlashcards([]); // Reset flashcards if loading fails
     }
   };
+  
   
   const deleteDeck = async (deckId: string) => {
     try {
@@ -128,6 +131,7 @@ const FlashcardComponent: React.FC = () => {
     try {
       await axios.delete(`http://localhost:3002/cards/deleteFlashcard/${unique_flashcard_id}`);
       setFlashcards(flashcards.filter(flashcard => flashcard.unique_flashcard_id !== unique_flashcard_id));
+      console.log("Flashcard deleted successfully!");
     } catch (error) {
       console.error("Error deleting flashcard:", error);
     }
