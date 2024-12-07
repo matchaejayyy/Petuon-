@@ -60,9 +60,9 @@ const Avatar = () => {
 
                   <p className="font-medium text-gray-800">{userName}</p>
 
-                  <p className={`text-sm ${userEmail.length > 10 ? "text-xs" : "text-gray-500"}`}>
-                      {userEmail}
-                  </p>  
+                      <p className="text-sm text-gray-500" title={userEmail}>
+                      {userEmail.length > 5 ? `${userEmail.substring(0, 5)}...@gmail.com` : userEmail}
+                      </p>
 
                 </div>
               </div>
