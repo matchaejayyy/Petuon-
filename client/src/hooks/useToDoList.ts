@@ -23,7 +23,19 @@ export const useToDoList = () => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const response = await axios.get("http://localhost:3002/tasks/getTask");
+      const token = localStorage.getItem('token');
+        
+      if (!token) {
+        throw new Error('No token found');
+      }
+      console.log(token)
+      const response = await axios.get("http://localhost:3002/tasks/getTask",  {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      console.log(response.data)
       const taskData = response.data.map(
         (task: {
           task_id: string;
@@ -40,8 +52,11 @@ export const useToDoList = () => {
         }),
       );
       const response1 = await axios.get(
-        "http://localhost:3002/tasks/getCompelteTask",
-      );
+        "http://localhost:3002/tasks/getCompelteTask",{
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+      });
       const taskData1 = response1.data.map(
         (task: {
           task_id: string;

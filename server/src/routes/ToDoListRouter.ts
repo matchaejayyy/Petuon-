@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import { pool, router } from "../database/CarmineDB";
 
+import authenticateToken  from '../middleware/AuthMiddleware'
+
+
 import {
   validateGetTask,
   validateInsertTask,
@@ -10,25 +13,40 @@ import {
 } from "../middleware/ToDoListMiddleware";
 
 // Fetch all uncompleted tasks
-router.get("/getTask", validateGetTask, async (req: Request, res: Response) => {
+router.get("/getTask", authenticateToken, async (req: Request, res: Response) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized: No user information' });
+    }
+
+    const userId = req.user.user_id;
+
     const result = await pool.query(
-      "SELECT * FROM tasks WHERE completed = false",
+      "SELECT * FROM tasks WHERE completed = false AND user_id = $1",
+      [userId]
     );
 
     res.status(200).json(result.rows);
   } catch (error) {
-    console.error("Error fetching tasks:", error);
+    console.error("Error fetching tasks: ", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
 
 // Fetch all completed tasks
-router.get("/getCompelteTask", async (req: Request, res: Response) => {
+router.get("/getCompelteTask", authenticateToken, async (req: Request, res: Response) => {
   try {
+    const userId = req.user?.user_id; // Get the user ID from the authenticated user
+
+    if (!userId) {
+      return res.status(401).json({ message: 'Unauthorized: User ID not found' });
+    }
+
     const result = await pool.query(
-      "SELECT * FROM tasks WHERE completed = true",
+      "SELECT * FROM tasks WHERE completed = true AND user_id = $1",
+      [userId]
     );
+
     res.status(200).json(result.rows);
   } catch (error) {
     console.error("Error fetching tasks:", error);

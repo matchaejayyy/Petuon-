@@ -34,19 +34,20 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       res.status(401).json({ message: "Invalid username or password" });
       return;
     }
-
+    
     // Generate JWT token
     const token = jwt.sign(
       { user_id: user.user_id, user_name: user.user_name },
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
     );
-    console.log(token)
+
     // Respond with token and user info
     res.status(200).json({
-      message: "Login successful",
+      message: `Login successful ${user.user_id}`,
       token,
       userId: user.user_id,
+      userName: user.user_name,
     });
   } catch (error) {
     console.error("Error during login:", error);
