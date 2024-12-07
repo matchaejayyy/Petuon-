@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { pool, router } from "../database/CarmineDB";
 import authenticateToken  from '../middleware/AuthMiddleware'
 
-
+// Get details of user
 router.get("/getUser", authenticateToken, async (req: Request, res: Response) => {
     try {
         if (!req.user) {

@@ -3,7 +3,6 @@ import { pool, router } from "../database/CarmineDB";
 import authenticateToken from "../middleware/AuthMiddleware";
 
 // Fetch all notes
-// In your Express route (backend)
 router.get("/getNotes", authenticateToken, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
