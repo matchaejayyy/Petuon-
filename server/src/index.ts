@@ -9,6 +9,7 @@ import RegisterRouter from "./routes/RegisterRouter";
 import ToDoListRouter from "./routes/ToDoListRouter";
 import FlashcardRouter from './routes/FlashcardRoutes';
 import NotesListRouter from "./routes/NotesListRouter";
+import PetsRouter from "./routes/PetsRouter"
 
 dotenv.config();
 
@@ -26,7 +27,13 @@ app.use('/register', RegisterRouter)
 app.use('/login', LoginRouter);
 app.use('/cards', FlashcardRouter);
 
-// Start Server on port 3002
+
+app.use('/pets', PetsRouter)
+
+ // Start Server on port 3002
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+ 
+
+
