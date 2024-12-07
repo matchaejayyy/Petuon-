@@ -8,7 +8,7 @@ router.get('/getPets', async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error fetching pets:', error);
         res.status(500).json({ message: 'Error fetching pets' });
-    }
+    }   
 });
 
 router.put('/updatePet', async (req: Request, res: Response) => {
