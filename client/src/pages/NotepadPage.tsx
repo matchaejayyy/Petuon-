@@ -16,17 +16,24 @@ const NotepadPage: React.FC = () => {
   const [creatingNewNote, setCreatingNewNote] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("All");
   const [selectedNote, setSelectedNote] = useState<any | null>(null);
+  const token = localStorage.getItem('token');
 
   const getRandomPastelColor = () => {
     const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"];
     return colors[Math.floor(Math.random() * colors.length)];
   };
 
-  // Fetch notes from the Express backend using Axios
+  
 
+  // Fetch notes from the Express backend using Axios
   const fetchNotes = async () => {
     try {
-      const response = await axios.get("http://localhost:3002/notes/getNotes");
+      const response = await axios.get("http://localhost:3002/notes/getNotes", {
+        headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      
       const notesWithDateTime = response.data.map((note: any) => ({
         ...note,
         // createdDate: new Date(note.createdDate).toLocaleDateString(),
@@ -71,12 +78,20 @@ const NotepadPage: React.FC = () => {
         response = await axios.patch(
           `http://localhost:3002/notes/updateNote/${editingNote}`,
           newNote,
-        );
+          {
+            headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
+
       } else {
         response = await axios.post(
           "http://localhost:3002/notes/insertNote",
-          newNote,
-        );
+          newNote, {
+            headers: {
+                Authorization: `Bearer ${token}`
+              }
+            });
       }
 
       console.log("Server response:", response.data); // Success log
@@ -108,7 +123,11 @@ const NotepadPage: React.FC = () => {
   // Delete a note
   const deleteNote = async (id: number) => {
     try {
-      await axios.delete(`http://localhost:3002/notes/deleteNote/${id}`);
+      await axios.delete(`http://localhost:3002/notes/deleteNote/${id}`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
       await fetchNotes(); // Re-fetch the notes after deletion
       window.location.reload(); // Reload the page after deletion
     } catch (error) {
