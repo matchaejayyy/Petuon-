@@ -64,8 +64,7 @@ const Avatar = () => {
                 <div className="ml-3">
 
                   <p className="font-medium text-gray-800">{userName}</p>
-
-                      <p className="text-sm text-gray-500" title={userEmail}>
+                        <p className="text-sm text-gray-500 cursor-pointer" title={userEmail} >
                       {userEmail.length > 5 ? `${userEmail.substring(0, 5)}...@gmail.com` : userEmail}
                       </p>
 
