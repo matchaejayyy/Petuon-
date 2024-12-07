@@ -56,7 +56,7 @@ router.post("/insertNote", authenticateToken, async (req: Request, res: Response
 });
 
 // Delete a note
-router.delete("/deleteNote/:id", async (req: Request, res: Response) => {
+router.delete("/deleteNote/:id", authenticateToken, async (req: Request, res: Response) => {
   const { id } = req.params; // Make sure we use "id" here as per the table definition
 
   if (!id) {
@@ -84,7 +84,7 @@ router.delete("/deleteNote/:id", async (req: Request, res: Response) => {
 });
 
 // Update a note
-router.patch("/updateNote/:id", async (req: Request, res: Response) => {
+router.patch("/updateNote/:id", authenticateToken, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { title, content, updatedAt } = req.body;
 
