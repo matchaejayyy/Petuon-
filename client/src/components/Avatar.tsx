@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../contexts/UserProvider"; // Import useAuth for logout functionality
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
 import axios from "axios";
-
+import { useNavigate } from 'react-router-dom';
 const Avatar = () => {
-  const { logout } = useAuth(); 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string>("")
   const [userEmail, setUserEmail] = useState<string>("")
   const token = localStorage.getItem('token');
+  const navigate = useNavigate(); 
+
   // Toggle dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -32,6 +32,11 @@ const Avatar = () => {
 
     fetchUserData();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
     <>
@@ -86,7 +91,7 @@ const Avatar = () => {
                 {/* Logout Option */}
                 <li
                   className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                  onClick={logout} // Call the logout function here
+                  onClick={handleLogout} 
                 >
                   Log out
                 </li>
