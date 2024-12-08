@@ -13,7 +13,7 @@ const NotepadComponent: React.FC = () => {
     const [filter, setFilter] = useState<string>("All");
     const [selectedNote, setSelectedNote] = useState<any | null>(null);
 
-    const {notes, addNote, setNotes, saveNOte, deleteNOte} = useNotepad();
+    const {notes, addNote, saveNOte, deleteNOte} = useNotepad();
 
   
     const getRandomPastelColor = () => {
