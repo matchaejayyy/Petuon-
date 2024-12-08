@@ -22,6 +22,7 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       `SELECT * FROM users WHERE user_name = $1`,
       [user_name]
     );
+    
     const user = userQuery.rows[0];
     if (!user) {
       res.status(401).json({ message: "Invalid username or password" });

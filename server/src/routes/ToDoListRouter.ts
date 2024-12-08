@@ -53,6 +53,7 @@ router.get("/getCompleteTask", authenticateToken, async (req: Request, res: Resp
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
 // Insert a new task
 router.post(
   "/insertTask", 

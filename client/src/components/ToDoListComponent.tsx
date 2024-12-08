@@ -7,23 +7,24 @@ import {
   useEffect,
   useCallback,
 } from "react";
-import { RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
-import { useToDoList } from "../hooks/useToDoList";
-import { useNavigate } from "react-router-dom";
 
-import { ToDoListProps } from "../types/ToDoListTypes";
+import { RotateCcw, SquarePlus, Save, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { v4 as uuidv4 } from "uuid";
+
+// ToDoList Hook
+import { useToDoList } from "../hooks/useToDoList";
+
+// Dashboard page (compact) and ToDolist page (default) display
+import { ToDoListProps } from "../types/ToDoListTypes";
 
 const ToDoListComponent: React.FC<ToDoListProps> = ({
   variant = "default",
 }) => {
-  // Creates Date
-  const [date, setDate] = useState<string>("mm/dd/yyyy");
-  // Creates Time
-  const [time, setTime] = useState<string>("--:-- --");
-  // Creates Task
-  const [task, setTask] = useState<string>("");
+  const [date, setDate] = useState<string>("mm/dd/yyyy");  // Creates Date
+  const [time, setTime] = useState<string>("--:-- --");  // Creates Time
+  const [task, setTask] = useState<string>("");   // Creates Task
 
   const [displayTime, setdisplayTime] = useState<string>("");
 
@@ -48,25 +49,22 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   const navigate = useNavigate();
 
   const {
-    afterloading,
+    afterloading, setAfterLoading,
+    filterType, setFilterType,
+    filterArr, setFilterArr,
+    tasks, setTasks,
     tasksBackup,
-    filterType,
-    setFilterType,
-    tasks,
-    setTasks,
-    filterArr,
-    setFilterArr,
     loading,
-    setAfterLoading,
     addTask,
+    afterMark,
     deleteTask,
-    toggleCompleteTask,
     saveEditedTask,
     completedTasks,
-    afterMark,
     taskInputDisable,
+    toggleCompleteTask,
   } = useToDoList();
 
+  // Automatically updates task
   const updateTasks = useCallback(() => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
@@ -80,6 +78,15 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
     return () => clearInterval(interval);
   }, [updateTasks]);
+
+  // Scrolling to the last task everytime a new task is added
+  useEffect(() => {
+    if (isAnimatingDropDown && lastTaskRef.current) {
+      lastTaskRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [tasks, isAnimatingDropDown]);
 
   function taskDateTime() {
     // returns a new Date with the set condition
@@ -105,16 +112,16 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     }
   }
 
+  // Inorder to submit task
   const handleAddTask = async (e: FormEvent) => {
-    // when form is submitted
     filteredTasks("default");
     e.preventDefault();
     const newTask = {
-      task_id: uuidv4(),
+      task_id: uuidv4(), // random generated id
       text: task, // the description of the task
       createdAt: new Date(), // stores the Date from when it is created
       dueAt: taskDateTime(), // from the function taskDateTime that stores the set Date
-      completed: false, // the status of if it is complete or not
+      completed: false, // the status of the task if completed or not
     };
 
     cancelEditing();
@@ -131,7 +138,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     setIsAnimatingDropDown(true);
     setTimeout(() => {
       setIsAnimatingDropDown(false);
-    }, 10); //duration sng drop down
+    }, 10); // dropdown duration
 
     if (lastTaskRef.current) {
       lastTaskRef.current.scrollIntoView({
@@ -146,15 +153,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
     await addTask(newTask);
   };
-  useEffect(() => {
-    // when the task is added it will scroll to the last task
-    if (isAnimatingDropDown && lastTaskRef.current) {
-      lastTaskRef.current.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  }, [tasks, isAnimatingDropDown]);
-
+  
   const handleDateChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDate(e.target.value);
   };
@@ -671,7 +670,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                   .slice(0, 5)
                   .map((task, index) => (
                     <li key={index} className="mt-[0.9rem] border-b-2">
-                      <div className="">
+                      <div>
                         <input
                           className="peer mb-[0.4rem] ml-[0.9rem] h-5 w-5 translate-y-[0.1rem] transform cursor-pointer appearance-none rounded-full border-[0.05rem] border-black bg-white shadow-lg transition-transform duration-300 checked:border-[#719191] checked:bg-[#719191] hover:scale-110 active:scale-50"
                           type="checkbox"
