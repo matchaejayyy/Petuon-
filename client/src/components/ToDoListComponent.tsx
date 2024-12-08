@@ -725,9 +725,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                           style={{
                             fontFamily: '"Signika Negative", sans-serif',
                             color:
-                              displayStatus(task.dueAt) === "Today"
-                                ? "maroon"
-                                : "black",
+                               displayStatus(task.dueAt) === "Today"
+                                ? "#10B981"
+                                : displayStatus(task.dueAt) === "Upcoming"
+                                ? "#3B82F6"
+                                : displayStatus(task.dueAt) === "Tomorrow"
+                                ? "#F59E0B"
+                                : "#6B7280"
                           }}
                           className={`
                             ${
@@ -737,9 +741,8 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                                 ? "ml-[26.5rem]"
                                 : displayStatus(task.dueAt) === "Tomorrow"
                                 ? "ml-[26.5rem]"
-                                : displayStatus(task.dueAt) === "NoDue"
-                                ? "ml-[27.1rem]"
-                                : "ml-[27.5rem]"
+                                : "ml-[27.1rem]"
+                                
                             } 
                             font-semibold
                           `}

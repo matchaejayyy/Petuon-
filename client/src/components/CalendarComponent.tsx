@@ -169,6 +169,31 @@ const CalendarComponent: React.FC = () => {
     return () => clearInterval(interval);
   }, [updateTasks]);
 
+  const displayStatus = (date: Date) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+  
+    const formattedDate = date.toLocaleDateString();
+    const todayString = today.toLocaleDateString();
+    const tomorrowString = tomorrow.toLocaleDateString();
+  
+    switch (formattedDate) {
+      case "1/1/1970":
+
+        return "NoDue";
+      case todayString:
+
+        return "Today";
+      case tomorrowString:
+
+        return "Tomorrow";
+      default:
+      
+        return "Upcoming";
+    }
+
+  };
   const renderCells = () => {
     const [expandedDay, setExpandedDay] = useState<string | null>(null); // Track which day is expanded
 
@@ -196,9 +221,9 @@ const CalendarComponent: React.FC = () => {
       );
 
       // Styling for day cells
-      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer  hover:shadow-lg transition-shadow transition-all duration-300 ${
-        isCurrentMonth ? "" : "text-gray-400"
-      } ${isToday ? "bg-[#FE9B72] text-white" : ""}`; // Highlight for today
+      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer  hover:shadow-lg transition-shadow transition-all duration-300 
+      ${isCurrentMonth ? "" : "text-gray-400"
+      } ${isToday ? "text-black border-green-500 bg-[#D1FAE5]" : ""}`
 
       dateCells.push(
         <div
@@ -206,37 +231,36 @@ const CalendarComponent: React.FC = () => {
           className={dayClasses}
           onClick={() => toggleExpand(formattedFullDate)} // Toggle dropdown on click
         >
-          {/* Render day number */}
-          <div className="text-right text-sm font-semibold">
-            {formattedDate}
-          </div>
-
-          {/* Conditionally show tasks in the container */}
-          {tasksForDay.length > 0 && (
+          {formattedDate}
+           {tasksForDay.length > 0 && (
             <div>
               {expandedDay !== formattedFullDate &&
                 tasksForDay.slice(0, 2).map((task) => (
-                  <div
-                    key={task.task_id}
-                    style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                    className={`ml-[0.5rem] truncate text-[1rem] ${
-                      new Date(task.dueAt).getTime() < new Date().getTime() 
-                          ? "glow-red text-red-600"       
-                          : new Date(new Date()).setDate(new Date().getDate() + 1)
-                          ? "text-light-blue-400"       
-                          : "text-yellow-500"           
-                      }`}
-                  >
-                    {task.text}
-                  </div>
+                  <ul key={task.task_id} className="list-disc pl-4">
+                    <li
+                      style={{
+                        fontFamily: '"Signika Negative", sans-serif',
+                        color:
+                          displayStatus(task.dueAt) === "Today"
+                            ? "green"
+                            : displayStatus(task.dueAt) === "Upcoming"
+                            ? "#3B82F6"
+                            : displayStatus(task.dueAt) === "Tomorrow"
+                            ? "#F59E0B"
+                            : "#6B7280",
+                      }}
+                      className="flex flex-col gap-2 ml-[0.5rem] mt-[-0.6rem] truncate text-lg"
+                    >
+                      {task.text}
+                    </li>
+                  </ul>
+                
                 ))}
-              {tasksForDay.length > 2 && (
-                <div className="left-[11.2rem] top-[13.4rem] text-gray-600">
-                  +{tasksForDay.length - 2} more task
-                  {tasksForDay.length - 2 > 1 ? "s" : ""}
-                </div>
-              )}
-
+                {tasksForDay.length > 2 && (
+                  <div className=" text-[#151515]">
+                    + {tasksForDay.length - 2}
+                  </div>
+                )}
               {expandedDay === formattedFullDate && (
                 <div className="absolute z-10 mt-2 max-h-20 w-[10rem] overflow-y-auto rounded-md border bg-white p-2 shadow-lg [&::-webkit-scrollbar]:w-2">
                   {tasksForDay.map((task) => (
