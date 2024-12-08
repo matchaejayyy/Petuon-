@@ -307,17 +307,28 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(today.getDate() + 1);
+  
+    const formattedDate = date.toLocaleDateString();
+    const todayString = today.toLocaleDateString();
+    const tomorrowString = tomorrow.toLocaleDateString();
+  
+    switch (formattedDate) {
+      case "1/1/1970":
 
-    if (date.toLocaleDateString() === "1/1/1970") return "NoDue";
-    else if (date.toLocaleDateString() === new Date().toLocaleDateString()) {
-      return "Today";
-    } else if (date.toLocaleDateString() === tomorrow.toLocaleDateString()) {
-      return "Tomorrow";
-    } else {
-      return "Upcoming";
+        return "NoDue";
+      case todayString:
+
+        return "Today";
+      case tomorrowString:
+
+        return "Tomorrow";
+      default:
+      
+        return "Upcoming";
     }
-  };
 
+  };
+  
   const display =
     filterType === "pastDue" ||
     filterType === "near" ||
@@ -331,9 +342,10 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     hidden: { opacity: 0, y: 0 }, // Initial state: invisible and above
     visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
   };
-
   const staggerTime = 1; // Total duration for all tasks to be rendered (in seconds)
   const delayPerItem = staggerTime / display.length; // Time delay per task
+
+  
 
   if (variant === "default") {
     return (
@@ -649,27 +661,49 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
           <div className="mt-[0.8rem] border-b-2"></div>
 
           {loading ? (
-            <h1
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="fixed left-[23rem] top-[15.5rem] text-center text-2xl text-gray-500"
-            >
-              Fetching tasks...
-            </h1>
+            <>
+              <h1
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="fixed left-[23rem] top-[15.5rem] text-center text-2xl text-gray-500"
+              >
+                Fetching tasks...
+              </h1>
+              <button
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="fixed top-[25rem] w-[35rem] rounded-bl-[1.5rem] rounded-br-[1.5rem] bg-[#354F52] py-2 text-white hover:bg-[#52796f]"
+              >
+                Searching Tasks...
+              </button>
+            </>
           ) : (
             <>
               <ul>
                 {tasks
-                  .sort((a, b) => {
-                    if (a.dueAt && b.dueAt) {
-                      if (a.dueAt.getTime() === 0) return 1;
-                      if (b.dueAt.getTime() === 0) return -1;
-                      return a.dueAt.getTime() - b.dueAt.getTime();
-                    }
-                    return 0;
-                  })
+                     .filter(task => 
+                      task.dueAt.getTime() > new Date().getTime() ||
+                      task.dueAt.getTime() === new Date(0).getTime()
+                    )
+                    .sort((a, b) => {
+                      if (a.dueAt && b.dueAt) {
+                        const now = new Date().getTime();
+                        const aDueTime = a.dueAt.getTime();
+                        const bDueTime = b.dueAt.getTime();
+                        return Math.abs(aDueTime - now) - Math.abs(bDueTime - now);
+                      }
+                      return 0; 
+                    })
                   .slice(0, 5)
                   .map((task, index) => (
-                    <li key={index} className="mt-[0.9rem] border-b-2">
+                    <motion.li key={index} className="mt-[0.9rem] border-b-2"
+                    variants={afterloading ? taskVariants : undefined}
+                    initial={afterloading ? "hidden" : undefined}
+                    animate={afterloading ? "visible" : undefined}
+                    exit={afterloading ? "visible" : undefined}
+                    transition={
+                      afterloading
+                        ? { duration: 0.2, delay: index * delayPerItem }
+                        : undefined
+                    }>
                       <div>
                         <input
                           className="peer mb-[0.4rem] ml-[0.9rem] h-5 w-5 translate-y-[0.1rem] transform cursor-pointer appearance-none rounded-full border-[0.05rem] border-black bg-white shadow-lg transition-transform duration-300 checked:border-[#719191] checked:bg-[#719191] hover:scale-110 active:scale-50"
@@ -695,12 +729,25 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                                 ? "maroon"
                                 : "black",
                           }}
-                          className="ml-[27rem] font-semibold"
-                        >
+                          className={`
+                            ${
+                              displayStatus(task.dueAt) === "Today"
+                                ? "ml-[27.5rem]"
+                                : displayStatus(task.dueAt) === "Upcoming"
+                                ? "ml-[26.5rem]"
+                                : displayStatus(task.dueAt) === "Tomorrow"
+                                ? "ml-[26.5rem]"
+                                : displayStatus(task.dueAt) === "NoDue"
+                                ? "ml-[27.1rem]"
+                                : "ml-[27.5rem]"
+                            } 
+                            font-semibold
+                          `}
+                          >
                           {displayStatus(task.dueAt)}
                         </span>
                       </div>
-                    </li>
+                    </motion.li>
                   ))}
               </ul>
               {tasks.length > 0 && tasks.length <= 4 ? (

@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   format,
   startOfMonth,
@@ -15,20 +14,15 @@ import {
   subMonths,
 } from "date-fns";
 import { useNavigate } from "react-router-dom"; // Import for navigation
-const token = localStorage.getItem('token');
-
-interface Tasks {
-  task_id: string;
-  text: string;
-  dueAt: Date;
-}
+import { useToDoList } from "../hooks/useToDoList";
 
 const CalendarComponent: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(getMonth(currentMonth));
   const [selectedYear, setSelectedYear] = useState(getYear(currentMonth));
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [tasks, setTasks] = useState<Tasks[]>([]);
+  const {tasks, setTasks} = useToDoList();
+
 
   const navigate = useNavigate(); // For navigation to ToDoListPage
 
@@ -161,27 +155,19 @@ const CalendarComponent: React.FC = () => {
     </div>
   );
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const response = await axios.get("http://localhost:3002/tasks/getTask", {
-          headers: {
-          Authorization: `Bearer ${token}` // Include the token for authentication
-          }
-      }); 
-      const taskData = response.data.map(
-        (task: { task_id: string; text: string; due_at: Date }) => {
-          const dueAt = new Date(task.due_at);
-          return {
-            task_id: task.task_id,
-            text: task.text,
-            dueAt: dueAt,
-          };
-        },
-      );
-      setTasks(taskData);
-    };
-    fetchTasks();
+  const updateTasks = useCallback(() => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        return task;
+      }),
+    );
   }, []);
+
+  useEffect(() => {
+    const interval = setInterval(updateTasks, 1000);
+
+    return () => clearInterval(interval);
+  }, [updateTasks]);
 
   const renderCells = () => {
     const [expandedDay, setExpandedDay] = useState<string | null>(null); // Track which day is expanded
@@ -229,22 +215,24 @@ const CalendarComponent: React.FC = () => {
           {tasksForDay.length > 0 && (
             <div>
               {expandedDay !== formattedFullDate &&
-                tasksForDay.slice(0, 1).map((task) => (
+                tasksForDay.slice(0, 2).map((task) => (
                   <div
                     key={task.task_id}
                     style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                    className={`ml-[0.5rem] truncate text-lg ${
-                      new Date(task.dueAt) < new Date()
-                        ? "glow-red text-red-600"
-                        : "text-blue-600"
-                    }`}
+                    className={`ml-[0.5rem] truncate text-[1rem] ${
+                      new Date(task.dueAt).getTime() < new Date().getTime() 
+                          ? "glow-red text-red-600"       
+                          : new Date(new Date()).setDate(new Date().getDate() + 1)
+                          ? "text-light-blue-400"       
+                          : "text-yellow-500"           
+                      }`}
                   >
                     {task.text}
                   </div>
                 ))}
-              {tasksForDay.length > 1 && (
+              {tasksForDay.length > 2 && (
                 <div className="left-[11.2rem] top-[13.4rem] text-gray-600">
-                  +{tasksForDay.length - 1} more task
+                  +{tasksForDay.length - 2} more task
                   {tasksForDay.length - 2 > 1 ? "s" : ""}
                 </div>
               )}
