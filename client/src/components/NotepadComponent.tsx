@@ -2,12 +2,22 @@ import React, { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import { FilePen, Trash2, FilePlus } from "lucide-react";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
+
+interface Note {
+  note_id: string,
+  title: string,
+  content: string,
+  color: string,
+  created_date: Date,
+  created_time: Date,
+}
 
 const NotepadComponent: React.FC = () => {
-    const [notes, setNotes] = useState<any[]>([]);
+    const [notes, setNotes] = useState<Note[]>([]);
     const [currentTitle, setCurrentTitle] = useState<string>("");
     const [currentNote, setCurrentNote] = useState<string>("");
-    const [editingNote, setEditingNote] = useState<number | null>(null);
+    const [editingNote, setEditingNote] = useState<string | null>(null);
     const [creatingNewNote, setCreatingNewNote] = useState<boolean>(false);
     const [filter, setFilter] = useState<string>("All");
     const [selectedNote, setSelectedNote] = useState<any | null>(null);
@@ -18,9 +28,7 @@ const NotepadComponent: React.FC = () => {
         return colors[Math.floor(Math.random() * colors.length)];
     };
 
-    useEffect(() => {
-        fetchNotes(); // Fetch notes on mount
-    }, []);
+    
 
     // Fetch notes from the Express backend using Axios
     const fetchNotes = async () => {
@@ -32,98 +40,109 @@ const NotepadComponent: React.FC = () => {
             });
         
         const notesWithDateTime = response.data.map((note: any) => ({
-            ...note,
-            // createdDate: new Date(note.createdDate).toLocaleDateString(),
-            // createdTime: new Date(note.createdDate).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        }));
-        setNotes(notesWithDateTime || []);
-        console.log(notes);
+            ...note,}));
+        setNotes(notesWithDateTime);
         } catch (error) {
         console.error("Error fetching notes:", error);
         }
     };
-
+  
     // Save or update note
     const saveNote = async () => {
-        if (currentTitle.trim() === "" || currentNote.trim() === "") {
+      if (!token) {
+        console.error("User not authenticated. No token found.");
+        return;
+      }
+    
+      if (currentTitle.trim() === "" || currentNote.trim() === "") {
         console.error("Title or content is empty.");
         return;
-        }
-        const strippedNoteContent = currentNote
+      }
+    
+      const strippedNoteContent = currentNote
         .replace(/<\/?(h1|h2|h3|p|br)>/g, "")
         .trim();
-        const newNote = {
+    
+      const newNote = {
+        note_id: uuidv4(),
         title: currentTitle.trim(),
         content: strippedNoteContent,
         color: getRandomPastelColor(),
         created_date: new Date().toISOString().split("T")[0], // '2024-12-01'
         created_time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false,
-        }), // '14:14:34'
-        };
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }),
+      };
 
-        try {
-        let response;
+      try {
         if (editingNote) {
-            console.log("Updating note with ID:", editingNote); // Debugging log
-            response = await axios.patch(
+          const updatedNotes = notes.map((note) =>
+            note.note_id === editingNote
+              ? { ...note, title: newNote.title, content: newNote.content }
+              : note
+          );
+          setNotes(updatedNotes)
+          await axios.patch(
             `http://localhost:3002/notes/updateNote/${editingNote}`,
             newNote,
             {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-                });
-
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setEditingNote(null)
         } else {
-            response = await axios.post(
-            "http://localhost:3002/notes/insertNote",
-            newNote, 
+          const response = await axios.post(
+            `http://localhost:3002/notes/insertNote`,
+            newNote,
             {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-                });
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const savedNote = response.data
+          setNotes([...notes, savedNote])
+          resetForm();
         }
-
-        await fetchNotes(); // Refresh notes list
-        resetForm(); // Clear the form after successful operation
-        } catch (error) {
-        console.error("Error saving note:", error); // Log error details
+      } catch (error) {
+        console.error("Error saving note:", error);
         if (axios.isAxiosError(error)) {
-            console.error(
-            "Server responded with:",
-            error.response?.data || "Unknown error",
-            );
+          console.error("Server responded with:", error.response?.data || "Unknown error");
+          console.error("Error message:", error.message);
+        } else {
+          console.error("An unexpected error occurred:", error);
         }
-        }
+      }
     };
-
     // Handle editing
-    const editNote = (id: number) => {
-        const noteToEdit = notes.find((note) => note.id === id); // Find the note to edit
+    const editNote = (note_id: string) => {
+        const noteToEdit = notes.find((note) => note.note_id === note_id); // Find the note to edit\
         if (noteToEdit) {
-        setEditingNote(id); // Set the current note as being edited
-        setCurrentTitle(noteToEdit.title); // Populate the form with existing note data
+        setEditingNote(note_id); 
+        setCurrentTitle(noteToEdit.title); 
         setCurrentNote(noteToEdit.content);
         } else {
-        console.error(`Note with id ${id} not found.`);
+        console.error(`Note with id ${note_id} not found.`);
         }
     };
 
     // Delete a note
-    const deleteNote = async (id: number) => {
+    const deleteNote = async (note_id: string) => {
         try {
-        await axios.delete(`http://localhost:3002/notes/deleteNote/${id}`, {
+        setNotes((prevNotes) => prevNotes.filter((note) => note.note_id !== note_id));
+        await axios.delete(`http://localhost:3002/notes/deleteNote/${note_id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-            });
-        await fetchNotes(); // Re-fetch the notes after deletion
-        window.location.reload(); // Reload the page after deletion
+          });
+      
+        setEditingNote(null)
+
         } catch (error) {
         console.error("Error deleting note:", error);
         }
@@ -157,6 +176,9 @@ const NotepadComponent: React.FC = () => {
         resetForm();
     };
 
+    useEffect(() => {
+      fetchNotes(); // Fetch notes on mount
+    }, []);
     // Filter notes based on criteria
     const getFilteredNotes = () => {
         const today = new Date();
@@ -182,12 +204,7 @@ const NotepadComponent: React.FC = () => {
         }
         return true; // Default is "All"
         });
-
-        // Sort by id in descending order for "All" filter
-        if (filter === "All") {
-        filtered.sort((a, b) => b.id - a.id);
-        }
-
+   
         return filtered;
     };
 
@@ -283,7 +300,7 @@ const NotepadComponent: React.FC = () => {
                     saveNote();
                   }
                 }}
-                className="rounded-md bg-[#354F52] px-4 py-2 text-white hover:bg-blue-700"
+                className="fixed left-0 rounded-md bg-[#354F52] px-4 py-2 text-white hover:bg-blue-700"
               >
                 {editingNote ? "Save Changes" : "Save Note"}
               </button>
@@ -343,7 +360,7 @@ const NotepadComponent: React.FC = () => {
                 ) : (
                   filteredNotes.map((note) => (
                     <div
-                      key={note.id}
+                      key={note.note_id}
                       className="active:scale-20 relative mb-2 transform cursor-pointer rounded-3xl border shadow-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl"
                       style={{
                         width: "16rem", // Set consistent width
@@ -390,7 +407,7 @@ const NotepadComponent: React.FC = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          editNote(note.id);
+                          editNote(note.note_id);
                         }}
                         className="absolute right-3 top-7 text-black hover:text-[#719191]"
                       >
