@@ -694,7 +694,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     })
                   .slice(0, 5)
                   .map((task, index) => (
-                    <motion.li key={index} className="mt-[0.9rem] border-b-2"
+                    <motion.li key={index} className="mt-[0.6rem] border-b-2"
                     variants={afterloading ? taskVariants : undefined}
                     initial={afterloading ? "hidden" : undefined}
                     animate={afterloading ? "visible" : undefined}
@@ -704,9 +704,9 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }>
-                      <div>
+                      <div className="mb-[0.8rem]">
                         <input
-                          className="peer mb-[0.4rem] ml-[0.9rem] h-5 w-5 translate-y-[0.1rem] transform cursor-pointer appearance-none rounded-full border-[0.05rem] border-black bg-white shadow-lg transition-transform duration-300 checked:border-[#719191] checked:bg-[#719191] hover:scale-110 active:scale-50"
+                          className="peer mb-[0rem] ml-[0.9rem] h-5 w-5 translate-y-[0.1rem] transform cursor-pointer appearance-none rounded-full border-[0.05rem] border-black bg-white shadow-lg transition-transform duration-300 checked:border-[#719191] checked:bg-[#719191] hover:scale-110 active:scale-50"
                           type="checkbox"
                           checked={task.completed}
                           onChange={() => completeToggle(task.task_id!)}
@@ -717,7 +717,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                           style={{
                             fontFamily: '"Signika Negative", sans-serif',
                           }}
-                          className="-mt[0.6rem] absolute ml-3 text-lg font-semibold text-[#354F52]"
+                          className="absolute ml-3 text-lg font-semibold text-[#354F52]"
                         >
                           {task.text}
                         </span>
