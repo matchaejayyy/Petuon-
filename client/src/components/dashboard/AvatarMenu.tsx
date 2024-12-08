@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { User, Trophy, Moon, Settings } from "lucide-react";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuth } from "../../contexts/UserProvider";
 
 const AvatarMenu: React.FC = () => {
   const { logout } = useAuth();

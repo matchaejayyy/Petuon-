@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 import Dashboard from '../src/pages/DashboardPage';
 import Calendar from '../src/pages/CalendarPage';
-import Flashcard from '../src/components/FlashCard';
+import Flashcard from '../src/pages/FlashCardPage';
 import ToDoList from '../src/pages/ToDoListPage';
 import Notepad from '../src/pages/NotepadPage';
 import LoginPage from '../src/pages/LoginPage';
