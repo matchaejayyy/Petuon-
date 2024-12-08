@@ -3,57 +3,27 @@ import ReactQuill from "react-quill";
 import { FilePen, Trash2, FilePlus } from "lucide-react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
-
-interface Note {
-  note_id: string,
-  title: string,
-  content: string,
-  color: string,
-  created_date: Date,
-  created_time: Date,
-}
+import { useNotepad } from "../hooks/useNotepad";
 
 const NotepadComponent: React.FC = () => {
-    const [notes, setNotes] = useState<Note[]>([]);
     const [currentTitle, setCurrentTitle] = useState<string>("");
     const [currentNote, setCurrentNote] = useState<string>("");
     const [editingNote, setEditingNote] = useState<string | null>(null);
     const [creatingNewNote, setCreatingNewNote] = useState<boolean>(false);
     const [filter, setFilter] = useState<string>("All");
     const [selectedNote, setSelectedNote] = useState<any | null>(null);
-    const token = localStorage.getItem('token');
 
+    const {notes, addNote, setNotes, saveNOte, deleteNOte} = useNotepad();
+
+  
     const getRandomPastelColor = () => {
         const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"];
         return colors[Math.floor(Math.random() * colors.length)];
     };
 
-    
-
-    // Fetch notes from the Express backend using Axios
-    const fetchNotes = async () => {
-        try {
-        const response = await axios.get("http://localhost:3002/notes/getNotes", {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-            });
-        
-        const notesWithDateTime = response.data.map((note: any) => ({
-            ...note,}));
-        setNotes(notesWithDateTime);
-        } catch (error) {
-        console.error("Error fetching notes:", error);
-        }
-    };
   
     // Save or update note
     const saveNote = async () => {
-      if (!token) {
-        console.error("User not authenticated. No token found.");
-        return;
-      }
-    
       if (currentTitle.trim() === "" || currentNote.trim() === "") {
         console.error("Title or content is empty.");
         return;
@@ -84,30 +54,13 @@ const NotepadComponent: React.FC = () => {
               ? { ...note, title: newNote.title, content: newNote.content }
               : note
           );
-          setNotes(updatedNotes)
-          await axios.patch(
-            `http://localhost:3002/notes/updateNote/${editingNote}`,
-            newNote,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+
+          await saveNOte(newNote, updatedNotes, editingNote)
           setEditingNote(null)
         } else {
-          const response = await axios.post(
-            `http://localhost:3002/notes/insertNote`,
-            newNote,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          const savedNote = response.data
-          setNotes([...notes, savedNote])
+          await addNote(newNote)
           resetForm();
+          setEditingNote(null)
         }
       } catch (error) {
         console.error("Error saving note:", error);
@@ -119,6 +72,7 @@ const NotepadComponent: React.FC = () => {
         }
       }
     };
+
     // Handle editing
     const editNote = (note_id: string) => {
         const noteToEdit = notes.find((note) => note.note_id === note_id); // Find the note to edit\
@@ -134,13 +88,7 @@ const NotepadComponent: React.FC = () => {
     // Delete a note
     const deleteNote = async (note_id: string) => {
         try {
-        setNotes((prevNotes) => prevNotes.filter((note) => note.note_id !== note_id));
-        await axios.delete(`http://localhost:3002/notes/deleteNote/${note_id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-          });
-      
+        await deleteNOte(note_id)
         setEditingNote(null)
 
         } catch (error) {
@@ -176,9 +124,7 @@ const NotepadComponent: React.FC = () => {
         resetForm();
     };
 
-    useEffect(() => {
-      fetchNotes(); // Fetch notes on mount
-    }, []);
+
     // Filter notes based on criteria
     const getFilteredNotes = () => {
         const today = new Date();
@@ -300,7 +246,7 @@ const NotepadComponent: React.FC = () => {
                     saveNote();
                   }
                 }}
-                className="fixed left-0 rounded-md bg-[#354F52] px-4 py-2 text-white hover:bg-blue-700"
+                className="rounded-md bg-[#354F52] px-4 py-2 text-white hover:bg-blue-700"
               >
                 {editingNote ? "Save Changes" : "Save Note"}
               </button>
