@@ -542,7 +542,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             <React.Fragment key={dateKey}>
             <h1 className="mt-[0.5rem] text-lg">{dateKey}</h1>
             
-            <h2 className="mopacity-80 opacity-80">{getDayOfWeek(tasks[0].dueAt)}</h2>
+            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? "mt-[0rem]" : "mt-[-0.5rem]"} opacity-80`}>{getDayOfWeek(tasks[0].dueAt)}</h2>
             {tasks.map((task, index) => (
                   <>
                   <motion.li
