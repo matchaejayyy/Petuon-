@@ -186,7 +186,7 @@ const FlashcardComponent: React.FC = () => {
   return (
     <>
       {OnFirstPage ? (
-        <div className="flex flex-col items-center mt-[-8rem] mr-[6rem] ">
+        <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
           <div className=" h-24 w-full mt-20 flex items-center ">
           <h1 className="text-[#354F52] font-serif text-3xl ">
             Create a new Deck
@@ -196,7 +196,7 @@ const FlashcardComponent: React.FC = () => {
                 value={DeckTitle}
                 onChange={(e) => setDeckTitle(e.target.value)}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="h-16 m-5 rounded-3xl w-[40rem] p-5 shadow-lg mt-[10rem] -ml-[10rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+                className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
                 placeholder="Title"
               />
                 <button
@@ -208,26 +208,17 @@ const FlashcardComponent: React.FC = () => {
                   title: deck.title,
                   }));
                   setDecks(deckData);
-                  const latestDeck = deckData[deckData.length - 1];
-                  if (latestDeck) {
-                  loadDeck(latestDeck.deck_id);
-                  }
                 }}
                 className="flex"
                 >
-            
-                <div
-                  style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="bg-[#354F52] mt-[9rem] ml-[1rem] text-white text-xl h-16 w-[8rem]  rounded-3xl flex items-center justify-center shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
-                >
-                  Create
-                </div>
+                <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
                 </button>
           </div>
-          <h1 className="text-[#354F52] font-serif text-3xl m-10 mt-[5rem] mr-[70rem]">
+          <h1 className="text-[#354F52] font-serif text-3xl m-10 mt-1 mr-[70rem]">
             SavedDecks
           </h1>
-          <div className="w-[94vw] flex items-center justify-center relative ml-[1.7rem] mt-[-2rem] ">
-            <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-10 ml-7 max-h-[460px] overflow-y-auto p-5 [&::-webkit-scrollbar]:w-2">
+          <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
+            <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
               {Object.keys(decks).length === 0 ? (
                 <p
                   className="text-2xl text-gray-500 text-center col-span-full "
@@ -250,7 +241,7 @@ const FlashcardComponent: React.FC = () => {
                           style={{
                             fontFamily: '"Signika Negative", sans-serif',
                           }}
-                        > 
+                        >
                           {title}
                         </h1>
                         <button
@@ -270,12 +261,18 @@ const FlashcardComponent: React.FC = () => {
             </ul>
           </div>
           <div className="fixed top-[6rem] right-[3.9rem]">
+            {/* <button
+              onClick={handleCreateNewDeck}
+              className=" scale-125 flex items-center justify-center"
+            >
+              <CopyPlus className="text-[#354F52] w-7 h-7 mt-[1rem] mr-[60rem] transform transition-transform duration-200 hover:scale-125" />
+            </button> */}
           </div>
         </div>
       ) : isReviewing ? (
         <div>
           <div className="flex">
-            <h1 className="ml-[0.3rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">
+            <h1 className="ml-[2.1rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">
               Review
             </h1>
             <div className="flex justify-center items-center">
@@ -297,30 +294,23 @@ const FlashcardComponent: React.FC = () => {
       ) : (
         <div>
           <div className="flex">
-            <h1 className="ml-[0.1rem] -mt-[1rem] font-serif text-3xl m-10 text-[#354F52]">
+            <h1 className="ml-[2.1rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">
               Create Flashcards!
             </h1>
             <div className="flex justify-center items-center">
-            <button
-              onClick={() => {
-                if (flashcards.length === 0) {
-                  alert('No flashcards to review');
-                } else {
-                  setisReviewing(true);
-                  setOnFirstPage(false);
-                }
-              }}
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="bg-[#657F83] text-white h-16 w-36 -ml-[18rem] rounded-3xl m-10 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
-            >
-              Review Deck
-            </button>
-                <button
-                onClick={() => {setOnFirstPage(true); console.log("Clicked Back");}}
-                className="bg-[#657F83] text-white h-16 w-36 -ml-[1rem] rounded-3xl m-10 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
-                >
-                Back
-                </button>
+              <button
+                onClick={() => {setisReviewing(true); setOnFirstPage(false);}}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="bg-[#657F83] text-white h-16 w-36 rounded-3xl m-10 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
+              >
+                Review Deck
+              </button>
+              <button
+                onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
+                className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
+              >
+                <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />
+              </button>
             </div>
           </div>
           <CreateFlashcard
