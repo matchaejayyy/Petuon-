@@ -208,19 +208,23 @@ const FlashcardComponent: React.FC = () => {
                 className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
                 placeholder="Title"
               />
-                <button
+               <button
                 onClick={async () => {
                   await saveDeck();
                   const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
                   });
                   const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
                   deck_id: deck.deck_id,
                   title: deck.title,
                   }));
                   setDecks(deckData);
+                  const newDeck = deckData.find((deck: Deck) => deck.title === DeckTitle);
+                  if (newDeck) {
+                  loadDeck(newDeck.deck_id);
+                  }
                 }}
                 className="flex"
                 >
