@@ -2,14 +2,22 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { pool } from '../database/CarmineDB';
 
+import authenticateToken  from '../middleware/AuthMiddleware'
+
 dotenv.config(); // Ensure environment variables are loaded
 
 const router = express.Router();
 
 // Get all decks
-router.get('/getDecks', async (req: Request, res: Response) => {
+router.get('/getDecks', authenticateToken, async (req: Request, res: Response) => {
   try {
-    const result = await pool.query('SELECT * FROM decks');
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized: No user information' });
+    }
+
+    const userId = req.user.user_id;
+
+    const result = await pool.query('SELECT * FROM decks WHERE user_id = $1', [userId]);
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error fetching decks:', error);
@@ -42,12 +50,17 @@ router.get('/getFlashcards', async (req: Request, res: Response) => {
 
 
 // Add a deck
-router.post('/insertDecks', async (req: Request, res: Response) => {
+router.post('/insertDecks', authenticateToken, async (req: Request, res: Response) => {
   const { deck_id, title } = req.body;
+  const userId = req.user?.user_id;
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized: User ID not found" });
+  }
 
   try {
-    const query = 'INSERT INTO decks (deck_id, title) VALUES ($1, $2) RETURNING *';
-    const values = [deck_id, title];
+    const query = 'INSERT INTO decks (deck_id, title, user_id) VALUES ($1, $2, $3) RETURNING *';
+    const values = [deck_id, title, userId];
 
     const result = await pool.query(query, values);
     res.status(201).json(result.rows[0]); // Return the new deck
@@ -79,15 +92,20 @@ router.post('/insertCard', async (req: Request, res: Response) => {
 
 
 // Delete a deck
-router.delete('/deleteDeck/:deckId', async (req: Request, res: Response) => {
-  const { deckId } = req.params;
-
+router.delete('/deleteDeck/:deckId', authenticateToken, async (req: Request, res: Response) => {
   try {
+    const { deckId } = req.params;
+    const userId = req.user?.user_id;
+
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized: User ID not found" });
+    }
+
     await pool.query('DELETE FROM flashcards WHERE flashcard_id = $1', [deckId]);
-    await pool.query('DELETE FROM decks WHERE deck_id = $1', [deckId]);
-    res.sendStatus(204); // No Content
+    await pool.query('DELETE FROM decks WHERE deck_id = $1 AND user_id = $2', [deckId, userId]);
+    res.sendStatus(204); 
   } catch (error) {
-    console.error(`Error deleting deck with ID ${deckId}:`, error);
+    console.error(`Error deleting deck`, error);
     res.status(500).send('Failed to delete deck');
   }
 });
