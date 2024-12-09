@@ -15,6 +15,7 @@ import {
   subMonths,
 } from "date-fns";
 import { useNavigate } from "react-router-dom"; // Import for navigation
+const token = localStorage.getItem('token');
 
 interface Tasks {
   task_id: string;
@@ -162,7 +163,11 @@ const CalendarComponent: React.FC = () => {
 
   useEffect(() => {
     const fetchTasks = async () => {
-      const response = await axios.get("http://localhost:3002/tasks/getTask");
+      const response = await axios.get("http://localhost:3002/tasks/getTask", {
+          headers: {
+          Authorization: `Bearer ${token}` // Include the token for authentication
+          }
+      }); 
       const taskData = response.data.map(
         (task: { task_id: string; text: string; due_at: Date }) => {
           const dueAt = new Date(task.due_at);
