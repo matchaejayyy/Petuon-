@@ -9,7 +9,7 @@ import RegisterRouter from "./routes/RegisterRouter";
 import ToDoListRouter from "./routes/ToDoListRouter";
 import FlashcardRouter from './routes/FlashcardRoutes';
 import NotesListRouter from "./routes/NotesListRouter";
-import PetsRouter from "./routes/PetsRouter"
+import AvatarRouter from "./routes/AvatarRouter"
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ app.use('/notes', NotesListRouter);
 app.use('/register', RegisterRouter)
 app.use('/login', LoginRouter);
 app.use('/cards', FlashcardRouter);
-
+app.use('/avatar', AvatarRouter);
 
 app.use('/pets', PetsRouter)
 

@@ -3,7 +3,7 @@ import { pool, router } from '../database/CarmineDB'
 import bcrypt from 'bcrypt';
 import { ValidateRegister } from '../middleware/RegisterMiddleware';
 
-
+// Register a user
 router.post('/registerUser', ValidateRegister, async (req: Request, res: Response) => {
     const { user_password, user_id, user_email, user_name } = req.body;
 

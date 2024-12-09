@@ -1,15 +1,43 @@
-import { useState } from "react";
-import { useAuth } from "../contexts/UserProvider"; // Import useAuth for logout functionality
+import { useState, useEffect } from "react";
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
-
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 const Avatar = () => {
-  const { logout } = useAuth(); // Access the logout function from useAuth
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [userName, setUserName] = useState<string>("")
+  const [userEmail, setUserEmail] = useState<string>("")
+  const token = localStorage.getItem('token');
+  const navigate = useNavigate(); 
 
   // Toggle dropdown visibility
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3002/avatar/getUser",  {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        const userData = response.data
+        setUserName(userData.user_name);
+        setUserEmail(userData.user_email);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <>
       {/* Top-right section for Bell and Profile */}
@@ -34,8 +62,12 @@ const Avatar = () => {
                   <User className="h-6 w-6" />
                 </div>
                 <div className="ml-3">
-                  <p className="font-medium text-gray-800">Carmine123</p>
-                  <p className="text-sm text-gray-500">carmine@gmail.com</p>
+
+                  <p className="font-medium text-gray-800">{userName}</p>
+                        <p className="text-sm text-gray-500 cursor-pointer" title={userEmail} >
+                      {userEmail.length > 5 ? `${userEmail.substring(0, 5)}...@gmail.com` : userEmail}
+                      </p>
+
                 </div>
               </div>
               {/* Dropdown Options */}
@@ -58,7 +90,7 @@ const Avatar = () => {
                 {/* Logout Option */}
                 <li
                   className="cursor-pointer px-4 py-2 hover:bg-gray-100"
-                  onClick={logout} // Call the logout function here
+                  onClick={handleLogout} 
                 >
                   Log out
                 </li>
