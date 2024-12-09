@@ -12,3 +12,7 @@
 .disabled-container {
   pointer-events: none; /* Disables all user interactions */ /* Optional: add visual feedback */
 }
+
+.glow-red {
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
+}

@@ -7,7 +7,7 @@ import LoginRouter from './routes/LoginRouter';
 import RegisterRouter from "./routes/RegisterRouter";
 
 import ToDoListRouter from "./routes/ToDoListRouter";
-import FlashcardRouter from './routes/FlashcardRoutes';
+import FlashcardRouter from './routes/FlashcardRouter';
 import NotesListRouter from "./routes/NotesListRouter";
 import PetsRouter from "./routes/PetsRouter"
 import AvatarRouter from "./routes/AvatarRouter"
