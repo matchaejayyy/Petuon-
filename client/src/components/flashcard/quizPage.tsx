@@ -54,7 +54,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   return (
     <div className="flex flex-col items-center justify-center h-[80%]">
       {isQuizComplete ? (
-        <div className="inline items-center justify-center">
+        <div className="ml-[10%] inline items-center justify-center">
           <div className="mb-8">
             <div className="w-[80rem] h-[300px] bg-black rounded-2xl shadow-lg overflow-hidden ml-[-8rem]">
               <div
@@ -101,7 +101,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           </div>
         </div>
       ) : (
-        <div className="w-[80%] h-[450px] ml-[-8rem] flex flex-col items-center justify-center rounded-2xl">
+        <div className="w-[80%] h-[450px] ml-1 flex flex-col items-center justify-center rounded-2xl">
           <div
             className="bg-[#FE9B72] rounded-2xl p-5 w-full text-center cursor-pointer flex flex-col justify-center items-center h-full shadow-lg"
             onClick={() => setShowAnswer((prev) => !prev)}
