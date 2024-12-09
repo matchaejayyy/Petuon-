@@ -231,12 +231,14 @@ const CalendarComponent: React.FC = () => {
           className={dayClasses}
           onClick={() => toggleExpand(formattedFullDate)} // Toggle dropdown on click
         >
+          <div className="text-right text-sm font-semibold">
           {formattedDate}
+          </div>
            {tasksForDay.length > 0 && (
             <div>
               {expandedDay !== formattedFullDate &&
                 tasksForDay.slice(0, 2).map((task) => (
-                  <ul key={task.task_id} className="list-disc pl-4">
+                  <ul key={task.task_id} className="pl-5 ml-[-1.3rem] w-[10rem]" style={{ listStyleType: "disc" }}>
                     <li
                       style={{
                         fontFamily: '"Signika Negative", sans-serif',
@@ -249,18 +251,26 @@ const CalendarComponent: React.FC = () => {
                             ? "#F59E0B"
                             : "#6B7280",
                       }}
-                      className="flex flex-col gap-2 ml-[0.5rem] mt-[-0.6rem] truncate text-lg"
-                    >
+                      className={`flex flex-col gap-2 ml-[0.5rem] mt-[-0.6rem] truncate text-sm ${
+                        displayStatus(task.dueAt) === "Today"
+                          ? "bg-green-400 mt-[0.1rem] rounded ml-[-1rem] pl-2"
+                          : displayStatus(task.dueAt) === "Upcoming"
+                          ? "bg-blue-100  mt-[0.1rem] rounded ml-[-1rem] pl-2"
+                          : displayStatus(task.dueAt) === "Tomorrow"
+                          ? "bg-orange-100 mt-[0.1rem] rounded ml-[-1rem] pl-2 "
+                          : "bg-gray-100 mt-[0.1rem] rounded ml-[-1rem] pl-2"
+                      }`}
+                      >
                       {task.text}
                     </li>
                   </ul>
                 
                 ))}
-                {tasksForDay.length > 2 && (
-                  <div className=" text-[#151515]">
+                {/* {tasksForDay.length > 2 &&  !expandedDay && (
+                  <div className=" text-[#151515] mt-[-0.8rem] ml-[8rem]">
                     + {tasksForDay.length - 2}
                   </div>
-                )}
+                )} */}
               {expandedDay === formattedFullDate && (
                 <div className="absolute z-10 mt-2 max-h-20 w-[10rem] overflow-y-auto rounded-md border bg-white p-2 shadow-lg [&::-webkit-scrollbar]:w-2">
                   {tasksForDay.map((task) => (
