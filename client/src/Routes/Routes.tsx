@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 
 import Dashboard from '../pages/DashboardPage';
 import Calendar from '../pages/CalendarPage';
-import Flashcard from '../components/FlashCard';
+import Flashcard from '../components/flashcard/FlashCardComponent';
 import ToDoList from '../pages/ToDoListPage';
 import Notepad from '../pages/NotepadPage';
 import LoginPage from '../pages/LoginPage';
@@ -23,8 +23,10 @@ const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/Calendar" element={<Calendar />} />
             <Route path="/Flashcard" element={<Flashcard />} />
-            <Route path="/ToDoList" element={<ToDoList />} />
             <Route path="/Notepad" element={<Notepad />} />
+
+            {/* Dynamic Route for ToDoList with taskId */}
+            <Route path="/ToDoList" element={<ToDoList />} />
           </>
         ) : (
           <>
@@ -40,4 +42,4 @@ const Routers: React.FC<RoutersProps> = ({ isLoggedIn }) => {
   );
 };
 
-export default Routers; 
+export default Routers;
