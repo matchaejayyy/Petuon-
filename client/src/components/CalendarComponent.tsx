@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import axios from "axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   format,
   startOfMonth,
@@ -15,20 +14,15 @@ import {
   subMonths,
 } from "date-fns";
 import { useNavigate } from "react-router-dom"; // Import for navigation
-const token = localStorage.getItem('token');
-
-interface Tasks {
-  task_id: string;
-  text: string;
-  dueAt: Date;
-}
+import { useToDoList } from "../hooks/useToDoList";
 
 const CalendarComponent: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(getMonth(currentMonth));
   const [selectedYear, setSelectedYear] = useState(getYear(currentMonth));
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [tasks, setTasks] = useState<Tasks[]>([]);
+  const {tasks, setTasks} = useToDoList();
+
 
   const navigate = useNavigate(); // For navigation to ToDoListPage
 
@@ -161,28 +155,45 @@ const CalendarComponent: React.FC = () => {
     </div>
   );
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      const response = await axios.get("http://localhost:3002/tasks/getTask", {
-          headers: {
-          Authorization: `Bearer ${token}` // Include the token for authentication
-          }
-      }); 
-      const taskData = response.data.map(
-        (task: { task_id: string; text: string; due_at: Date }) => {
-          const dueAt = new Date(task.due_at);
-          return {
-            task_id: task.task_id,
-            text: task.text,
-            dueAt: dueAt,
-          };
-        },
-      );
-      setTasks(taskData);
-    };
-    fetchTasks();
+  const updateTasks = useCallback(() => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        return task;
+      }),
+    );
   }, []);
 
+  useEffect(() => {
+    const interval = setInterval(updateTasks, 1000);
+
+    return () => clearInterval(interval);
+  }, [updateTasks]);
+
+  const displayStatus = (date: Date) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+  
+    const formattedDate = date.toLocaleDateString();
+    const todayString = today.toLocaleDateString();
+    const tomorrowString = tomorrow.toLocaleDateString();
+  
+    switch (formattedDate) {
+      case "1/1/1970":
+
+        return "NoDue";
+      case todayString:
+
+        return "Today";
+      case tomorrowString:
+
+        return "Tomorrow";
+      default:
+      
+        return "Upcoming";
+    }
+
+  };
   const renderCells = () => {
     const [expandedDay, setExpandedDay] = useState<string | null>(null); // Track which day is expanded
 
@@ -210,9 +221,9 @@ const CalendarComponent: React.FC = () => {
       );
 
       // Styling for day cells
-      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer  hover:shadow-lg transition-shadow transition-all duration-300 ${
-        isCurrentMonth ? "" : "text-gray-400"
-      } ${isToday ? "bg-[#FE9B72] text-white" : ""}`; // Highlight for today
+      const dayClasses = `flex flex-col border p-2 h-20 w-full rounded-lg cursor-pointer  hover:shadow-lg transition-shadow transition-all duration-300 
+      ${isCurrentMonth ? "" : "text-gray-400"
+      } ${isToday ? "text-black border-green-500 bg-[#D1FAE5]" : ""}`
 
       dateCells.push(
         <div
@@ -220,35 +231,46 @@ const CalendarComponent: React.FC = () => {
           className={dayClasses}
           onClick={() => toggleExpand(formattedFullDate)} // Toggle dropdown on click
         >
-          {/* Render day number */}
           <div className="text-right text-sm font-semibold">
-            {formattedDate}
+          {formattedDate}
           </div>
-
-          {/* Conditionally show tasks in the container */}
-          {tasksForDay.length > 0 && (
+           {tasksForDay.length > 0 && (
             <div>
               {expandedDay !== formattedFullDate &&
-                tasksForDay.slice(0, 1).map((task) => (
-                  <div
-                    key={task.task_id}
-                    style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                    className={`ml-[0.5rem] truncate text-lg ${
-                      new Date(task.dueAt) < new Date()
-                        ? "glow-red text-red-600"
-                        : "text-blue-600"
-                    }`}
-                  >
-                    {task.text}
-                  </div>
+                tasksForDay.slice(0, 2).map((task) => (
+                  <ul key={task.task_id} className="pl-5 ml-[-1.3rem] w-[10rem]" style={{ listStyleType: "disc" }}>
+                    <li
+                      style={{
+                        fontFamily: '"Signika Negative", sans-serif',
+                        color:
+                          displayStatus(task.dueAt) === "Today"
+                            ? "green"
+                            : displayStatus(task.dueAt) === "Upcoming"
+                            ? "#3B82F6"
+                            : displayStatus(task.dueAt) === "Tomorrow"
+                            ? "#F59E0B"
+                            : "#6B7280",
+                      }}
+                      className={`flex flex-col gap-2 ml-[0.5rem] mt-[-0.6rem] truncate text-sm ${
+                        displayStatus(task.dueAt) === "Today"
+                          ? "bg-green-400 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                          : displayStatus(task.dueAt) === "Upcoming"
+                          ? "bg-blue-100  mt-[0.1rem] rounded ml-[1rem] pl-2"
+                          : displayStatus(task.dueAt) === "Tomorrow"
+                          ? "bg-orange-100 mt-[0.1rem] rounded ml-[1rem] pl-2 "
+                          : "bg-gray-100 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                      }`}
+                      >
+                      {task.text}
+                    </li>
+                  </ul>
+                
                 ))}
-              {tasksForDay.length > 1 && (
-                <div className="left-[11.2rem] top-[13.4rem] text-gray-600">
-                  +{tasksForDay.length - 1} more task
-                  {tasksForDay.length - 2 > 1 ? "s" : ""}
-                </div>
-              )}
-
+                {/* {tasksForDay.length > 2 &&  !expandedDay && (
+                  <div className=" text-[#151515] mt-[-0.8rem] ml-[8rem]">
+                    + {tasksForDay.length - 2}
+                  </div>
+                )} */}
               {expandedDay === formattedFullDate && (
                 <div className="absolute z-10 mt-2 max-h-20 w-[10rem] overflow-y-auto rounded-md border bg-white p-2 shadow-lg [&::-webkit-scrollbar]:w-2">
                   {tasksForDay.map((task) => (
