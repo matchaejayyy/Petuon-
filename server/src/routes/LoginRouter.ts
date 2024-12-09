@@ -63,4 +63,3 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
 });
 
 export default router;
-export default router;
