@@ -23,6 +23,7 @@ const LoginPage: React.FC<Props> = () => {
           user_password: form.user_password,
         });
         if (response.data.token) {
+          localStorage.setItem("token", response.data.token);
           alert("Login successful! Redirecting to dashboard...");
           navigate("/dashboard");
         }

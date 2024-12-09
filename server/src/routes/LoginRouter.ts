@@ -48,6 +48,8 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       `UPDATE users SET token = $1 WHERE user_id = $2`,
       [token, user.user_id]
     );
+    console.log(token)
+
 
     // Respond with token and user info
     res.status(200).json({
