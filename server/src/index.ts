@@ -10,6 +10,7 @@ import FlashcardRouter from './routes/FlashcardRoutes';
 import NotesListRouter from "./routes/NotesListRouter";
 import AvatarRouter from "./routes/AvatarRouter"
 
+
 dotenv.config();
 
 const app = express();
@@ -28,6 +29,7 @@ app.use('/cards', FlashcardRouter);
 app.use('/avatar', AvatarRouter);
 
 app.use('/pets', PetsRouter)
+app.use('/avatar', AvatarRouter);
 
  // Start Server on port 3002
 app.listen(PORT, () => {

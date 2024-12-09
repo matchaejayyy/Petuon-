@@ -199,15 +199,26 @@ const FlashcardComponent: React.FC = () => {
                 className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
                 placeholder="Title"
               />
-              <button onClick={saveDeck} className="flex  ">
-                <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
-              </button>
+                <button
+                onClick={async () => {
+                  await saveDeck();
+                  const response = await axios.get(`http://localhost:3002/cards/getDecks`);
+                  const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
+                  deck_id: deck.deck_id,
+                  title: deck.title,
+                  }));
+                  setDecks(deckData);
+                }}
+                className="flex"
+                >
+                <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
+                </button>
           </div>
-          <h1 className="text-[#354F52] font-serif text-3xl m-10 mr-[77rem]">
-            Saved Decks
+          <h1 className="text-[#354F52] font-serif text-3xl m-10 mt-1 mr-[70rem]">
+            SavedDecks
           </h1>
           <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
-            <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 max-h-[540px] overflow-y-auto p-5 [&::-webkit-scrollbar]:w-2">
+            <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
               {Object.keys(decks).length === 0 ? (
                 <p
                   className="text-2xl text-gray-500 text-center col-span-full "
@@ -220,7 +231,7 @@ const FlashcardComponent: React.FC = () => {
                   const assignedColor = colors[index % colors.length];
 
                   return (
-                    <li key={title} className="w-full">
+                    <li key={title} className="w-full ml-[3rem]">
                       <div
                         onClick={() => {loadDeck(deck_id)}}
                         className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
@@ -234,10 +245,10 @@ const FlashcardComponent: React.FC = () => {
                           {title}
                         </h1>
                         <button
-                          className="absolute bottom-3 right-3  h-8 w-8 rounded-full flex items-center justify-center "
+                          className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
                           onClick={(e) => {
-                            e.preventDefault();
-                            deleteDeck(deck_id);
+                          e.stopPropagation();
+                          deleteDeck(deck_id);
                           }}
                         >
                           <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
