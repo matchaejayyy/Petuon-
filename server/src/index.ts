@@ -2,10 +2,9 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-
 import LoginRouter from './routes/LoginRouter';
 import RegisterRouter from "./routes/RegisterRouter";
-
+import PetsRouter from "./routes/PetsRouter";
 import ToDoListRouter from "./routes/ToDoListRouter";
 import FlashcardRouter from './routes/FlashcardRoutes';
 import NotesListRouter from "./routes/NotesListRouter";
@@ -34,6 +33,6 @@ app.use('/pets', PetsRouter)
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
- 
+
 
 

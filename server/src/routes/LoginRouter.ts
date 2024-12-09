@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { pool, router } from '../database/CarmineDB'
+import { pool, router } from '../database/CarmineDB';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -22,7 +22,7 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       `SELECT * FROM users WHERE user_name = $1`,
       [user_name]
     );
-    
+
     const user = userQuery.rows[0];
     if (!user) {
       res.status(401).json({ message: "Invalid username or password" });
@@ -35,12 +35,18 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       res.status(401).json({ message: "Invalid username or password" });
       return;
     }
-    
+
     // Generate JWT token
     const token = jwt.sign(
       { user_id: user.user_id, user_name: user.user_name },
       JWT_SECRET,
       { expiresIn: '1h' } // Token expires in 1 hour
+    );
+
+    // Save the token to the database
+    await pool.query(
+      `UPDATE users SET token = $1 WHERE user_id = $2`,
+      [token, user.user_id]
     );
 
     // Respond with token and user info
