@@ -15,18 +15,25 @@ import {
 } from "date-fns";
 import { useNavigate } from "react-router-dom"; // Import for navigation
 import { useToDoList } from "../hooks/useToDoList";
+import { motion } from 'framer-motion';
 
 const CalendarComponent: React.FC = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedMonth, setSelectedMonth] = useState(getMonth(currentMonth));
   const [selectedYear, setSelectedYear] = useState(getYear(currentMonth));
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const {tasks, setTasks} = useToDoList();
-
-
-  const navigate = useNavigate(); // For navigation to ToDoListPage
-
-  // Navigate to the previous or next month
+  const {tasks, setTasks, afterloading} = useToDoList();
+  const [expandedTaskId, setExpandedTaskId] =  useState<string | null>(null);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  
+  const toggleTaskContent = (taskId: string) => {
+    setExpandedTaskId((prevId) => (prevId === taskId ? null : taskId));
+  };
+  
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/todolist");
+  };
   const prevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
     setCurrentMonth(newDate);
@@ -155,6 +162,7 @@ const CalendarComponent: React.FC = () => {
     </div>
   );
 
+
   const updateTasks = useCallback(() => {
     setTasks((prevTasks) =>
       prevTasks.map((task) => {
@@ -162,38 +170,26 @@ const CalendarComponent: React.FC = () => {
       }),
     );
   }, []);
-
+  
   useEffect(() => {
     const interval = setInterval(updateTasks, 1000);
 
     return () => clearInterval(interval);
   }, [updateTasks]);
 
-  const displayStatus = (date: Date) => {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-  
-    const formattedDate = date.toLocaleDateString();
-    const todayString = today.toLocaleDateString();
-    const tomorrowString = tomorrow.toLocaleDateString();
-  
-    switch (formattedDate) {
-      case "1/1/1970":
-
-        return "NoDue";
-      case todayString:
-
-        return "Today";
-      case tomorrowString:
-
-        return "Tomorrow";
-      default:
-      
-        return "Upcoming";
-    }
-
+  const listItemVariants = {
+    hidden: { opacity: 0 }, // Start fully transparent
+    visible: (index: number) => ({
+      opacity: 1, // Fade to fully visible
+      transition: {
+        delay: index * 0.1, // Delay each item by 0.1s
+        duration: 0.3,
+        ease: 'easeInOut',
+      },
+    }),
+    exit: { opacity: 0 }, // Fade out when exiting
   };
+  
   const renderCells = () => {
     const [expandedDay, setExpandedDay] = useState<string | null>(null); // Track which day is expanded
 
@@ -225,68 +221,159 @@ const CalendarComponent: React.FC = () => {
       ${isCurrentMonth ? "" : "text-gray-400"
       } ${isToday ? "text-black border-green-500 bg-[#D1FAE5]" : ""}`
 
+      const emojis = ["☮", "❤︎", "☯"];  
+   
       dateCells.push(
         <div
           key={day.toString()}
           className={dayClasses}
-          onClick={() => toggleExpand(formattedFullDate)} // Toggle dropdown on click
+          onClick={() => {
+            if (tasksForDay.length > 3) {
+              toggleExpand(formattedFullDate);
+            }
+          }}  // Toggle dropdown on click
         >
           <div className="text-right text-sm font-semibold">
           {formattedDate}
           </div>
            {tasksForDay.length > 0 && (
             <div>
+              
               {expandedDay !== formattedFullDate &&
-                tasksForDay.slice(0, 2).map((task) => (
-                  <ul key={task.task_id} className="pl-5 ml-[-1.3rem] w-[10rem]" style={{ listStyleType: "disc" }}>
-                    <li
+                 tasksForDay.slice(0, 3).map((task, index) => (
+                  <ul
+                    key={task.task_id}
+                    className="pl-5 ml-[-2rem] mb-[1.3rem] mt-[-1.2rem] w-[10.5rem]"
+                    style={{ listStyleType: "disc" }}
+                  >
+                    <motion.li
+                      initial={afterloading ? "hidden" : undefined}
+                      animate={afterloading ? "visible" : undefined}
+                      exit={afterloading ? "exit" : undefined}
+                      custom={afterloading ? index : undefined}
+                      variants={afterloading ? listItemVariants : undefined}
                       style={{
                         fontFamily: '"Signika Negative", sans-serif',
                         color:
-                          displayStatus(task.dueAt) === "Today"
+                          new Date(task.dueAt) < new Date()
+                            ? "red"
+                            : new Date(task.dueAt).getDay() === new Date().getDay()
                             ? "green"
-                            : displayStatus(task.dueAt) === "Upcoming"
-                            ? "#3B82F6"
-                            : displayStatus(task.dueAt) === "Tomorrow"
-                            ? "#F59E0B"
-                            : "#6B7280",
+                            : new Date(task.dueAt).getDay() === new Date().getDay() + 1
+                            ? "orange"
+                            : "blue",
                       }}
-                      className={`flex flex-col gap-2 ml-[0.5rem] mt-[-0.6rem] truncate text-sm ${
-                        displayStatus(task.dueAt) === "Today"
-                          ? "bg-green-400 mt-[0.1rem] rounded ml-[1rem] pl-2"
-                          : displayStatus(task.dueAt) === "Upcoming"
-                          ? "bg-blue-100  mt-[0.1rem] rounded ml-[1rem] pl-2"
-                          : displayStatus(task.dueAt) === "Tomorrow"
-                          ? "bg-orange-100 mt-[0.1rem] rounded ml-[1rem] pl-2 "
-                          : "bg-gray-100 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                      className={`flex flex-col gap-2 ml-[1rem] mt-[-0.6rem] pl-[0.7rem] truncate text-sm hover:scale-110 ${
+                        new Date(task.dueAt) < new Date()
+                          ? "bg-red-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                          : new Date(task.dueAt).getDay() === new Date().getDay()
+                          ? "bg-green-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                          : new Date(task.dueAt).getDay() === new Date().getDay() + 1
+                          ? "bg-orange-200 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                          : "bg-blue-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
                       }`}
-                      >
-                      {task.text}
-                    </li>
-                  </ul>
-                
-                ))}
-                {/* {tasksForDay.length > 2 &&  !expandedDay && (
-                  <div className=" text-[#151515] mt-[-0.8rem] ml-[8rem]">
-                    + {tasksForDay.length - 2}
-                  </div>
-                )} */}
-              {expandedDay === formattedFullDate && (
-                <div className="absolute z-10 mt-2 max-h-20 w-[10rem] overflow-y-auto rounded-md border bg-white p-2 shadow-lg [&::-webkit-scrollbar]:w-2">
-                  {tasksForDay.map((task) => (
-                    <div
-                      key={task.task_id}
-                      onClick={() =>
-                        navigate(`/ToDoList?taskId=${task.task_id}`)
-                      }
-                      className="text-md cursor-pointer truncate rounded p-1 text-black hover:bg-gray-200"
-                      style={{ fontFamily: '"Signika Negative", serif' }}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect(); // Get position of hovered element
+                        setModalPosition({ top: rect.bottom + 5, left: rect.left + rect.width / 2 });
+                        toggleTaskContent(task.task_id);
+                      }}
+                      onMouseLeave={() => {
+                        setExpandedTaskId(null); // Close the modal when the mouse leaves
+                      }}
                     >
-                      {task.text}
-                    </div>
+                      <span>
+                        <span className="text-[0.7rem] ml-[-0.3rem] mr-[-0.4rem] pr-[1rem]">
+                          {emojis[index % emojis.length]}
+                        </span>
+                        <span className="text-[0.9rem] ">
+                          {task.text.length > 10 ? `${task.text.slice(0, 10)}...` : task.text}
+                        </span>
+                      </span>
+                    </motion.li>
+                    {expandedTaskId === task.task_id && (
+                      <div
+                        className={`modal-content fixed w-[20rem] p-[0.5rem] rounded-lg border border-gray-700 bg-opacity-70 ${
+                          new Date(task.dueAt) < new Date()
+                            ? "bg-red-200"
+                            : new Date(task.dueAt).getDay() === new Date().getDay()
+                            ? "bg-green-200"
+                            : new Date(task.dueAt).getDay() === new Date().getDay() + 1
+                            ? "bg-orange-100"
+                            : "bg-blue-100"
+                        }`}
+                        style={{ top: modalPosition.top, left: modalPosition.left, transform: "translateX(-50%)" }}
+                        onClick={handleClick}
+                      >
+                        <span
+                          className={`left-3 ${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                        >
+                          {task.text}
+                        </span>
+                        <span className="ml-[13rem]">
+                          {new Date(task.dueAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true, // Use `false` for 24-hour format
+                          })}
+                        </span>
+                      </div>
+                    )}
+                  </ul>
+                ))}
+                
+                {tasksForDay.length > 3 && expandedDay !== formattedFullDate && (
+                  <div 
+                  className=" text-[#3B82F6] mt-[-2.4rem] ml-[8.7rem] font-medium"
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  >
+                    + {tasksForDay.length - 3}
+                  </div>
+                )}
+             
+              {expandedDay === formattedFullDate && (
+                <motion.div className={`absolute z-10  ml-[-0.5rem] max-h-[5.7rem] w-[11.1rem] overflow-x-hidden overflow-y-auto rounded-md border p-2 shadow-lg bg-opacity-0 [&::-webkit-scrollbar]:w-2`}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                >
+                  {tasksForDay.map((task, index) => (
+                    <ul key={task.task_id} className="pl-5 ml-[-2rem] mb-[0.2rem] mt-[-0.1rem] w-[10.4rem] scale-70" style={{ listStyleType: "disc" }}>
+                      <li
+                      style={{
+                        fontFamily: '"Signika Negative", sans-serif',
+                        color:
+                        new Date(task.dueAt) < new Date() ? 
+                        "red" :
+                        new Date(task.dueAt).getDay() == new Date().getDay() ?
+                        "green": 
+                        new Date(task.dueAt).getDay() === new Date().getDay() + 1 ?
+                        "orange" : "blue"
+                    }}
+                      className={`flex flex-col gap-2 ml-[1rem] mt-[-0.6rem] pl-[0.7rem] truncate text-sm hover:shadow-[0px_4px_10px_rgba(0,0,0,0.5)]  ${
+                        new Date(task.dueAt) < new Date() ? 
+                        "bg-red-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                        :  new Date(task.dueAt).getDay() == new Date().getDay() ?
+                        "bg-green-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                        : new Date(task.dueAt).getDay() === new Date().getDay() + 1 ?
+                          "bg-orange-200 mt-[0.1rem] rounded ml-[1rem] pl-2" :
+                          "bg-blue-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
+                    }`}
+                      key={task.task_id}
+                      >
+                      <span>
+                          <span className="text-[0.7rem] mr-[-0.4rem] pr-[1rem]">
+                            {emojis[index % emojis.length]}
+                          </span> 
+                          <span className="text-[0.9rem] ">
+                          {task.text.length > 10 ? `${task.text.slice(0, 10)}...` : task.text}
+                          </span>
+                        </span> 
+                      </li>
+                     
+                    </ul>
+                    
                   ))}
-                </div>
-              )}
+                </motion.div>
+                
+                )}
             </div>
           )}
         </div>,

@@ -808,7 +808,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                           }}
                           className="absolute ml-3 text-lg font-semibold text-[#354F52]"
                         >
-                          {task.text}
+                           {task.text.length > 40 ? `${task.text.slice(0, 40)}...` : task.text}
                         </span>
                         <span
                           style={{
