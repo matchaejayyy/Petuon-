@@ -6,13 +6,14 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const [tempFlashcards, setTempFlashcards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
-  const [QuizFinished, setQuizFinished] = useState<boolean>(false);
+  const [quizFinished, setQuizFinished] = useState<boolean>(false);
+  const [quizStarted, setQuizStarted] = useState<boolean>(false); // Track if the quiz has started
 
   useEffect(() => {
     if (flashcards && flashcards.length > 0) {
       setTempFlashcards(shuffleArray(flashcards));
     }
-  }, [flashcards]); 
+  }, [flashcards]);
 
   function shuffleArray<T>(array: T[]): T[] {
     const shuffled = [...array];
@@ -39,7 +40,6 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       setQuizFinished(true);
     }
   };
-  
 
   const handlePreviousFlashcard = () => {
     if (currentIndex > 0) {
@@ -48,82 +48,127 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     }
   };
 
+  const handleStartNewQuiz = () => {
+    setQuizStarted(true);
+    setQuizFinished(false);
+    setCurrentIndex(0);
+  };
+
   const currentFlashcard = tempFlashcards[currentIndex];
-  const isQuizComplete = currentIndex === tempFlashcards.length - 1 && showAnswer && QuizFinished;
+  const isQuizComplete = currentIndex === tempFlashcards.length - 1 && quizFinished;
 
   return (
-    <div className="flex flex-col items-center justify-center h-[80%]">
-      {isQuizComplete ? (
-        <div className="inline items-center justify-center">
-          <div className="mb-8">
-            <div className="w-[80rem] h-[300px] bg-black rounded-2xl shadow-lg overflow-hidden ml-[-8rem]">
-              <div
-                className="bg-[#FE9B72] w-full h-full p-5 text-center cursor-pointer flex flex-col justify-center items-center"
-                onClick={() => setShowAnswer((prev) => !prev)}
-              >
-                <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-4xl mb-5">{currentFlashcard.question}</h2>
-                <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className={`text-xl ${showAnswer ? "text-black" : "text-gray-200"}`}>
-                  {showAnswer ? currentFlashcard.answer : "Tap to show answer"}
-                </p>
-              </div>
-            </div>
-            <div className="flex justify-between mt-5 w-full">
-              <button
-                onClick={handlePreviousFlashcard}
-                className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] ml-[-8rem]"
-                disabled={currentIndex === 0}
-              >
-                <CircleArrowLeft className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
-              </button>
-              <button
-                onClick={handleNextFlashcard}
-                className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]"
-              >
-                <CircleArrowRight className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
-              </button>
-            </div>
+    <div className="flex flex-col items-center justify-center h-screen">
+      {quizStarted ? (
+        // Fill-in-the-blank quiz UI
+        <div className="flex flex-col items-center">
+          <div
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center transition-transform duration-300 hover:scale-105 cursor-pointer"
+          >
+            <h2 className="text-3xl font-semibold text-[#354F52] break-words max-w-full p-5">
+              {currentFlashcard ? `Fill in the blank: ${currentFlashcard.question.replace(
+                /___/g,
+                "_____"
+              )}` : "Loading..."}
+            </h2>
           </div>
 
-          <div className="flex flex-col ml-[21rem] mt-[-5rem]">
-            <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-4xl">Quiz complete! Well done!</p>
+          {/* Input for fill-in-the-blank */}
+          <input
+            type="text"
+            placeholder="Your answer"
+            className="mt-5 p-2 border border-[#354F52] rounded-md"
+            onChange={(e) => {
+              // Check the answer when typed
+              if (e.target.value.trim().toLowerCase() === currentFlashcard.answer.trim().toLowerCase()) {
+                handleNextFlashcard();
+              }
+            }}
+          />
+
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between w-[600px] mt-5">
             <button
-              onClick={shuffleFlashcards}
-              style={{ fontFamily: '"Signika Negative", sans-serif' }} className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-5 ml-[7rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+              onClick={handlePreviousFlashcard}
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
+              disabled={currentIndex === 0}
             >
-              Shuffle & Restart
+              <CircleArrowLeft className="w-10 h-10 text-[#354F52]" />
             </button>
+            <div className="bg-[#354F52] rounded-lg p-2 mt-[2rem]">
+              <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
+                {currentIndex + 1} / {tempFlashcards.length}
+              </span>
+            </div>
             <button
-              onClick={() => setOnFirstPage(true)}
-              style={{ fontFamily: '"Signika Negative", sans-serif' }} className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-5 ml-[7rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+              onClick={handleNextFlashcard}
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
             >
-              Go to Decks
+              <CircleArrowRight className="w-10 h-10 text-[#354F52]" />
             </button>
           </div>
         </div>
+      ) : isQuizComplete ? (
+        <div className="flex flex-col items-center">
+          {/* Quiz Completion UI */}
+          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#354F52] font-bold mb-4 -mt-[16rem]">
+            FlashCard Complete! Well Done!
+          </h2>
+          <button
+            onClick={shuffleFlashcards}
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-10 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+          >
+            Shuffle & Restart
+          </button>
+          <button
+            onClick={() => setOnFirstPage(true)}
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+          >
+            Go to Decks
+          </button>
+          <button
+            onClick={handleStartNewQuiz}
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+          >
+            Start Quiz
+          </button>
+        </div>
       ) : (
-        <div className="w-[80%] h-[450px] ml-[-8rem] flex flex-col items-center justify-center rounded-2xl">
+        // Regular quiz UI before it's finished
+        <div className="flex flex-col items-center">
           <div
-            className="bg-[#FE9B72] rounded-2xl p-5 w-full text-center cursor-pointer flex flex-col justify-center items-center h-full shadow-lg"
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center transition-transform duration-300 hover:scale-105 cursor-pointer"
             onClick={() => setShowAnswer((prev) => !prev)}
           >
-            <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-6xl mb-5">
-              {currentFlashcard ? currentFlashcard.question : 'Loading...'}</h2>
-            <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className={`text-3xl ${showAnswer ? "text-black" : "text-gray-400"}`}>
-              {showAnswer ? currentFlashcard.answer : "Tap to show answer"}
-            </p>
+            <h2 className="text-3xl font-semibold text-[#354F52] break-words max-w-full p-5">
+              {currentFlashcard ? (showAnswer ? currentFlashcard.answer : currentFlashcard.question) : "Loading..."}
+            </h2>
           </div>
-          <div className="flex justify-between mt-5 w-full">
+
+          {/* Navigation Controls */}
+          <div className="flex items-center justify-between w-[600px] mt-5">
             <button
               onClick={handlePreviousFlashcard}
-              className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]"
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
+              disabled={currentIndex === 0}
             >
-              <CircleArrowLeft className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
+              <CircleArrowLeft className="w-10 h-10 text-[#354F52]" />
             </button>
+            <div className="bg-[#354F52] rounded-lg p-2 mt-[2rem]">
+              <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
+                {currentIndex + 1} / {tempFlashcards.length}
+              </span>
+            </div>
             <button
               onClick={handleNextFlashcard}
-              className="rounded-full flex items-center justify-center transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]"
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
             >
-              <CircleArrowRight className="w-[3.5rem] h-[3.5rem] text-[#354F52]" />
+              <CircleArrowRight className="w-10 h-10 text-[#354F52]" />
             </button>
           </div>
         </div>
