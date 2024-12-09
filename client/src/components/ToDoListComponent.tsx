@@ -400,9 +400,26 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   const groupedTasks = groupTasksByDate(display);
 
   const sortedGroupedTasks = Object.entries(groupedTasks).sort(([a], [b]) => {
-    if (a === "Past Due") return -1;
+    if (a === "No Due") return 1;
     if (b === "No Due") return -1;
-    return b.localeCompare(a);
+  
+    if (a === "Past Due") return -1;
+    if (b === "Past Due") return 1;
+  
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+  
+    const isValidDateA = !isNaN(dateA.getTime());
+    const isValidDateB = !isNaN(dateB.getTime());
+  
+    if (isValidDateA && isValidDateB) {
+      return dateA.getTime() - dateB.getTime();
+    }
+  
+    if (isValidDateA) return -1;
+    if (isValidDateB) return 1;
+  
+    return a.localeCompare(b);
   });
   
   if (variant === "default") {
