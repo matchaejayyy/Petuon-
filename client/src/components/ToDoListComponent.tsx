@@ -546,9 +546,9 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             >
             {sortedGroupedTasks.map(([dateKey, tasks]) => (
             <React.Fragment key={dateKey}>
-            <h1 className="mt-[0.5rem] text-lg">{dateKey}</h1>
+            <h1 className="ml-[0.2rem] mt-[0.5rem] text-xl">{dateKey}</h1>
             
-            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? "mt-[0.3rem]" : "mt-[-0.5rem]"} pb-[0.3rem] opacity-80`}>{getDayOfWeek(tasks[0].dueAt)}</h2>
+            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? "mt-[0.3rem]" : "mt-[-0.5rem]"} ml-[0.2rem] pb-[0.3rem] opacity-80`}>{getDayOfWeek(tasks[0].dueAt)}</h2>
             {tasks.map((task, index) => (
                   <>
                   <motion.li
