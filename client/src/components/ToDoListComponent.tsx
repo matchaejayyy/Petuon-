@@ -399,6 +399,12 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   
   const groupedTasks = groupTasksByDate(display);
 
+  const sortedGroupedTasks = Object.entries(groupedTasks).sort(([a], [b]) => {
+    if (a === "Past Due") return -1;
+    if (b === "No Due") return -1;
+    return b.localeCompare(a);
+  });
+  
   if (variant === "default") {
     return (
       <>
@@ -536,13 +542,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             ) : null}
 
             <div
-              className={`fixed left-[10rem] top-[14rem] h-[28rem] w-[84.4rem] overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2`}
+              className={`fixed left-[10rem] top-[14rem] h-[28rem] w-[84.4rem] overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 `}
             >
-            {Object.entries(groupedTasks).map(([dateKey, tasks]) => (
+            {sortedGroupedTasks.map(([dateKey, tasks]) => (
             <React.Fragment key={dateKey}>
             <h1 className="mt-[0.5rem] text-lg">{dateKey}</h1>
             
-            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? "mt-[0rem]" : "mt-[-0.5rem]"} opacity-80`}>{getDayOfWeek(tasks[0].dueAt)}</h2>
+            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? "mt-[0.3rem]" : "mt-[-0.5rem]"} pb-[0.3rem] opacity-80`}>{getDayOfWeek(tasks[0].dueAt)}</h2>
             {tasks.map((task, index) => (
                   <>
                   <motion.li
@@ -556,7 +562,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }
-                    className={`group flex whitespace-nowrap rounded-lg bg-white pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
+                    className={`mt-[-0.4rem] group flex whitespace-nowrap rounded-lg bg-white pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
                     style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
                     ref={index === tasks.length - 1 ? lastTaskRef : null}
                   >
@@ -644,7 +650,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         onClick={() =>
                           startEditing(task.task_id, task.text, task.dueAt)
                         }
-                        className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""}`}
+                        className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""} `}
                       >
                         <span className="absolute left-[3rem] max-w-[46.3rem] overflow-hidden text-ellipsis whitespace-nowrap">
                           {task.text}

@@ -253,12 +253,12 @@ const CalendarComponent: React.FC = () => {
                       }}
                       className={`flex flex-col gap-2 ml-[0.5rem] mt-[-0.6rem] truncate text-sm ${
                         displayStatus(task.dueAt) === "Today"
-                          ? "bg-green-400 mt-[0.1rem] rounded ml-[-1rem] pl-2"
+                          ? "bg-green-400 mt-[0.1rem] rounded ml-[1rem] pl-2"
                           : displayStatus(task.dueAt) === "Upcoming"
-                          ? "bg-blue-100  mt-[0.1rem] rounded ml-[-1rem] pl-2"
+                          ? "bg-blue-100  mt-[0.1rem] rounded ml-[1rem] pl-2"
                           : displayStatus(task.dueAt) === "Tomorrow"
-                          ? "bg-orange-100 mt-[0.1rem] rounded ml-[-1rem] pl-2 "
-                          : "bg-gray-100 mt-[0.1rem] rounded ml-[-1rem] pl-2"
+                          ? "bg-orange-100 mt-[0.1rem] rounded ml-[1rem] pl-2 "
+                          : "bg-gray-100 mt-[0.1rem] rounded ml-[1rem] pl-2"
                       }`}
                       >
                       {task.text}
