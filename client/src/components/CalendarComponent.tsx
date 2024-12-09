@@ -272,6 +272,7 @@ const CalendarComponent: React.FC = () => {
                           ? "bg-orange-200 mt-[0.1rem] rounded ml-[1rem] pl-2"
                           : "bg-blue-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
                       }`}
+                      onClick={handleClick}
                       onMouseEnter={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect(); // Get position of hovered element
                         setModalPosition({ top: rect.bottom + 5, left: rect.left + rect.width / 2 });
@@ -305,11 +306,11 @@ const CalendarComponent: React.FC = () => {
                         onClick={handleClick}
                       >
                         <span
-                          className={`left-3 ${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
                         >
                           {task.text}
                         </span>
-                        <span className="ml-[13rem]">
+                        <span className="ml-[12rem]">
                           {new Date(task.dueAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -357,6 +358,14 @@ const CalendarComponent: React.FC = () => {
                           "bg-blue-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
                     }`}
                       key={task.task_id}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect(); // Get position of hovered element
+                        setModalPosition({ top: rect.bottom + 5, left: rect.left + rect.width / 2 });
+                        toggleTaskContent(task.task_id);
+                      }}
+                      onMouseLeave={() => {
+                        setExpandedTaskId(null); // Close the modal when the mouse leaves
+                      }}
                       >
                       <span>
                           <span className="text-[0.7rem] mr-[-0.4rem] pr-[1rem]">
@@ -367,7 +376,34 @@ const CalendarComponent: React.FC = () => {
                           </span>
                         </span> 
                       </li>
-                     
+                      {expandedTaskId === task.task_id && (
+                      <div
+                        className={`modal-content fixed w-[20rem] p-[0.5rem] rounded-lg border border-gray-700 bg-opacity-70 ${
+                          new Date(task.dueAt) < new Date()
+                            ? "bg-red-200"
+                            : new Date(task.dueAt).getDay() === new Date().getDay()
+                            ? "bg-green-200"
+                            : new Date(task.dueAt).getDay() === new Date().getDay() + 1
+                            ? "bg-orange-100"
+                            : "bg-blue-100"
+                        }`}
+                        style={{ top: modalPosition.top, left: modalPosition.left, transform: "translateX(-50%)" }}
+                        onClick={handleClick}
+                      >
+                        <span
+                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                        >
+                          {task.text}
+                        </span>
+                        <span className="ml-[12rem]">
+                          {new Date(task.dueAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true, // Use `false` for 24-hour format
+                          })}
+                        </span>
+                      </div>
+                    )}
                     </ul>
                     
                   ))}
