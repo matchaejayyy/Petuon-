@@ -23,11 +23,9 @@ const LoginPage: React.FC<Props> = () => {
           user_password: form.user_password,
         });
         if (response.data.token) {
-          // Store JWT token in localStorage for persistent sessions
-          localStorage.setItem("token", response.data.token);
           alert("Login successful! Redirecting to dashboard...");
           navigate("/dashboard");
-        } 
+        }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Error connecting to the server.");
