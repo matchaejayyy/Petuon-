@@ -16,6 +16,8 @@ export const validateGetTask = async (
     console.log("Tasks found in the database");
     next();
   } catch (error) {
+    console.error("Error getting tasks:", error);
+    res.status(500).json({ message: "Internal server error" });
 
   }
 };

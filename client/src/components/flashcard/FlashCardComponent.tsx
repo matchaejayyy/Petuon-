@@ -1,151 +1,34 @@
-import { BookmarkMinus, CircleArrowLeft, FolderPlus, Minus} from "lucide-react";
-import React, { useState, useEffect } from "react";
-// import SideBar from "../SideBar";
-// import WhiteContainer from "../WhiteContainer";
-// import Avatar from "../Avatar";
-
-import { Deck, Flashcard } from "../../types/FlashCardTypes";
+import React from "react";
+import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
-
+import { FolderPlus, BookmarkMinus, Minus, CircleArrowLeft } from "lucide-react";
+import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const token = localStorage.getItem('token');
 
 const FlashcardComponent: React.FC = () => {
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
-  const [decks, setDecks] = useState<Deck[]>([]);
+  const {
+    flashcards,
+    decks,
+    isReviewing,
+    onFirstPage,
+    deckTitle,
+    deckId,
+    setFlashcards,
+    setDeckTitle,
+    setDecks,
+    setIsReviewing,
+    setOnFirstPage,
+    saveDeck,
+    loadDeck,
+    deleteDeck,
+    deleteFlashcard,
+  } = useFlashcardHooks();
 
-  const [isReviewing, setisReviewing] = useState<boolean>(false);
-  const [OnFirstPage, setOnFirstPage] = useState<boolean>(true);
- 
-  const [DeckTitle, setDeckTitle] = useState<string>("");
-  const [deckId, setDeckId] = useState<string | null>(null);
-  
-
-  useEffect(() => {
-    const fetchDecks = async () => {
-      try {
-        if (!token) {
-          throw new Error('No token found');
-        }
-        console.log(token)
-        const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
-          deck_id: deck.deck_id,
-          title: deck.title,
-        }));
-        setDecks(deckData)
-      } catch (error) {
-        console.error("Error fetching decks:", error);
-      }
-    };
-    const fetchFlashcards = async () => {
-      try {
-        const response = await axios.get(`http://localhost:3002/cards/getFlashcards`);
-        const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string;  unique_flashcard_id: string}) => ({
-          question: flashcard.question,
-          answer: flashcard.answer,
-          flashcard_id: flashcard.flashcard_id,
-          unique_flashcard_id: flashcard.unique_flashcard_id,
-        }));
-        setFlashcards(flashcardData)
-      } catch (error) {
-        console.error("Error fetching flashcards:", error);
-      }
-    }
-    fetchDecks(); 
-    fetchFlashcards();
-  }, []);
-
-  useEffect(() => {
-    if (deckId) {
-      console.log(`Updated deckId: ${deckId}`);
-    }
-  }, [deckId]);
-
-
-  const saveDeck = async () => {
-    if (!DeckTitle.trim()) {
-      alert("Deck title cannot be empty.");
-      return;
-    }
-    try {
-      setOnFirstPage(true)
-      const data: Deck = {
-        title: DeckTitle,
-        deck_id: uuidv4(),
-      };
-      await axios.post(`http://localhost:3002/cards/insertDecks`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setDeckTitle("");
-      alert("Deck saved successfully!");
-    } catch (error) {
-      console.error("Error saving deck:", error);
-
-    }
-  };
-
-  const loadDeck = async (deck_id: string) => {
-    try {
-      setDeckId(deck_id);
-      setisReviewing(false);
-      setOnFirstPage(false);
-  
-      // Fetch flashcards specific to the selected deck
-      const response = await axios.get(`http://localhost:3002/cards/getFlashcards`, {
-        params: { deck_id }, 
-      });
-  
-      const flashcardData = response.data.map((flashcard: { question: string; answer: string; flashcard_id: string; unique_flashcard_id: string }) => ({
-        question: flashcard.question,
-        answer: flashcard.answer,
-        flashcard_id: flashcard.flashcard_id,
-        unique_flashcard_id: flashcard.unique_flashcard_id,
-      }));
-  
-      setFlashcards(flashcardData); // Update state with new flashcards
-    } catch (error) {
-      console.error("Error loading deck:", error);
-      setFlashcards([]); // Reset flashcards if loading fails
-    }
-  };
-  
-  
-  const deleteDeck = async (deckId: string) => {
-    try {
-      await axios.delete(`http://localhost:3002/cards/deleteDeck/${deckId}`, {
-        headers: {
-          Authorization: `Bearer ${token}` // Include the token for authentication
-        }
-      }
-
-      );
-      const updatedDecks = decks.filter(deck => deck.deck_id !== deckId);
-      setDecks(updatedDecks);
-    } catch (error) {
-      console.error("Error deleting deck:", error);
-    }
-  };
-  
-
-  const deleteFlashcard = async (unique_flashcard_id: string) => {
-    try {
-      await axios.delete(`http://localhost:3002/cards/deleteFlashcard/${unique_flashcard_id}`);
-      setFlashcards(flashcards.filter(flashcard => flashcard.unique_flashcard_id !== unique_flashcard_id));
-      console.log("Flashcard deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting flashcard:", error);
-    }
-  };
 
   const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({
     flashcards,
@@ -157,7 +40,7 @@ const FlashcardComponent: React.FC = () => {
           return (
             <li
               key={index}
-              className="w-2/3 mt-7 ml-[9rem] m-[5rem] relative transform transition-transform duration-200 hover:scale-105"
+              className="w-2/3 ml-[9rem] m-10 relative transform transition-transform duration-200 hover:scale-105"
             >
               <div
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
@@ -167,7 +50,7 @@ const FlashcardComponent: React.FC = () => {
                   className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
                   onClick={() => {
                     if (flashcard.unique_flashcard_id) {
-                      deleteFlashcard(flashcard.unique_flashcard_id); // Check that unique_flashcard_id is not undefined
+                      deleteFlashcard(flashcard.unique_flashcard_id); 
                     } else {
                       console.error("Flashcard unique_flashcard_id is undefined");
                     }
@@ -194,27 +77,42 @@ const FlashcardComponent: React.FC = () => {
   ];
   return (
     <>
-      {OnFirstPage ? (
+      {onFirstPage ? (
         <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
           <div className=" h-24 w-full mt-20 flex items-center ">
           <h1 className="text-[#354F52] font-serif text-3xl ">
             Create a new Deck
           </h1>
             <input
-                type="text"
-                value={DeckTitle}
-                onChange={(e) => setDeckTitle(e.target.value)}
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
-                placeholder="Title"
-              />
+                  type="text"
+                  value={deckTitle}
+                  onChange={(e) => setDeckTitle(e.target.value)}
+                  onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    await saveDeck();
+                    const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                    }
+                    });
+                    const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
+                    deck_id: deck.deck_id,
+                    title: deck.title,
+                    }));
+                    setDecks(deckData);
+                  }
+                  }}
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+                  placeholder="Title"
+                />
                 <button
                 onClick={async () => {
                   await saveDeck();
                   const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
                   });
                   const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
                   deck_id: deck.deck_id,
@@ -228,7 +126,7 @@ const FlashcardComponent: React.FC = () => {
                 </button>
           </div>
           <h1 className="text-[#354F52] font-serif text-3xl m-10 mt-1 mr-[70rem]">
-            SavedDecks
+            Decks
           </h1>
           <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
             <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
@@ -279,12 +177,15 @@ const FlashcardComponent: React.FC = () => {
       ) : isReviewing ? (
         <div>
           <div className="flex">
-            <h1 className="ml-[2.1rem] mt-[-0.5rem] font-serif text-3xl m-10 text-[#354F52]">
-              Review
+            <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-5 font-serif text-3xl m-10 text-[#354F52]">
+              Reviewing: 
+            </h1>
+            <h1 className=" mt-[-0.5rem] mr-20 font-serif text-2xl text-black font-bold uppercase">
+              {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
             </h1>
             <div className="flex justify-center items-center">
               <button
-                onClick={() => setisReviewing(false)}
+                onClick={() => setIsReviewing(false)}
                 className="flex mt-[-2.8rem] ml-[-2.8rem]"
               >
                 <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
@@ -302,11 +203,14 @@ const FlashcardComponent: React.FC = () => {
         <div>
           <div className="flex">
             <div className="flex justify-center items-center">
-                <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-96 font-serif text-2xl text-[#354F52] font-bold uppercase">
-                Deck: {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
+                <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-0 font-serif text-2xl text-[#354F52] font-bold uppercase">
+                Deck:
+                </h1>
+                <h1 className="ml-5 mt-[-0.5rem] mr-96 font-serif text-2xl text-black font-bold uppercase">
+                {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
                 </h1>
               <button
-                onClick={() => {setisReviewing(true); setOnFirstPage(false);}}
+                onClick={() => {setIsReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
                 className="bg-[#657F83] text-white h-16 w-36 rounded-3xl m-10 ml-72 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
                     >
