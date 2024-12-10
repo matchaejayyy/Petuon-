@@ -6,9 +6,11 @@ import LoginBG from "../assets/LoginBg.png";
 import axios from "axios";
 import { LoginFormsInputs, Props } from "../types/LoginTypes";
 
+
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -18,6 +20,7 @@ const LoginPage: React.FC<Props> = () => {
 
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
+        setLoading(true);
         const response = await axios.post("http://localhost:3002/login/userLogin", {
           user_name: form.user_name,
           user_password: form.user_password,
@@ -25,7 +28,7 @@ const LoginPage: React.FC<Props> = () => {
         if (response.data.token) {
           // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
-          alert("Login successful! Redirecting to dashboard...");
+          // alert("Login successful! Redirecting to dashboard...");
           navigate("/dashboard");
         } 
     } catch (error: unknown) {
@@ -37,8 +40,21 @@ const LoginPage: React.FC<Props> = () => {
     }
   };
 
+  
+
   return (
-    <section
+    <>
+    {loading && (
+      <div className="loading-overlay">
+        <img
+          src="src\assets\Petuon_loading_.gif"
+          alt="Loading..."
+          className="loading-gif"
+        />
+      </div>
+    )}
+   
+    <section  
       className="flex h-screen items-center justify-center"
       style={{
         backgroundImage: `url(${LoginBG})`,
@@ -46,6 +62,7 @@ const LoginPage: React.FC<Props> = () => {
         backgroundPosition: "center",
       }}
     >
+      
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div
           className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0"
@@ -111,6 +128,7 @@ const LoginPage: React.FC<Props> = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 
