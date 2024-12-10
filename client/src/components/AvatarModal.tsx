@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import LogInOut from "./logInOutComponent";
+import { toast, ToastContainer } from "react-toastify";
+
 const Avatar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string>("")
   const [userEmail, setUserEmail] = useState<string>("")
+  const [loading, setLoading] = useState(false);
   const token = localStorage.getItem('token');
   const navigate = useNavigate(); 
 
@@ -33,13 +37,38 @@ const Avatar = () => {
     fetchUserData();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    setLoading(true); // Start loading animation
+    try {
+      // Simulate an async operation (e.g., API request)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      localStorage.removeItem("token");
+      toast.info("You are being logged out. Redirecting to the login page...");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } 
   };
-
+  
   return (
     <>
+      <ToastContainer
+        position="top-center" // This makes the toast appear at the top center
+        autoClose={3000} // Adjust the auto-close time if needed
+        hideProgressBar={false} // Show the progress bar
+        newestOnTop={true} // New toasts appear at the top of the stack
+        closeOnClick // Close on click
+        rtl={false} // Set to true for right-to-left layout
+        pauseOnFocusLoss
+        draggable
+      />
+      {loading && (
+      <LogInOut/>
+      )}
+   
+
       {/* Top-right section for Bell and Profile */}
       <div className="fixed right-12 top-9 hidden items-center space-x-4 lg:flex">
         {/* Bell Icon */}

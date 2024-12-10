@@ -1,6 +1,6 @@
 import WhiteContainer from "../components/WhiteContainer";
 import Sidebar from "../components/SideBar";
-import Avatar from "../components/Avatar";
+import Avatar from "../components/AvatarModal";
 
 import FlashcardComponent from "../components/flashcard/FlashCardComponent";
 
