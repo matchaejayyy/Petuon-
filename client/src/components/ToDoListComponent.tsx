@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 
+import { useLocation } from "react-router-dom";
 // ToDoList Hook
 import { useToDoList } from "../hooks/useToDoList";
 
@@ -38,7 +39,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   const [isEditing, setIsEditing] = useState(false);
 
   const lastTaskRef = useRef<HTMLLIElement | null>(null);
-
+  
   const [isAnimatingDropDown, setIsAnimatingDropDown] =
     useState<boolean>(false); //para sa dropdown animation
   const colors = ["#FE9B72", "#FFC973", "#E5EE91", "#B692FE"];
@@ -49,6 +50,20 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   const [taskPos, setTaskPos] = useState<string>("left-[42rem]");
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const [highlightedTaskId, setHighlightedTaskId] = useState<string | null>(
+    location.state?.highlightedTaskId || null
+  );
+
+  useEffect(() => {
+    if (highlightedTaskId) {
+      const timer = setTimeout(() => {
+        setHighlightedTaskId(null); // Remove the highlight after 3 seconds
+      }, 3000);
+
+      return () => clearTimeout(timer); // Cleanup timeout on unmount or update
+    }
+  }, [highlightedTaskId]);
 
   const {
     afterloading, setAfterLoading,
@@ -412,8 +427,12 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     const isValidDateA = !isNaN(dateA.getTime());
     const isValidDateB = !isNaN(dateB.getTime());
   
+    if (filterType === "later" && isValidDateA && isValidDateB) {
+      return dateB.getTime() - dateA.getTime(); // Sort by descending order for "near"
+    }
+    
     if (isValidDateA && isValidDateB) {
-      return dateA.getTime() - dateB.getTime();
+      return dateA.getTime() - dateB.getTime(); // Default ascending order
     }
   
     if (isValidDateA) return -1;
@@ -571,22 +590,39 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               "text-green-700" : "" }`}>
                 {getDayOfWeek(tasks[0].dueAt)}
             </h2>
-            {tasks.map((task, index) => (
+            {tasks.map((task, index) => (   
                   <>
                   <motion.li
-                    key={index}
+                    key={task.task_id}
+                    id={task.task_id}
                     variants={afterloading ? taskVariants : undefined}
-                    initial={afterloading ? "hidden" : undefined}
-                    animate={afterloading ? "visible" : undefined}
-                    exit={afterloading ? "visible" : undefined}
+                    initial={afterloading 
+                      ? "hidden" 
+                      : undefined
+                    }
+                    animate={afterloading
+                      ? "visible"
+                      : undefined
+                    }
+                    exit={afterloading 
+                      ? "visible" 
+                      : undefined
+                    }
                     transition={
                       afterloading
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }
-                    className={`mt-[-0.4rem] group flex whitespace-nowrap rounded-lg bg-white pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
-                    style={{ backgroundColor: colors[index % colors.length] }} // Dynamic color
-                    ref={index === tasks.length - 1 ? lastTaskRef : null}
+                    className={`mt-[-0.4rem] group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
+                    style={{
+                      backgroundColor: task.task_id === highlightedTaskId ? "rgba(144, 238, 144, 0.9)" :colors[index % colors.length],  
+                      boxShadow: task.task_id === highlightedTaskId ? "0 0 10px 2px 0.8" : "none", 
+                      border: task.task_id === highlightedTaskId ?  "1px solid rgba(144, 238, 144, 1)" : "none", 
+                      transition: "transform 0.2s ease-in-out, background-color 0.2s ease-in-out",
+                      zIndex: task.task_id === highlightedTaskId ? 1000 : "auto",
+                    }} 
+                    ref={index === tasks.length - 1 ? lastTaskRef :  lastTaskRef}
+                    
                   >
                     
                     <input

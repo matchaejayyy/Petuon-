@@ -31,8 +31,8 @@ const CalendarComponent: React.FC = () => {
   };
   
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/todolist");
+  const handleClick = (taskId: string) => {
+    navigate("/todolist", { state: { highlightedTaskId: taskId } });
   };
   const prevMonth = () => {
     const newDate = subMonths(currentMonth, 1);
@@ -272,7 +272,7 @@ const CalendarComponent: React.FC = () => {
                           ? "bg-orange-200 mt-[0.1rem] rounded ml-[1rem] pl-2"
                           : "bg-blue-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
                       }`}
-                      onClick={handleClick}
+                      onClick={() => handleClick(task.task_id)}
                       onMouseEnter={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect(); // Get position of hovered element
                         setModalPosition({ top: rect.bottom + 5, left: rect.left + rect.width / 2 });
@@ -303,20 +303,21 @@ const CalendarComponent: React.FC = () => {
                             : "bg-blue-100"
                         }`}
                         style={{ top: modalPosition.top, left: modalPosition.left, transform: "translateX(-50%)" }}
-                        onClick={handleClick}
+                        onClick={() => handleClick}
                       >
-                        <span
-                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
-                        >
-                          {task.text}
-                        </span>
-                        <span className="ml-[12rem]">
+                        <span className="fixed left-[15rem] ">
                           {new Date(task.dueAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: true, // Use `false` for 24-hour format
                           })}
                         </span>
+                        <div
+                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                        >
+                          {task.text}
+                        </div>
+                      
                       </div>
                     )}
                   </ul>
@@ -366,6 +367,8 @@ const CalendarComponent: React.FC = () => {
                       onMouseLeave={() => {
                         setExpandedTaskId(null); // Close the modal when the mouse leaves
                       }}
+
+                      onClick={() => handleClick(task.task_id)}
                       >
                       <span>
                           <span className="text-[0.7rem] mr-[-0.4rem] pr-[1rem]">
@@ -388,19 +391,19 @@ const CalendarComponent: React.FC = () => {
                             : "bg-blue-100"
                         }`}
                         style={{ top: modalPosition.top, left: modalPosition.left, transform: "translateX(-50%)" }}
-                        onClick={handleClick}
+                        onClick={() => handleClick(task.task_id)}
                       >
-                        <span
-                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
-                        >
-                          {task.text}
-                        </span>
-                        <span className="ml-[12rem]">
+                       <span className="fixed left-[15rem] ">
                           {new Date(task.dueAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
                             hour12: true, // Use `false` for 24-hour format
                           })}
+                        </span>
+                        <span
+                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                        >
+                          {task.text}
                         </span>
                       </div>
                     )}
