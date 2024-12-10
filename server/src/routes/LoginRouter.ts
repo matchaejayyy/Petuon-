@@ -40,7 +40,6 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
     const token = jwt.sign(
       { user_id: user.user_id, user_name: user.user_name },
       JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
     );
 
     // Save the token to the database
@@ -48,7 +47,6 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       `UPDATE users SET token = $1 WHERE user_id = $2`,
       [token, user.user_id]
     );
-    console.log(token)
 
 
     // Respond with token and user info
