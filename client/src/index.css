@@ -56,12 +56,12 @@
   }
 }
 
-.task {
-  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+
+.task-item {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-.task:hover {
-  transform: translateY(-5px); /* Moves the element upward */
-  background-color: rgba(200, 240, 200, 0.9); /* Optional for visual feedback */
+.task-item:hover {
+  transform: translateY(-0.4rem);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
-

@@ -598,7 +598,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     variants={afterloading ? taskVariants : undefined}
                     initial={afterloading 
                       ? "hidden" 
-                      : undefined
+                      : {y:0}
                     }
                     animate={afterloading
                       ? "visible"
@@ -613,7 +613,8 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }
-                    className={` mt-[-0.4rem]  group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
+                    className={` mt-[-0.4rem] group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg 
+                      ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
                     style={{
                       backgroundColor: task.task_id === highlightedTaskId ? "rgba(144, 238, 144, 0.9)" :colors[index % colors.length],  
                       boxShadow: task.task_id === highlightedTaskId ? "0 0 10px 2px 0.8" : "none", 
@@ -623,11 +624,10 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                       animation: task.task_id === highlightedTaskId ? "beat 1s infinite ease-in-out" : "none",
                     }} 
                     ref={index === tasks.length - 1 ? lastTaskRef :  lastTaskRef}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-0.5rem)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "translateY(0)";
+
+                    whileHover={{
+                      y: -6, // Move up by 0.4rem
+                      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.2)", // Add shadow
                     }}
                   >
                     
