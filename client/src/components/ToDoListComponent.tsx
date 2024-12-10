@@ -400,9 +400,26 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   const groupedTasks = groupTasksByDate(display);
 
   const sortedGroupedTasks = Object.entries(groupedTasks).sort(([a], [b]) => {
-    if (a === "Past Due") return -1;
+    if (a === "No Due") return 1;
     if (b === "No Due") return -1;
-    return b.localeCompare(a);
+  
+    if (a === "Past Due") return -1;
+    if (b === "Past Due") return 1;
+  
+    const dateA = new Date(a);
+    const dateB = new Date(b);
+  
+    const isValidDateA = !isNaN(dateA.getTime());
+    const isValidDateB = !isNaN(dateB.getTime());
+  
+    if (isValidDateA && isValidDateB) {
+      return dateA.getTime() - dateB.getTime();
+    }
+  
+    if (isValidDateA) return -1;
+    if (isValidDateB) return 1;
+  
+    return a.localeCompare(b);
   });
   
   if (variant === "default") {
@@ -546,9 +563,14 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             >
             {sortedGroupedTasks.map(([dateKey, tasks]) => (
             <React.Fragment key={dateKey}>
-            <h1 className="mt-[0.5rem] text-lg">{dateKey}</h1>
+            <h1 className={`ml-[0.2rem] mt-[0.5rem] text-xl ${dateKey === "Past Due" ? "text-red-800": dateKey === getDateLabelWithTime(new Date()) ? "text-green-800" : "" } font-semibold`}>{dateKey}</h1>
             
-            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? "mt-[0.3rem]" : "mt-[-0.5rem]"} pb-[0.3rem] opacity-80`}>{getDayOfWeek(tasks[0].dueAt)}</h2>
+            <h2 className={`${new Date(tasks[0].dueAt).getTime() === 0? 
+              "mt-[0.3rem]" : "mt-[-0.5rem]"} ml-[0.2rem] pb-[0.3rem] opacity-80 
+              ${dateKey === "Past Due" ? "text-red-700": dateKey === getDateLabelWithTime(new Date()) ? 
+              "text-green-700" : "" }`}>
+                {getDayOfWeek(tasks[0].dueAt)}
+            </h2>
             {tasks.map((task, index) => (
                   <>
                   <motion.li
@@ -786,7 +808,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                           }}
                           className="absolute ml-3 text-lg font-semibold text-[#354F52]"
                         >
-                          {task.text}
+                           {task.text.length > 40 ? `${task.text.slice(0, 40)}...` : task.text}
                         </span>
                         <span
                           style={{

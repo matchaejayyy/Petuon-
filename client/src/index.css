@@ -16,3 +16,26 @@
 .glow-red {
   text-shadow: 0 0 5px rgba(255, 0, 0, 0.5);
 }
+
+::-webkit-scrollbar-thumb {
+  background-color: black; /* Transparent blue */
+  border-radius: 8px;
+  height: 0.5rem; /* Rounded edges */
+}
+
+.move-text {
+  display: block;
+  margin-top: 1rem; /* Adjust this value as needed */
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
