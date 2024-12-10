@@ -18,21 +18,21 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
 
   const handleFeedPet = () => {
     if (petData.pet_currency >= 100) {
-      let updatedPet = { ...petData };
-
+      const updatedPet = { ...petData }; // Changed 'let' to 'const'
+  
       // Check if the pet has reached the max evolution rank
       if (updatedPet.pet_evolution_rank >= 3) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;
       }
-
+  
       // If the progress bar has reached 100, trigger evolution and reset
       if (updatedPet.pet_progress_bar >= 100) {
         updatedPet.pet_progress_bar = 0; // Reset the progress bar
-
+  
         // Increase the evolution rank and adjust max value
         updatedPet.pet_evolution_rank += 1;
-
+  
         if (updatedPet.pet_evolution_rank === 3) {
           updatedPet.pet_max_value = Math.min(updatedPet.pet_max_value + 100, 200); // Cap max value at 200 for final evolution
           setShowCongratulatoryMessage("Congratulations! Your pet has reached its final evolution!");
@@ -40,7 +40,7 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
           updatedPet.pet_max_value = Math.min(updatedPet.pet_max_value + 50, 150); // Increase max value after the first evolution
           setShowCongratulatoryMessage("Congratulations! Your pet has evolved!");
         }
-
+  
         setTimeout(() => {
           setShowCongratulatoryMessage(""); // Hide the message after a short delay
         }, 3000); // Message will disappear after 3 seconds
@@ -48,12 +48,13 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
         updatedPet.pet_currency -= 100; // Deduct 100 currency
         updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100); // Add 10 progress, but max it out at 100
       }
-
+  
       onPetUpdated(updatedPet); // Update pet data with new progress and currency
     } else {
       alert("Not enough currency to feed the pet.");
     }
   };
+  
 
   const handleAddCash = () => {
     const updatedPet = {
