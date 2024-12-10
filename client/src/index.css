@@ -40,3 +40,28 @@
   justify-content: center;
   align-items: center;
 }
+
+@keyframes beat {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 10px 2px rgba(144, 238, 144, 0.8);
+  }
+  50% {
+    transform: scale(1.009);
+    box-shadow: 0 0 15px 4px rgba(144, 238, 144, 1);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 10px 2px rgba(144, 238, 144, 0.8);
+  }
+}
+
+.task {
+  transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.task:hover {
+  transform: translateY(-5px); /* Moves the element upward */
+  background-color: rgba(200, 240, 200, 0.9); /* Optional for visual feedback */
+}
+

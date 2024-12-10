@@ -578,7 +578,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             ) : null}
 
             <div
-              className={`fixed left-[10rem] top-[14rem] h-[28rem] w-[84.4rem] overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 `}
+              className={`fixed left-[10rem] top-[14rem] h-[28rem] w-[84.4rem] overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden`}
             >
             {sortedGroupedTasks.map(([dateKey, tasks]) => (
             <React.Fragment key={dateKey}>
@@ -613,16 +613,22 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }
-                    className={`mt-[-0.4rem] group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
+                    className={` mt-[-0.4rem]  group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
                     style={{
                       backgroundColor: task.task_id === highlightedTaskId ? "rgba(144, 238, 144, 0.9)" :colors[index % colors.length],  
                       boxShadow: task.task_id === highlightedTaskId ? "0 0 10px 2px 0.8" : "none", 
                       border: task.task_id === highlightedTaskId ?  "1px solid rgba(144, 238, 144, 1)" : "none", 
                       transition: "transform 0.2s ease-in-out, background-color 0.2s ease-in-out",
                       zIndex: task.task_id === highlightedTaskId ? 1000 : "auto",
+                      animation: task.task_id === highlightedTaskId ? "beat 1s infinite ease-in-out" : "none",
                     }} 
                     ref={index === tasks.length - 1 ? lastTaskRef :  lastTaskRef}
-                    
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "translateY(-0.5rem)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     
                     <input
@@ -634,7 +640,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     />
 
                     {editIndex === task.task_id ? (
-                      <div>
+                      <div className="">
                         <input
                           className="absolute left-[3rem] w-[46rem] overflow-hidden text-ellipsis bg-transparent opacity-45 outline-none"
                           type="text"
