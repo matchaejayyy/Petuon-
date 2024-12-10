@@ -1,7 +1,7 @@
 import ToDoListComponent from "../components/ToDoListComponent";
 import WhiteContainer from "../components/WhiteContainer"
 import Sidebar from "../components/SideBar";
-import Avatar from "../components/Avatar";
+import Avatar from "../components/AvatarModal";
 import Clock from "../components/Clock";
 
 

@@ -76,10 +76,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Ensure it appears on top */
+  z-index: 999; /* Ensure it appears on top */
 }
 
 .loading-gif {
-  width: 20rem; /* Adjust size as needed */
-  height: 20rem;
+  width: 18rem; /* Adjust size as needed */
+  height: 18rem;
+}
+
+.toast-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999; /* Ensures it appears above other elements */
 }

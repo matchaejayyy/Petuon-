@@ -5,7 +5,9 @@ import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBg.png";
 import axios from "axios";
 import { LoginFormsInputs, Props } from "../types/LoginTypes";
-
+import LogInOut from "../components/logInOutComponent";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
@@ -29,7 +31,12 @@ const LoginPage: React.FC<Props> = () => {
           // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
           // alert("Login successful! Redirecting to dashboard...");
-          navigate("/dashboard");
+          toast.success("Login successful! Redirecting to dashboard...");
+
+      // Redirect to the dashboard after showing the notification
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 2000);
         } 
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -44,14 +51,19 @@ const LoginPage: React.FC<Props> = () => {
 
   return (
     <>
+     <ToastContainer
+        position="top-center" // This makes the toast appear at the top center
+        autoClose={3000} // Adjust the auto-close time if needed
+        hideProgressBar={false} // Show the progress bar
+        newestOnTop={true} // New toasts appear at the top of the stack
+        closeOnClick // Close on click
+        rtl={false} // Set to true for right-to-left layout
+        pauseOnFocusLoss
+        draggable
+      />
     {loading && (
-      <div className="loading-overlay">
-        <img
-          src="src\assets\Petuon_loading_.gif"
-          alt="Loading..."
-          className="loading-gif"
-        />
-      </div>
+      
+      <LogInOut/>
     )}
    
     <section  
