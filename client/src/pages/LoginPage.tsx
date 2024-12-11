@@ -39,6 +39,7 @@ const LoginPage: React.FC<Props> = () => {
           }, 2000);
         } 
     } catch (error: unknown) {
+      setLoading(false);
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Error connecting to the server.");
       } else {

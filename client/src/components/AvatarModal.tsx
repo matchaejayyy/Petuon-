@@ -48,6 +48,7 @@ const Avatar = () => {
         navigate("/login");
       }, 2000);
     } catch (error) {
+      setLoading(false)
       console.error("Logout failed:", error);
     } 
   };
