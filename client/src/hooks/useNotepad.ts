@@ -48,7 +48,7 @@ export const useNotepad= () => {
     }
 
     // Save Note
-    const saveNOte = async (newNote: Note, updatedNote: Note[], editingNote: String) => {
+    const saveNOte = async (newNote: Note, updatedNote: Note[], editingNote: string) => {
         if (!token) {
             console.error("User not authenticated. No token found.");
             return;
