@@ -4,22 +4,18 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBg.png";
-import axios, { AxiosError } from "axios";
-// import { LoginFormsInputs, Props } from "../types/LoginTypes";
-import { supabase } from "../SupabaseClient";
 
-
-export type Props = {};
-
-export type LoginFormsInputs = {
-  userName: string;
-  password: string;
-};
+import axios from "axios";
+import { LoginFormsInputs, Props } from "../types/LoginTypes";
+import LogInOut from "../components/logInOutComponent";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 const LoginPage: React.FC<Props> = () => {
   const [error, setError] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
 
   const {
@@ -33,34 +29,31 @@ const LoginPage: React.FC<Props> = () => {
   
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("user_name", form.userName)
-        .single();
 
-      if (!data || error) {
-        alert("Supabase: Invalid username or password. Trying backend...");
+        setLoading(true);
+        const response = await axios.post("http://localhost:3002/login/userLogin", {
+          user_name: form.user_name,
+          user_password: form.user_password,
 
-        // If Supabase login fails, try backend login
-        const response = await axios.post("http://localhost:3002/login", {
-          userName: form.userName,
-          password: form.password,
         });
 
         if (response.data.token) {
           // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
-          alert("Login successful! Redirecting to dashboard...");
-          navigate("/dashboard");
-        }
-      } else {
-        alert("Login successful with Supabase!");
-        navigate("/dashboard");
-      }
+
+          // alert("Login successful! Redirecting to dashboard...");
+          toast.success("Login successful! Redirecting to dashboard...");
+
+      // Redirect to the dashboard after showing the notification
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 2000);
+        } 
+
     } catch (error: unknown) {
+      toast.error("Failed to login, pls try again.")
+      setLoading(false);
       if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Error connecting to the server.");
       } else {
         alert("An unexpected error occurred.");
       }
@@ -68,17 +61,35 @@ const LoginPage: React.FC<Props> = () => {
   };
 
   
-  
+
 
   return (
-    <section
-      className="h-screen flex items-center justify-center"
+    <>
+     <ToastContainer
+        position="top-center" // This makes the toast appear at the top center
+        autoClose={3000} // Adjust the auto-close time if needed
+        hideProgressBar={false} // Show the progress bar
+        newestOnTop={true} // New toasts appear at the top of the stack
+        closeOnClick // Close on click
+        rtl={false} // Set to true for right-to-left layout
+        pauseOnFocusLoss
+        draggable
+      />
+    {loading && (
+      
+      <LogInOut/>
+    )}
+   
+    <section  
+      className="flex h-screen items-center justify-center"
+
       style={{
         backgroundImage: `url(${LoginBG})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
+      
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div
           className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0"
@@ -144,6 +155,7 @@ const LoginPage: React.FC<Props> = () => {
         </div>
       </div>
     </section>
+    </>
   );
 };
 

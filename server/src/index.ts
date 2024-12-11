@@ -9,7 +9,7 @@ import ToDoListRouter from "./routes/ToDoListRouter";
 import FlashcardRouter from './routes/FlashcardRouter';
 import NotesListRouter from "./routes/NotesListRouter";
 import AvatarRouter from "./routes/AvatarRouter"
-
+import EditProfileRouter from "./routes/EditProfileRouter"
 
 dotenv.config();
 
@@ -30,6 +30,7 @@ app.use('/avatar', AvatarRouter);
 
 app.use('/pets', PetsRouter)
 app.use('/avatar', AvatarRouter);
+app.use('/editprofile', EditProfileRouter)
 
  // Start Server on port 3002
 app.listen(PORT, () => {
