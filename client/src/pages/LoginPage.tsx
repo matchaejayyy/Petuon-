@@ -1,46 +1,35 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import React, { useState } from "react";
-// import * as Yup from "yup";
-// import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBg.png";
-
 import axios from "axios";
 import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import LogInOut from "../components/logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const LoginPage: React.FC<Props> = () => {
-  const [error, setError] = useState<string | null>(null); // Track error message
+  const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormsInputs>({
-    // resolver: yupResolver(validationSchema),
-  });
+  } = useForm<LoginFormsInputs>();
 
-  
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
-
         setLoading(true);
         const response = await axios.post("http://localhost:3002/login/userLogin", {
           user_name: form.user_name,
           user_password: form.user_password,
-
         });
-
         if (response.data.token) {
           // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
-
           // alert("Login successful! Redirecting to dashboard...");
           toast.success("Login successful! Redirecting to dashboard...");
 
@@ -49,11 +38,10 @@ const LoginPage: React.FC<Props> = () => {
             navigate("/dashboard");
           }, 2000);
         } 
-
     } catch (error: unknown) {
-      toast.error("Failed to login, pls try again.")
       setLoading(false);
       if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "Error connecting to the server.");
       } else {
         alert("An unexpected error occurred.");
       }
@@ -61,7 +49,6 @@ const LoginPage: React.FC<Props> = () => {
   };
 
   
-
 
   return (
     <>
@@ -82,7 +69,6 @@ const LoginPage: React.FC<Props> = () => {
    
     <section  
       className="flex h-screen items-center justify-center"
-
       style={{
         backgroundImage: `url(${LoginBG})`,
         backgroundSize: "cover",
@@ -97,7 +83,7 @@ const LoginPage: React.FC<Props> = () => {
         >
           <div className="p-10 space-y-6 md:space-y-8 sm:p-12">
             <h2 className="text-4xl font-bold text-white">Welcome!</h2>
-            <p className="text-left font-light text-white mb-5">
+            <p className="mb-5 text-left font-light text-white">
               Ready to learn smarter? Log in to access your dashboard!
             </p>
             {error && <p className="text-red-500">{error}</p>}
@@ -112,11 +98,11 @@ const LoginPage: React.FC<Props> = () => {
                 <input
                   type="text"
                   id="username"
-                  className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                  className="focus:ring-primary-600 focus:border-primary-600 block w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm"
                   placeholder="Username"
-                  {...register("userName")}
+                  {...register("user_name")}
                 />
-                {errors.userName && <p className="text-white">{errors.userName.message}</p>}
+                {errors.user_name && <p className="text-white">{errors.user_name.message}</p>}
               </div>
               <div>
                 <label htmlFor="password" className="block mb-2 text-sm font-medium text-white">
@@ -127,24 +113,24 @@ const LoginPage: React.FC<Props> = () => {
                   id="password"
                   placeholder="••••••••"
                   className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                  {...register("password")}
+                  {...register("user_password")}
                 />
-                {errors.password && <p className="text-white">{errors.password.message}</p>}
+                {errors.user_password && <p className="text-white">{errors.user_password.message}</p>}
               </div>
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <button
                   type="submit"
-                  className="bg-[#719191] justify-center hover:bg-gray-700 text-white font-bold py-2 px-8 rounded-3xl"
+                  className="justify-center rounded-3xl bg-[#719191] px-8 py-2 font-bold text-white hover:bg-gray-700"
                 >
                   Log in
                 </button>
               </div>
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <p className="text-sm font-light text-white">
                   Don’t have an account yet?{" "}
                   <Link
                     to="/register"
-                    className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+                    className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
                   >
                     Sign up
                   </Link>
