@@ -2,12 +2,14 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
+
 import LoginRouter from './routes/LoginRouter';
 import RegisterRouter from "./routes/RegisterRouter";
-import PetsRouter from "./routes/PetsRouter";
+
 import ToDoListRouter from "./routes/ToDoListRouter";
 import FlashcardRouter from './routes/FlashcardRouter';
 import NotesListRouter from "./routes/NotesListRouter";
+import PetsRouter from "./routes/PetsRouter"
 import AvatarRouter from "./routes/AvatarRouter"
 import EditProfileRouter from "./routes/EditProfileRouter"
 
@@ -26,8 +28,6 @@ app.use('/notes', NotesListRouter);
 app.use('/register', RegisterRouter)
 app.use('/login', LoginRouter);
 app.use('/cards', FlashcardRouter);
-app.use('/avatar', AvatarRouter);
-
 app.use('/pets', PetsRouter)
 app.use('/avatar', AvatarRouter);
 app.use('/editprofile', EditProfileRouter)
@@ -36,6 +36,4 @@ app.use('/editprofile', EditProfileRouter)
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
-
+ 
