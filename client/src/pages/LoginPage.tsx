@@ -39,9 +39,9 @@ const LoginPage: React.FC<Props> = () => {
           }, 2000);
         } 
     } catch (error: unknown) {
+      toast.error("Failed to login, pls try again.")
       setLoading(false);
       if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Error connecting to the server.");
       } else {
         alert("An unexpected error occurred.");
       }

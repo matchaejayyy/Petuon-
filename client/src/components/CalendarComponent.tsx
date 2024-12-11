@@ -257,7 +257,7 @@ const CalendarComponent: React.FC = () => {
                         color:
                           new Date(task.dueAt) < new Date()
                             ? "red"
-                            : new Date(task.dueAt).getDay() === new Date().getDay()
+                            : isSameDay(new Date(task.dueAt), new Date())
                             ? "green"
                             : new Date(task.dueAt).getDay() === new Date().getDay() + 1
                             ? "orange"
@@ -266,7 +266,7 @@ const CalendarComponent: React.FC = () => {
                       className={`flex flex-col gap-2 ml-[1rem] mt-[-0.6rem] pl-[0.7rem] truncate text-sm hover:scale-110 ${
                         new Date(task.dueAt) < new Date()
                           ? "bg-red-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
-                          : new Date(task.dueAt).getDay() === new Date().getDay()
+                          : isSameDay(new Date(task.dueAt), new Date())
                           ? "bg-green-300 mt-[0.1rem] rounded ml-[1rem] pl-2"
                           : new Date(task.dueAt).getDay() === new Date().getDay() + 1
                           ? "bg-orange-200 mt-[0.1rem] rounded ml-[1rem] pl-2"
@@ -296,7 +296,7 @@ const CalendarComponent: React.FC = () => {
                         className={`modal-content fixed w-[20rem] p-[0.5rem] rounded-lg border border-gray-700 bg-opacity-70 ${
                           new Date(task.dueAt) < new Date()
                             ? "bg-red-200"
-                            : new Date(task.dueAt).getDay() === new Date().getDay()
+                            : isSameDay(new Date(task.dueAt), new Date())
                             ? "bg-green-200"
                             : new Date(task.dueAt).getDay() === new Date().getDay() + 1
                             ? "bg-orange-100"
@@ -305,7 +305,7 @@ const CalendarComponent: React.FC = () => {
                         style={{ top: modalPosition.top, left: modalPosition.left, transform: "translateX(-50%)" }}
                         onClick={() => handleClick}
                       >
-                        <span className="fixed left-[15rem] ">
+                        <span className="ml-[14rem]">
                           {new Date(task.dueAt).toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -313,7 +313,15 @@ const CalendarComponent: React.FC = () => {
                           })}
                         </span>
                         <div
-                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                          className={`${task.text.length > 10 ? "move-text" : ""} border-t-2 w-[19rem] 
+                          ${ new Date(task.dueAt) < new Date()
+                            ?  "border-red-300" 
+                            : isSameDay(new Date(task.dueAt), new Date())
+                            ? "border-green-300"
+                            : new Date(task.dueAt).getDay() === new Date().getDay() + 1
+                            ? "border-orange-300"
+                            : "border-blue-300"
+                          }`}
                         >
                           {task.text}
                         </div>
@@ -344,7 +352,7 @@ const CalendarComponent: React.FC = () => {
                         color:
                         new Date(task.dueAt) < new Date() ? 
                         "red" :
-                        new Date(task.dueAt).getDay() == new Date().getDay() ?
+                        isSameDay(new Date(task.dueAt), new Date()) ?
                         "green": 
                         new Date(task.dueAt).getDay() === new Date().getDay() + 1 ?
                         "orange" : "blue"
@@ -384,7 +392,7 @@ const CalendarComponent: React.FC = () => {
                         className={`modal-content fixed w-[20rem] p-[0.5rem] rounded-lg border border-gray-700 bg-opacity-70 ${
                           new Date(task.dueAt) < new Date()
                             ? "bg-red-200"
-                            : new Date(task.dueAt).getDay() === new Date().getDay()
+                            : isSameDay(new Date(task.dueAt), new Date())
                             ? "bg-green-200"
                             : new Date(task.dueAt).getDay() === new Date().getDay() + 1
                             ? "bg-orange-100"
@@ -393,18 +401,19 @@ const CalendarComponent: React.FC = () => {
                         style={{ top: modalPosition.top, left: modalPosition.left, transform: "translateX(-50%)" }}
                         onClick={() => handleClick(task.task_id)}
                       >
-                       <span className="fixed left-[15rem] ">
-                          {new Date(task.dueAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                            hour12: true, // Use `false` for 24-hour format
-                          })}
-                        </span>
-                        <span
-                          className={`${task.text.length > 10 ? "move-text" : ""} w-[13rem]`}
+                       <div
+                          className={`${task.text.length > 10 ? "move-text" : ""} border-t-2 w-[19rem] 
+                          ${ new Date(task.dueAt) < new Date()
+                            ?  "border-red-300" 
+                            :isSameDay(new Date(task.dueAt), new Date())
+                            ? "border-green-300"
+                            : new Date(task.dueAt).getDay() === new Date().getDay() + 1
+                            ? "border-orange-300"
+                            : "border-blue-300"
+                          }`}
                         >
                           {task.text}
-                        </span>
+                        </div>
                       </div>
                     )}
                     </ul>

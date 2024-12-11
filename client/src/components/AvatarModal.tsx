@@ -4,12 +4,15 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import LogInOut from "./logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
+import SettingPageModal from "./dashboard/SettingsModal";
 
 const Avatar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string>("")
   const [userEmail, setUserEmail] = useState<string>("")
   const [loading, setLoading] = useState(false);
+  const [openSettings, setOpenSettings] = useState<boolean>(false);
+
   const token = localStorage.getItem('token');
   const navigate = useNavigate(); 
 
@@ -83,6 +86,11 @@ const Avatar = () => {
           >
             <User className="h-7 w-7 text-[#354F52]" />
           </button>
+          {openSettings && (
+            <>
+              <SettingPageModal onClose={() => setOpenSettings(false)}/>
+            </>
+          )} 
           {/* Dropdown Menu */}
           {isDropdownOpen && (
             <div className="absolute right-0 top-12 w-56 rounded-lg border bg-white shadow-lg">
@@ -102,11 +110,9 @@ const Avatar = () => {
               </div>
               {/* Dropdown Options */}
               <ul className="py-2">
-                <li className="flex cursor-pointer items-center px-4 py-2 hover:bg-gray-100">
-                  <Trophy className="mr-2 h-5 w-5 text-gray-700" />
-                  Achievements
-                </li>
-                <li className="flex cursor-pointer items-center px-4 py-2 hover:bg-gray-100">
+                <li className="flex cursor-pointer items-center px-4 py-2 hover:bg-gray-100"
+                onClick={() => setOpenSettings(true)}
+                >
                   <Settings className="mr-2 h-5 w-5 text-gray-700" />
                   Settings
                 </li>
