@@ -5,10 +5,20 @@ import dinosaur from "../../assets/dinosaur_egg.png";
 import duck from "../../assets/duck_egg.png";
 import penguin from "../../assets/penguin_egg.png";
 import unicorn from "../../assets/unicorn_egg.png";
+import { supabase } from "../../SupabaseClient"; // Import Supabase client
+
+interface PetData {
+  pet_type: string;
+  pet_name: string;
+  pet_currency: number;
+  pet_progress_bar: number;
+  pet_evolution_rank: number;
+  pet_max_value: number;
+}
 
 interface PetSelectionModalProps {
   onClose: () => void;
-  onPetAdded: (petData: any) => void;
+  onPetAdded: (petData: PetData) => void;
 }
 
 const PetSelectionModal: React.FC<PetSelectionModalProps> = ({
@@ -40,14 +50,14 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({
     setSelectedPet(pet);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedPet || !petName) {
       alert("Please select a pet and enter a name.");
       return;
     }
 
-    // Just display the selected pet data (no DB call yet)
-    const petData = {
+    // Prepare pet data to be inserted
+    const petData: PetData = {
       pet_type: selectedPet,
       pet_name: petName,
       pet_currency: 1000, // Default currency
@@ -56,8 +66,34 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({
       pet_max_value: 150, // Default max value
     };
 
-    onPetAdded(petData); // Pass the pet data to the parent
-    onClose(); // Close the modal
+    console.log("Inserting pet data:", petData); // Log the data before insertion
+
+    try {
+      // Insert pet data into Supabase
+      const { data, error } = await supabase
+        .from("pets")
+        .insert([petData])
+        .select("*"); // Explicitly select all columns to ensure the returned data
+
+      // If an error occurred, throw an error
+      if (error) {
+        console.error("Supabase Error:", error.message || error.details);
+        throw new Error(error.message || error.details);
+      }
+
+      // Check if the data was returned and inserted
+      if (data && data.length > 0) {
+        console.log("Inserted pet data:", data); // Log the inserted data
+        onPetAdded(data[0]); // Pass the added pet data back to the parent component
+        onClose(); // Close the modal after successfully adding the pet
+      } else {
+        console.error("No pet data returned after insert.");
+        throw new Error("No pet data returned after insert.");
+      }
+    } catch (error) {
+      console.error("Error inserting pet:", error);
+      alert("There was an issue adding your pet. Please try again.");
+    }
   };
 
   return (
@@ -84,9 +120,7 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({
             (pet) => (
               <button
                 key={pet}
-                className={`w-20 h-20 p-2 border-2 rounded-md ${
-                  petColors[pet]
-                } transition-all duration-300 ${
+                className={`w-20 h-20 p-2 border-2 rounded-md ${petColors[pet]} transition-all duration-300 ${
                   selectedPet === pet ? "scale-110 p-4 border-4" : "p-2"
                 }`}
                 onClick={() => handlePetSelection(pet)}
