@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import LogInOut from "./logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
-import SettingPageModal from "./dashboard/SettingsModal";
+import SettingPageModal from "./avatar/SettingsModal";
 
 const Avatar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -21,24 +21,24 @@ const Avatar = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3002/avatar/getUser",  {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        const userData = response.data
-        setUserName(userData.user_name);
-        setUserEmail(userData.user_email);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get("http://localhost:3002/avatar/getUser", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userData = response.data;
+      setUserName(userData.user_name);
+      setUserEmail(userData.user_email);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
-    fetchUserData();
-  }, []);
+  useEffect(() => {
+    fetchUserData(); // Call fetchUserData on component mount
+  }, [token]);
 
   const handleLogout = async () => {
     setLoading(true); // Start loading animation
@@ -72,7 +72,6 @@ const Avatar = () => {
       <LogInOut/>
       )}
    
-
       {/* Top-right section for Bell and Profile */}
       <div className="fixed right-12 top-9 hidden items-center space-x-4 lg:flex">
         {/* Bell Icon */}
@@ -88,7 +87,10 @@ const Avatar = () => {
           </button>
           {openSettings && (
             <>
-              <SettingPageModal onClose={() => setOpenSettings(false)}/>
+             <SettingPageModal
+                onClose={() => setOpenSettings(false)}
+                fetchUserData={fetchUserData}
+              />
             </>
           )} 
           {/* Dropdown Menu */}
