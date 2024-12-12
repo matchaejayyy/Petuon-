@@ -3,13 +3,11 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import LoginBG from "../assets/LoginBg.png";
-
 import axios from "axios";
 import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import LogInOut from "../components/logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
@@ -24,17 +22,14 @@ const LoginPage: React.FC<Props> = () => {
 
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
-
         setLoading(true);
         const response = await axios.post("http://localhost:3002/login/userLogin", {
           user_name: form.user_name,
           user_password: form.user_password,
-
         });
         if (response.data.token) {
           // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
-
           // alert("Login successful! Redirecting to dashboard...");
           toast.success("Login successful! Redirecting to dashboard...");
 
@@ -43,11 +38,10 @@ const LoginPage: React.FC<Props> = () => {
             navigate("/dashboard");
           }, 2000);
         } 
-
     } catch (error: unknown) {
-      toast.error("Failed to login, pls try again.")
       setLoading(false);
       if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "Error connecting to the server.");
       } else {
         alert("An unexpected error occurred.");
       }
@@ -55,7 +49,6 @@ const LoginPage: React.FC<Props> = () => {
   };
 
   
-
 
   return (
     <>
@@ -76,7 +69,6 @@ const LoginPage: React.FC<Props> = () => {
    
     <section  
       className="flex h-screen items-center justify-center"
-
       style={{
         backgroundImage: `url(${LoginBG})`,
         backgroundSize: "cover",
