@@ -25,7 +25,6 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
   const handleFeedPet = async () => {
     if (petData?.pet_currency >= 100) {
       const updatedPet = { ...petData }; // Clone petData to avoid direct mutation
-    
       if (updatedPet.pet_evolution_rank >= 3) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;

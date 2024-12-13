@@ -22,6 +22,7 @@ router.post(
 
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(user_password, saltRounds);
+
         const query = `
         INSERT INTO users (user_id, user_email, user_name, user_password)
         VALUES ($1, $2, $3, $4)

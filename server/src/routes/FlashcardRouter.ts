@@ -124,5 +124,78 @@ router.delete('/deleteFlashcard/:unique_flashcard_id', async (req: Request, res:
     res.status(500).send('Failed to delete flashcard');
   }
 });
+// Update a deck's title
+router.put('/updateDeckTitle/:deckId', authenticateToken, async (req: Request, res: Response) => {
+  const { deckId } = req.params; // Get the deck ID from the URL parameters
+  const { title } = req.body; // Get the new title from the request body
+  const userId = req.user?.user_id; // Get the user ID from the authenticated token
+
+  if (!title || title.trim() === "") {
+    return res.status(400).json({ message: "Title is required and cannot be empty" });
+  }
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized: User ID not found" });
+  }
+
+  try {
+    const query = `
+      UPDATE decks
+      SET title = $1
+      WHERE deck_id = $2 AND user_id = $3
+      RETURNING *`;
+    const values = [title, deckId, userId];
+
+    const result = await pool.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Deck not found or not owned by the user" });
+    }
+
+    res.status(200).json({ message: "Deck title updated successfully", deck: result.rows[0] });
+  } catch (error) {
+    console.error(`Error updating deck title for deck ID ${deckId}:`, error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.put('/updateFlashcard/:unique_flashcard_id', async (req, res) => {
+  const { unique_flashcard_id } = req.params;
+  const { question, answer } = req.body;
+
+  // Only update the fields that are provided
+  const updateFields = [];
+  const updateValues = [];
+
+  if (question) {
+    updateFields.push('question');
+    updateValues.push(question);
+  }
+  if (answer) {
+    updateFields.push('answer');
+    updateValues.push(answer);
+  }
+
+  if (updateFields.length === 0) {
+    return res.status(400).send("No valid fields provided to update");
+  }
+
+  const updateQuery = `
+    UPDATE flashcards 
+    SET ${updateFields.map((field, idx) => `${field} = $${idx + 1}`).join(", ")} 
+    WHERE unique_flashcard_id = $${updateFields.length + 1}
+  `;
+
+  try {
+    await pool.query(updateQuery, [...updateValues, unique_flashcard_id]);
+    res.status(200).send("Flashcard updated successfully");
+  } catch (error) {
+    console.error("Error updating flashcard:", error);
+    res.status(500).send("Failed to update flashcard");
+  }
+});
+
+
+
 
 export default router;
