@@ -79,7 +79,7 @@ const FlashcardComponent: React.FC = () => {
       {onFirstPage ? (
         <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
           <div className=" h-24 w-full mt-20 flex items-center ">
-          <h1 className="text-[#354F52] font-serif text-3xl ">
+          <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-[#354F52] text-3xl ">
             Create a new Deck
           </h1>
             <input
@@ -113,7 +113,7 @@ const FlashcardComponent: React.FC = () => {
                 <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
                 </button>
           </div>
-          <h1 className="text-[#354F52] font-serif text-3xl m-10 mt-1 mr-[70rem]">
+          <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-[#354F52] text-3xl m-10 mt-1 mr-[70rem]">
             Decks
           </h1>
           <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
@@ -165,10 +165,10 @@ const FlashcardComponent: React.FC = () => {
       ) : isReviewing ? (
         <div>
           <div className="flex">
-            <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-5 font-serif text-3xl m-10 text-[#354F52]">
+            <h1  style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-[0.2rem] mt-[-0.5rem] mr-5 font-serif text-3xl m-10 text-[#354F52]">
               Reviewing: 
             </h1>
-            <h1 className=" mt-[-0.5rem] mr-20 font-serif text-2xl text-black font-bold uppercase">
+            <h1  style={{ fontFamily: '"Signika Negative", sans-serif' }} className=" mt-[-0.3rem] mr-20 font-serif text-2xl text-[#354F52] font-bold uppercase">
               {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
             </h1>
             <div className="flex justify-center items-center">

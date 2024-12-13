@@ -137,33 +137,57 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
 
           {/* Input for fill-in-the-blank */}
           <div className="mt-5 flex items-center space-x-2">
-            <input
-              type="text"
-              placeholder="Your answer"
-              ref={inputRef}
-              style={{ fontFamily: '"Signika Negative", sans-serif' }} className={`p-2 border rounded-md transition-all duration-300 focus:outline-none 
-                ${answerStatus === 'correct' 
-                  ? 'focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50' 
-                  : answerStatus === 'incorrect' 
-                    ? 'focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50 shake' 
-                    : 'focus:ring-2 focus:ring-[#354F52] focus:border-transparent border-[#354F52]'}`}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  handleSubmit(); // Trigger submission when pressing "Enter"
+            <style>
+              {`
+                @keyframes shake {
+                  0%, 100% { transform: translateX(0); }
+                  25% { transform: translateX(-5px); }
+                  50% { transform: translateX(5px); }
+                  75% { transform: translateX(-5px); }
                 }
-              }}
-              onChange={() => {
-                // Reset answer status when typing
-                setAnswerStatus(null);
-              }}
-            />
+                .animate-shake {
+                  animation: shake 0.3s ease-in-out;
+                }
+              `}
+            </style>
+            <div
+              className={`transition-transform ${
+                answerStatus === 'incorrect' ? 'animate-shake' : ''
+              }`}
+            >
+              <input
+                type="text"
+                placeholder="Your answer"
+                ref={inputRef}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className={`p-2 border rounded-md transition-all duration-300 focus:outline-none 
+                  ${
+                    answerStatus === 'correct'
+                      ? 'focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50'
+                      : answerStatus === 'incorrect'
+                      ? 'focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50'
+                      : 'focus:ring-2 focus:ring-[#354F52] focus:border-transparent border-[#354F52]'
+                  }`}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSubmit(); // Trigger submission when pressing "Enter"
+                  }
+                }}
+                onChange={() => {
+                  // Reset answer status when typing
+                  setAnswerStatus(null);
+                }}
+              />
+            </div>
             <button
               onClick={handleSubmit}
-              style={{ fontFamily: '"Signika Negative", sans-serif' }} className="p-2 bg-[#354F52] text-white rounded-md transition-all hover:bg-[#456B65]"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="p-2 bg-[#354F52] text-white rounded-md transition-all hover:bg-[#456B65]"
             >
               Submit
             </button>
           </div>
+
             {isQuizComplete && (
               <div className="flex flex-col items-center mt-5">
                 <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#354F52] font-bold mb-4 -mt-[16rem]">
