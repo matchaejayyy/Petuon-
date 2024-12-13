@@ -14,7 +14,7 @@ const LoginPage: React.FC<Props> = () => {
   const [loading, setLoading] = useState(false); // Track loading state
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { token, fetchTokenFromDatabase} = useToken(); // Use the hook
+  const { token, fetchTokenFromDatabase } = useToken(); // Use the hook
 
   const {
     register,
@@ -22,41 +22,47 @@ const LoginPage: React.FC<Props> = () => {
     formState: { errors },
   } = useForm<LoginFormsInputs>();
 
-
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
-        setLoading(true);
-        const response = await axios.post("http://localhost:3002/login/userLogin", {
-          user_name: form.user_name,
-          user_password: form.user_password,
-        });
-
-        if (response.data.user_id) {
-          toast.success("Login successful! Fetching token...");
-          // Fetch token from the database
-          const fetchedToken = await fetchTokenFromDatabase(response.data.user_id);
+      setLoading(true);
+      const response = await axios.post("http://localhost:3002/login/userLogin", {
+        user_name: form.user_name,
+        user_password: form.user_password,
+      });
+  
+      if (response.data.user_id) {
+        toast.success("Login successful! Fetching token...");
+        const fetchedToken = await fetchTokenFromDatabase(response.data.user_id);
+  
+        if (fetchedToken) {
+          console.log("Token successfully retrieved:", fetchedToken);
+          localStorage.setItem("token", fetchedToken);
           toast.success("Login successful! Redirecting to dashboard...");
-          if (fetchedToken) {
-            console.log("Token successfully retrieved:", fetchedToken);
-            setTimeout(() => {
-              navigate("/dashboard");
-            }, 2000);
-          } else {
-            toast.error("Failed to retrieve token. Please try again.");
-          }
-        }
-      } catch (error: unknown) {
-        setLoading(false);
-        if (axios.isAxiosError(error)) {
-          toast.error(error.response?.data?.message || "Error connecting to the server.");
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 2000);
         } else {
-          toast.error("An unexpected error occurred.");
+          toast.error("Failed to retrieve token. Please try again.");
         }
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error: unknown) {
+      setLoading(false);
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || "Error connecting to the server.");
+      } else {
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    toast.success("Logged out successfully!");
+    navigate("/login");
+  };
+  
   return (
     <>
      <ToastContainer
@@ -70,10 +76,8 @@ const LoginPage: React.FC<Props> = () => {
         draggable
       />
     {loading && (
-      
       <LogInOut/>
     )}
-   
     <section  
       className="flex h-screen items-center justify-center"
       style={{
@@ -82,7 +86,6 @@ const LoginPage: React.FC<Props> = () => {
         backgroundPosition: "center",
       }}
     >
-      
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div
           className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0"
@@ -142,6 +145,8 @@ const LoginPage: React.FC<Props> = () => {
                     Sign up
                   </Link>
                 </p>
+              </div>
+              <div className="flex items-center justify-center">
               </div>
             </form>
           </div>
