@@ -355,7 +355,7 @@ const NotepadComponent: React.FC = () => {
                           e.stopPropagation();
                           editNote(note.note_id);
                         }}
-                        className="absolute right-3 top-7 text-black hover:text-[#719191]"
+                        className="absolute right-3 top-7 text-black hover:text-[#354F52]"
                       >
                         <FilePen size={20} />
                       </button>

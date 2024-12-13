@@ -1,11 +1,18 @@
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { quizFlashcardProps, Flashcard } from "../../types/FlashCardTypes";
-import { useState, useEffect } from "react";
+
+
 import axios from "axios";
+
+const token = localStorage.getItem('token');
+
+import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-const token = localStorage.getItem('token');
+const correctSound = new URL('../../assets/soundEffects/correct_sound.mp3', import.meta.url).href;
+const incorrectSound = new URL('../../assets/soundEffects/incorrect_sound.mp3', import.meta.url).href
+
 
 export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, flashcards }) => {
   const [tempFlashcards, setTempFlashcards] = useState<Flashcard[]>([]);
@@ -15,6 +22,13 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const [quizState, setQuizState] = useState<"review" | "fillBlanks" | "finished">("review")
   const [userScore, setUserScore] = useState<number>(0);
   const [attempts, setAttempts] = useState<number>(3);
+  const [answerStatus, setAnswerStatus] = useState<'correct' | 'incorrect' | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const currentflashcard = tempFlashcards[currentIndex];
+
+   // Create Audio objects using resolved paths
+   const CorrectSound = new Audio(correctSound);
+   const IncorrectSound = new Audio(incorrectSound);
 
   useEffect(() => {
     if (flashcards && flashcards.length > 0) {
@@ -161,10 +175,40 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
 };
   
 
+
   const currentFlashcard = tempFlashcards[currentIndex];
   const isQuizComplete =
   currentIndex === tempFlashcards.length - 1 && quizState === "finished" &&
   (showAnswer);
+
+  const handleSubmit = () => {
+    const inputElement = inputRef.current;
+  
+    // Check if input and flashcard data are valid
+    if (currentFlashcard && inputElement) {
+      const userAnswer = inputElement.value.trim().toLowerCase();
+      const correctAnswer = currentFlashcard.answer.trim().toLowerCase();
+      const isCorrect = userAnswer === correctAnswer;
+  
+       // Update answer status
+      setAnswerStatus(isCorrect ? 'correct' : 'incorrect');
+
+      // Play sound based on the answer status
+      if (isCorrect) {
+        CorrectSound.play().catch(err => console.error('Error playing correct sound:', err));
+      } else {
+        IncorrectSound.play().catch(err => console.error('Error playing incorrect sound:', err));
+      }
+  
+      setTimeout(() => {
+        if (isCorrect) {
+          handleNextFlashcard();
+        }
+        inputElement.value = '';
+        setAnswerStatus(null);
+      }, 500);
+    }
+  };
 
 
   return (
@@ -174,7 +218,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         <div className="flex flex-col items-center">
           <div
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center transition-transform duration-300 hover:scale-105 cursor-pointer"
+            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center  cursor-pointer"
           >
             <h2 className="text-3xl font-semibold text-[#354F52] break-words max-w-full p-5">
               {currentFlashcard ? `Fill in the blank: ${currentFlashcard.question.replace(
@@ -184,38 +228,69 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
             </h2>
           </div>
 
-          {/* Input for fill-in-the-blank */}
-          <input
-            type="text"
-            value={userInput}
-            placeholder="Your answer"
-            className="mt-5 p-2 border border-[#354F52] rounded-md"
-            onChange={handleInputChange}
-            onKeyPress={handleInputKeyPress}
-          />
+           {/* Input for fill-in-the-blank */}
+           <div className="mt-5 flex items-center space-x-2">
+          <style>
+            {`
+              @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                50% { transform: translateX(5px); }
+                75% { transform: translateX(-5px); }
+              }
+              .animate-shake {
+                animation: shake 0.3s ease-in-out;
+              }
+            `}
+          </style>
+          <div
+            className={`transition-transform ${
+              answerStatus === 'incorrect' ? 'animate-shake' : ''
+            }`}
+          >
+            <input
+              type="text"
+              placeholder="Your answer"
+              ref={inputRef}
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className={`p-2 border rounded-md transition-all duration-300 focus:outline-none 
+                ${
+                  answerStatus === 'correct'
+                    ? 'focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50'
+                    : answerStatus === 'incorrect'
+                    ? 'focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50'
+                    : 'focus:ring-2 focus:ring-[#354F52] focus:border-transparent border-[#354F52]'
+                }`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSubmit(); // Trigger submission when pressing "Enter"
+                }
+              }}
+              onChange={() => {
+                // Reset answer status when typing
+                setAnswerStatus(null);
+              }}
+            />
+          </div>
+          <button
+            onClick={handleSubmit}
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="p-2 bg-[#354F52] text-white rounded-md transition-all hover:bg-[#456B65]"
+          >
+            Submit
+          </button>
+        </div>
 
-          {/* Navigation Controls */}
-          <div className="flex items-center justify-between w-[600px] mt-5">
-            <button
-              onClick={handlePreviousFlashcard}
-              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
-              disabled={currentIndex === 0}
-            >
-              <CircleArrowLeft className="w-10 h-10 text-[#354F52]" />
-            </button>
+    {/* Navigation Controls */}
+          <div className="flex items-center justify-between w-auto mt-5">
             <div className="bg-[#354F52] rounded-lg p-2 mt-[2rem]">
               <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
                 {currentIndex + 1} / {tempFlashcards.length}
               </span>
             </div>
-            <button
-              onClick={handleNextFlashcard}
-              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
-            >
-              <CircleArrowRight className="w-10 h-10 text-[#354F52]" />
-            </button>
           </div>
         </div>
+
       ) : isQuizComplete ? (
         <div className="flex flex-col items-center">
           {/* Quiz Completion UI */}
@@ -254,32 +329,49 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         // Regular quiz UI before it's finished
         <div className="flex flex-col items-center">
           <div
-            style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center transition-transform duration-300 hover:scale-105 cursor-pointer"
+            className="w-[800px] h-[400px] -mt-[15rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            style={{
+              fontFamily: '"Signika Negative", sans-serif',
+              transformStyle: 'preserve-3d',
+              transition: 'transform 0.6s',
+              transform: showAnswer ? 'rotateY(180deg)' : 'rotateY(0deg)',
+            }}
             onClick={() => setShowAnswer((prev) => !prev)}
           >
-            <h2 className="text-3xl font-semibold text-[#354F52] break-words max-w-full p-5">
+            {!showAnswer && (
+              <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-gray-400 text-lg">
+                Tap to Reveal
+              </div>
+            )}
+            <h2
+              className="text-3xl font-semibold text-[#354F52] break-words max-w-full p-5"
+              style={{
+              fontFamily: '"Signika Negative", sans-serif',
+              backfaceVisibility: 'hidden',
+              transform: showAnswer ? 'rotateY(180deg)' : 'rotateY(0deg)',
+              }}
+            >
               {currentFlashcard ? (showAnswer ? currentFlashcard.answer : currentFlashcard.question) : "Loading..."}
             </h2>
           </div>
 
-          {/* Navigation Controls */}
-          <div className="flex items-center justify-between w-[600px] mt-5">
+           {/* Navigation Controls */}
+           <div className="flex items-center justify-between w-[600px] mt-5">
             <button
               onClick={handlePreviousFlashcard}
-              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[1rem]"
               disabled={currentIndex === 0}
             >
               <CircleArrowLeft className="w-10 h-10 text-[#354F52]" />
             </button>
-            <div className="bg-[#354F52] rounded-lg p-2 mt-[2rem]">
+            <div className="bg-[#354F52] rounded-lg p-2 mt-[1.5rem]">
               <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
                 {currentIndex + 1} / {tempFlashcards.length}
               </span>
             </div>
             <button
               onClick={handleNextFlashcard}
-              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-200 active:scale-50 mt-[1rem]"
             >
               <CircleArrowRight className="w-10 h-10 text-[#354F52]" />
             </button>

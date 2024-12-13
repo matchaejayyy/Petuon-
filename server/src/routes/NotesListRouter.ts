@@ -84,7 +84,6 @@ router.delete("/deleteNote/:note_id", authenticateToken, async (req: Request, re
     if (result.rowCount === 0) {
       return res.status(404).json({ message: "Note not found" });
     }
-
     res
       .status(200)
       .json({ message: "Note deleted", deletedNote: result.rows[0] });

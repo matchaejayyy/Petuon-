@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Deck, Flashcard } from "../types/FlashCardTypes";
 import { v4 as uuidv4 } from "uuid";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+
 
 const token = localStorage.getItem("token");
 
@@ -71,7 +72,7 @@ export const useFlashcardHooks = () => {
 
   const saveDeck = async () => {
     if (!deckTitle.trim()) {
-      toast.warning("Deck title required!");
+      alert("Deck title cannot be empty.");
       return;
     }
 
@@ -85,6 +86,7 @@ export const useFlashcardHooks = () => {
 
       setDeckTitle("");
      toast.success("Deck created successfully!");
+
     } catch (error) {
       console.error("Error saving deck:", error);
     }
@@ -125,7 +127,6 @@ export const useFlashcardHooks = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDecks(decks.filter((deck) => deck.deck_id !== deckId));
-      toast.success("Deck deleted successfully!");
     } catch (error) {
       console.error("Error deleting deck:", error);
     }
@@ -136,7 +137,6 @@ export const useFlashcardHooks = () => {
       await axios.delete(`http://localhost:3002/cards/deleteFlashcard/${unique_flashcard_id}`);
       setFlashcards(flashcards.filter((flashcard) => flashcard.unique_flashcard_id !== unique_flashcard_id));
       console.log("Flashcard deleted successfully!");
-      toast.success("Flashcard deleted!");
     } catch (error) {
       console.error("Error deleting flashcard:", error);
     }
@@ -194,6 +194,23 @@ export const useFlashcardHooks = () => {
   };
   
 
+  const updateFlashcard = async (flashcardId: string, newValue: string, field: "question" | "answer") => {
+    try {
+      const data: { question?: string; answer?: string } = {};
+      data[field] = newValue; // Dynamically set the field being updated
+  
+      const response = await axios.put(
+        `http://localhost:3002/cards/updateFlashcard/${flashcardId}`,
+        data
+      );
+      console.log(`${field} updated successfully!`, response.data);
+    } catch (error) {
+      console.error("Error updating flashcard:", error|| error);
+      alert("Failed to update the flashcard. Please try again later.");
+    }
+  };
+  
+
   return {
     flashcards,
     decks,
@@ -215,9 +232,11 @@ export const useFlashcardHooks = () => {
     loadDeck,
     deleteDeck,
     deleteFlashcard,
+    updateFlashcard,
     fetchDecks,
     fetchFlashcards,
     openEditModal,
     handleUpdateDeckTitle
+
   };
 };

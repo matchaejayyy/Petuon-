@@ -18,7 +18,7 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
 
   const handleFeedPet = () => {
     if (petData.pet_currency >= 100) {
-      const updatedPet = { ...petData }; // Change 'let' to 'const'
+      const updatedPet = { ...petData }; // Changed 'let' to 'const'
   
       // Check if the pet has reached the max evolution rank
       if (updatedPet.pet_evolution_rank >= 3) {
