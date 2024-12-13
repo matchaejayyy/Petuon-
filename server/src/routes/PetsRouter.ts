@@ -101,9 +101,8 @@ router.patch("/updatePet/:pet_id", authenticateToken, async (req: Request, res: 
     if (!req.user || !req.user.user_id) {
       return res.status(401).json({ message: "Unauthorized: No user information" });
     }
-
     const { pet_id } = req.params;
-    const { pet_currency, pet_progress_bar, updated_at } = req.body;
+    const { pet_currency, pet_progress_bar, updated_date } = req.body;
     const userId = req.user.user_id;
 
     if (pet_currency == null || pet_progress_bar == null) {
@@ -112,11 +111,11 @@ router.patch("/updatePet/:pet_id", authenticateToken, async (req: Request, res: 
 
     const query = `
       UPDATE pets 
-      SET pet_currency = $1, pet_progress_bar = $2, updated_at = $3
+      SET pet_currency = $1, pet_progress_bar = $2, updated_date = $3
       WHERE pet_id = $4 AND user_id = $5
       RETURNING *;
     `;
-    const values = [pet_currency, pet_progress_bar, updated_at || new Date().toISOString(), pet_id, userId];
+    const values = [pet_currency, pet_progress_bar, updated_date || new Date().toISOString(), pet_id, userId];
 
     const result = await pool.query(query, values);
 

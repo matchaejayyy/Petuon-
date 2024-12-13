@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
 import axios from "axios";
+const token = localStorage.getItem("token");
 
 interface PetsProps {
   onPetAdded: (pet: any) => void;
@@ -25,17 +26,17 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const handleFeedPet = async (petData: any) => {
     if (petData.pet_currency >= 100) {
       const updatedPet = { ...petData };
-
+  
       if (updatedPet.pet_evolution_rank >= 3) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;
       }
-
+  
       if (updatedPet.pet_progress_bar >= 100) {
         updatedPet.pet_progress_bar = 0; // Reset the progress bar
         updatedPet.pet_evolution_rank += 1; // Increase evolution rank
         updatedPet.pet_max_value = updatedPet.pet_evolution_rank === 3 ? 200 : 150;
-
+  
         setShowCongratulatoryMessage("Congratulations! Your pet has evolved!");
         setTimeout(() => {
           setShowCongratulatoryMessage("");
@@ -44,15 +45,23 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
         updatedPet.pet_currency -= 100; // Deduct 100 currency
         updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100); // Add 10 progress
       }
-
+      console.log(updatedPet)
       const response = await axios.patch(
         `http://localhost:3002/pets/updatePet/${updatedPet.pet_id}`,
-        updatedPet
+        {
+          pet_currency: updatedPet.pet_currency,
+          pet_progress_bar: updatedPet.pet_progress_bar, 
+          updated_date: new Date()// Update progress bar as well
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       
-      if (response.status === 200) {
         onPetUpdated(updatedPet); // Update pet data with new progress and currency
-      }
+
     } else {
       alert("Not enough currency to feed the pet.");
     }
