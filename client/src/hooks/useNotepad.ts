@@ -9,11 +9,12 @@ export const useNotepad= () => {
     // Fetched Notes
     const fetchNotes = async () => {
         try {
-        const response = await axios.get("http://localhost:3002/notes/getNotes", {
+        const response = await axios.get("http://localhost:3002/notes/getNotes", 
+        {
             headers: {
                 Authorization: `Bearer ${token}`
             }
-            });
+        });
         
         const notesWithDateTime = response.data.map((note: any) => ({
             ...note,}));

@@ -18,6 +18,7 @@ router.put('/updatePet', async (req: Request, res: Response) => {
             'UPDATE pets SET pet_currency = $1, pet_progress_bar = $2 WHERE pet_id = $3 RETURNING *',
             [pet_currency, pet_progress_bar, pet_id]
         );
+        
         res.status(200).json(result.rows[0]);
     } catch (error) {
         console.error('Error updating pet:', error);
