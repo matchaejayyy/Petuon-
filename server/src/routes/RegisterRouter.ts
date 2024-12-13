@@ -7,7 +7,7 @@ import { ValidateRegister } from '../middleware/RegisterMiddleware';
 router.post('/registerUser', ValidateRegister, async (req: Request, res: Response) => {
     const { user_password, user_id, user_email, user_name } = req.body;
 
-    try { 
+    try {
 
             // Check if the email already exists
         const checkQuery = `SELECT user_email FROM users WHERE user_email = $1`;
