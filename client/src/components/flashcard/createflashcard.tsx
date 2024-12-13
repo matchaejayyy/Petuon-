@@ -43,7 +43,7 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
   // Function to delete a flashcard
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center p-8 mt-[-11.5rem]">
+    <div className="flex flex-col md:flex-row items-center justify-center p-8 mt-[-6rem]">
       <div className="w-full max-w-4xl p-6   rounded-xl  space-y-6 ">
         {/* Title */}
         <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-3xl font-semibold text-[#354F52]">Create a New Set</h2>

@@ -133,6 +133,28 @@ export const useFlashcardHooks = () => {
     }
   };
 
+  const updateFlashcard = async (flashcardId: string, newValue: string, field: "question" | "answer") => {
+    try {
+      const data: { question?: string; answer?: string } = {};
+      data[field] = newValue; // Dynamically set the field being updated
+  
+      const response = await axios.put(
+        `http://localhost:3002/cards/updateFlashcard/${flashcardId}`,
+        data
+      );
+      console.log(`${field} updated successfully!`, response.data);
+    } catch (error) {
+      console.error("Error updating flashcard:", error|| error);
+      alert("Failed to update the flashcard. Please try again later.");
+    }
+  };
+  
+
+  
+  
+  
+    
+
   return {
     flashcards,
     decks,
@@ -150,5 +172,6 @@ export const useFlashcardHooks = () => {
     loadDeck,
     deleteDeck,
     deleteFlashcard,
+    updateFlashcard
   };
 };

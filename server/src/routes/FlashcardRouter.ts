@@ -125,4 +125,42 @@ router.delete('/deleteFlashcard/:unique_flashcard_id', async (req: Request, res:
   }
 });
 
+router.put('/updateFlashcard/:unique_flashcard_id', async (req, res) => {
+  const { unique_flashcard_id } = req.params;
+  const { question, answer } = req.body;
+
+  // Only update the fields that are provided
+  const updateFields = [];
+  const updateValues = [];
+
+  if (question) {
+    updateFields.push('question');
+    updateValues.push(question);
+  }
+  if (answer) {
+    updateFields.push('answer');
+    updateValues.push(answer);
+  }
+
+  if (updateFields.length === 0) {
+    return res.status(400).send("No valid fields provided to update");
+  }
+
+  const updateQuery = `
+    UPDATE flashcards 
+    SET ${updateFields.map((field, idx) => `${field} = $${idx + 1}`).join(", ")} 
+    WHERE unique_flashcard_id = $${updateFields.length + 1}
+  `;
+
+  try {
+    await pool.query(updateQuery, [...updateValues, unique_flashcard_id]);
+    res.status(200).send("Flashcard updated successfully");
+  } catch (error) {
+    console.error("Error updating flashcard:", error);
+    res.status(500).send("Failed to update flashcard");
+  }
+});
+
+
+
 export default router;
