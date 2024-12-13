@@ -5,6 +5,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { useNotepad } from "../hooks/useNotepad";
 import { motion } from "framer-motion";
+import parse from 'html-react-parser';
 
 const NotepadComponent: React.FC = () => {
     const [currentTitle, setCurrentTitle] = useState<string>("");
@@ -44,15 +45,11 @@ const NotepadComponent: React.FC = () => {
         console.error("Title or content is empty.");
         return;
       }
-    
-      const strippedNoteContent = currentNote
-        .replace(/<\/?(h1|h2|h3|p|br)>/g, "")
-        .trim();
-    
+  
       const newNote = {
         note_id: uuidv4(),
         title: currentTitle.trim(),
-        content: strippedNoteContent,
+        content: currentNote,
         color: getRandomPastelColor(),
         created_date: new Date().toISOString().split("T")[0], // '2024-12-01'
         created_time: new Date().toLocaleTimeString([], {
@@ -117,7 +114,7 @@ const NotepadComponent: React.FC = () => {
         try {
         await deleteNOte(note_id)
         setEditingNote(null)
-
+        resetForm()
         } catch (error) {
         console.error("Error deleting note:", error);
         }
@@ -189,7 +186,20 @@ const NotepadComponent: React.FC = () => {
     };
     const staggerTime = 1; // Total duration for all tasks to be rendered (in seconds)
     const delayPerItem = staggerTime / notes.length; // Time delay per task
-    console.log(afterLoading)
+
+    const formatContent = (content: string) => {
+      // If content is an object, convert it to a string or access the correct property
+      console.log(content)
+      if (typeof content === 'object') {
+        content = JSON.stringify(content); // or access a specific property like content.text
+      }
+
+      const strippedContent = content.replace(/<a [^>]*>(.*?)<\/a>/g, '$1');
+
+      return parse(strippedContent); // Safely parse HTML content
+    };
+    
+
     return (
       <>
       <h1
@@ -306,11 +316,10 @@ const NotepadComponent: React.FC = () => {
       ) : (
         /* Notes List */
         <div className="-ml-6 mt-0">
-          <div className="-mt-2 overflow-x-auto p-6" ref={notesContainerRef}>
+          <div className="-mt-2 overflow-x-auto p-6">
             <div className="grid w-max grid-flow-col grid-rows-[repeat(2,minmax(0,1fr))] gap-x-5 gap-y-2">
               {/* New Note Button */}
               <div
-                ref={notesContainerRef} 
                 className="active:scale-20, mb-2 flex transform cursor-pointer flex-col items-center justify-center rounded-3xl border shadow-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl"
                 onClick={() => setCreatingNewNote(true)}
                 style={{
@@ -361,7 +370,6 @@ const NotepadComponent: React.FC = () => {
                       ? { duration: 0.2, delay: index * delayPerItem }
                       : undefined
                   }
-                  ref={index === notes.length - 1 ? newNoteRef : null} 
                 >
                   <h4
                     style={{ fontFamily: '"Signika Negative", sans-serif' }}
@@ -379,12 +387,24 @@ const NotepadComponent: React.FC = () => {
                   </h3>
                   <hr className="mb-2 w-full border-t-2 border-black" />
                   <p
-                    style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                    style={{
+                      fontFamily: '"Signika Negative", sans-serif',
+                      maxHeight: '30rem', // Set a max height for the paragraph
+                      overflow: 'hidden', // Hide overflowing content
+                      textOverflow: 'ellipsis', // Show ellipsis if content overflows
+                      display: '-webkit-box',
+                      WebkitBoxOrient: 'vertical',
+                      WebkitLineClamp: 6, // Limit the content to 2 lines
+                    }}
                     className="ml-3 text-gray-700"
                   >
-                    {note.content.length > 20
-                      ? `${note.content.slice(0, 20)}...`
-                      : note.content}
+                    {note.content && note.content.includes('http') ? (
+                      // If content is a URL, render as plain text
+                      note.content
+                    ) : (
+                      // Otherwise, render normally
+                      formatContent(note.content)
+                    )}
                   </p>
                   <p
                     style={{ fontFamily: '"Signika Negative", sans-serif' }}
