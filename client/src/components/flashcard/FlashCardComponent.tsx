@@ -314,23 +314,24 @@ const FlashcardComponent: React.FC = () => {
       ) : isReviewing ? (
         <div>
           <div className="flex">
-          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-lg">
-                 <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="-ml-[0.1rem] mt-[0.2rem] mr-96 font-serif text-2xl text-white font-bold uppercase">
-              Deck: 
-            </h1>
-            </div>
-            <h1  style={{ fontFamily: '"Signika Negative", sans-serif' }} className="-ml-[8.25rem] mt-[0.6rem] mr-96 font-serif text-2xl text-white font-bold uppercase">
-              {decks.find(deck => deck.deck_id === deckId)?.title?.length > 5 
-                  ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 5) + "..."
+          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="-ml-[0.1rem] mt-[0.2rem]  text-xl text-white  uppercase">
+                Deck:
+                </h1>
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-xl text-white  uppercase">
+                {decks.find(deck => deck.deck_id === deckId)?.title?.length > 9 
+                  ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
-            </h1>
+              </h1>
+              </div>
             <div className="flex justify-center items-center">
               <button
                 onClick={() => setIsReviewing(false)}
-                className="flex mt-[-2.8rem] ml-[-2.8rem]"
-              >
-                <FolderPlus className="w-10 h-10 ml-[1rem]  text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F] " />
-              </button>
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[4rem] -ml-[13.5rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
+                >
+                Return to deck
+                </button>
             </div>
           </div>
           <div className="b">
@@ -343,27 +344,32 @@ const FlashcardComponent: React.FC = () => {
       ) : (
         <div>
           <div className="flex">
-          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-lg">
-                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="-ml-[0.1rem] mt-[0.2rem]  text-2xl text-white font-bold uppercase">
+          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="-ml-[0.1rem] mt-[0.2rem]  text-xl text-white  uppercase">
                 Deck:
                 </h1>
-                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-2xl text-white font-bold uppercase">
-                {decks.find(deck => deck.deck_id === deckId)?.title?.length > 5 
-                  ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 5) + "..."
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-xl text-white  uppercase">
+                {decks.find(deck => deck.deck_id === deckId)?.title?.length > 9 
+                  ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
-              <button
+              <div>
+                <button
                 onClick={() => {setIsReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className=" text-white text-2xl bg-[#354F52] p-4 w-[5rem] h-[3rem] rounded-lg m-10 mt-[10rem] -ml-[30rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110" >
+                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[10rem] -ml-[33.95rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
+                >
                 Review Deck
-              </button>
+                </button>
+              </div>
+              <div>
               <button
-          onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
-          className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
-              >
-          <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />
+                onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[17.5rem] -ml-[33.95rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
+                >
+                Back
               </button>
+              </div>
             </div>
           </div>
           <CreateFlashcard

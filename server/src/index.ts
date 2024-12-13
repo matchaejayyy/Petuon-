@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 
 import LoginRouter from './routes/LoginRouter';
 import RegisterRouter from "./routes/RegisterRouter";
-
 import ToDoListRouter from "./routes/ToDoListRouter";
 import FlashcardRouter from './routes/FlashcardRouter';
 import NotesListRouter from "./routes/NotesListRouter";
