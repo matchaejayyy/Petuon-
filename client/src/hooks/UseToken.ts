@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 // Typing for the response and errors
-interface DecodedToken {
-  exp: number;
-}
+// interface DecodedToken {
+//   exp: number;
+// }
 
 interface TokenResponse {
   token: string | null;
@@ -36,13 +36,16 @@ export const useToken = (): UseTokenReturn => {
         return response.data.token;
       } else {
         console.error("No token found for userId:", user_id);
+        setError("No token found for user.");
         return null;
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Axios error while fetching token:", error.response?.data);
+        setError("Failed to fetch token.");
       } else {
         console.error("Unexpected error while fetching token:", error);
+        setError("An unexpected error occurred while fetching token.");
       }
       return null;
     }
@@ -60,6 +63,7 @@ export const useToken = (): UseTokenReturn => {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error("Axios error while logging out:", error.response?.data);
+        setError("Logout failed.");
       } else {
         console.error("Unexpected error while logging out:", error);
       }

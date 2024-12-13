@@ -33,6 +33,7 @@ app.use('/pets', PetsRouter)
 app.use('/avatar', AvatarRouter);
 app.use('/editprofile', EditProfileRouter)
 
+
  // Start Server on port 3002
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

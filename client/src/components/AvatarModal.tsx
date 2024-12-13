@@ -14,16 +14,39 @@ const Avatar = () => {
   const [userEmail, setUserEmail] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [openSettings, setOpenSettings] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const { logout } = useToken();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  
   let userId: string | null = null;
 
   // Decode the token to get the userId
-  if (token) {
-    const decodedToken: any = jwtDecode(token);
-    userId = decodedToken.user_id; // Adjust this based on your token structure
-  }
+  useEffect(() => {
+    const decodeToken = () => {
+      if (token) {
+        try {
+          const decodedToken: any = jwtDecode(token);
+          const expiry = decodedToken.exp * 1000; // Convert to milliseconds
+          const currentTime = Date.now();
+
+          if (currentTime > expiry) {
+            setError("Token has expired"); // Set an error if the token is expired
+            return;
+          }
+
+          userId = decodedToken.user_id; // Decode user_id from the token
+        } catch (error) {
+          setError("Invalid token");
+        }
+      } else {
+        setError("Token is missing");
+      }
+    };
+
+    decodeToken();
+  }, [token]); // Only run when the token changes or on mount
+
 
   // Toggle dropdown visibility
   const toggleDropdown = () => {
@@ -57,8 +80,10 @@ const Avatar = () => {
   };
 
   useEffect(() => {
-    fetchUserData(); // Call fetchUserData on component mount
-  }, [token]);
+    if (!error) {
+      fetchUserData(); // Only fetch user data if no token-related error
+    }
+  }, [token, error]); // Fetch user data when token or error changes
 
   const handleLogout = async () => {
     setLoading(true); // Start loading animation
@@ -77,6 +102,10 @@ const Avatar = () => {
       setLoading(false); // Ensure loading state is reset
     }
   };
+
+  if (error) {
+    return <div>Error: {error}</div>; // Display the error if there's an issue with the token
+  }
 
   return (
     <>
