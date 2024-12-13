@@ -43,11 +43,13 @@ export const useFlashcardHooks = () => {
         answer: string;
         flashcard_id: string;
         unique_flashcard_id: string;
+        progress: boolean;
       }) => ({
         question: flashcard.question,
         answer: flashcard.answer,
         flashcard_id: flashcard.flashcard_id,
         unique_flashcard_id: flashcard.unique_flashcard_id,
+        progress: flashcard.progress,
       }));
       setFlashcards(flashcardData);
     } catch (error) {

@@ -193,4 +193,40 @@ router.put('/updateFlashcard/:unique_flashcard_id', async (req: Request, res: Re
   }
 });
 
+
+// Update flashcard progress
+router.put('/updateFlashcardProgress/:unique_flashcard_id', authenticateToken, async (req: Request, res: Response) => {
+  const { unique_flashcard_id } = req.params;
+  const { progress } = req.body;
+
+  if (progress === undefined) {
+    return res.status(400).json({ message: "Progress is required" });
+  }
+
+  try {
+    // Run the query to update the flashcard's progress based on unique_flashcard_id
+    const query = `
+      UPDATE flashcards
+      SET progress = $1
+      WHERE unique_flashcard_id = $2
+      RETURNING *`;
+    const values = [progress, unique_flashcard_id];
+    const result = await pool.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Flashcard not found" });
+    }
+
+    res.status(200).json({ message: "Flashcard progress updated", flashcard: result.rows[0] });
+  } catch (error) {
+    // Log full error for debugging
+    console.error('Error updating flashcard progress:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    res.status(500).json({ message: "An error occurred while updating flashcard progress", error: errorMessage });
+  }
+});
+
+
+
 export default router;
+
