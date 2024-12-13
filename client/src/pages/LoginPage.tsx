@@ -8,17 +8,20 @@ import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import LogInOut from "../components/logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useToken } from "../hooks/UseToken";
 
 const LoginPage: React.FC<Props> = () => {
-  const [error] = useState<string | null>(null); // Track error message
+  const [loading, setLoading] = useState(false); // Track loading state
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { token, fetchTokenFromDatabase} = useToken(); // Use the hook
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormsInputs>();
+
 
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
@@ -27,28 +30,32 @@ const LoginPage: React.FC<Props> = () => {
           user_name: form.user_name,
           user_password: form.user_password,
         });
-        if (response.data.token) {
-          // Store JWT token in localStorage for persistent sessions
-          localStorage.setItem("token", response.data.token);
-          // alert("Login successful! Redirecting to dashboard...");
+
+        if (response.data.user_id) {
+          toast.success("Login successful! Fetching token...");
+          // Fetch token from the database
+          const fetchedToken = await fetchTokenFromDatabase(response.data.user_id);
           toast.success("Login successful! Redirecting to dashboard...");
-
-      // Redirect to the dashboard after showing the notification
-          setTimeout(() => {
-            navigate("/dashboard");
-          }, 2000);
-        } 
-    } catch (error: unknown) {
-      setLoading(false);
-      if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Error connecting to the server.");
-      } else {
-        alert("An unexpected error occurred.");
+          if (fetchedToken) {
+            console.log("Token successfully retrieved:", fetchedToken);
+            setTimeout(() => {
+              navigate("/dashboard");
+            }, 2000);
+          } else {
+            toast.error("Failed to retrieve token. Please try again.");
+          }
+        }
+      } catch (error: unknown) {
+        setLoading(false);
+        if (axios.isAxiosError(error)) {
+          toast.error(error.response?.data?.message || "Error connecting to the server.");
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+      } finally {
+        setLoading(false);
       }
-    }
-  };
-
-  
+    };
 
   return (
     <>
