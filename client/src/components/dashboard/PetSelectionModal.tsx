@@ -17,9 +17,7 @@ interface PetSelectionModalProps {
 const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAdded }) => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [petName, setPetName] = useState<string>("");
-  const { addPet, fetchPets } = usePets();
-
-  fetchPets()
+  const { addPet } = usePets();
 
   const petColors: Record<string, string> = {
     capybara: "border-red-500",
