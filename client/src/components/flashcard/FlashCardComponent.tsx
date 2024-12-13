@@ -319,7 +319,7 @@ const FlashcardComponent: React.FC = () => {
                 Deck:
                 </h1>
                 <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-xl text-white  uppercase">
-                {decks.find(deck => deck.deck_id === deckId)?.title?.length > 9 
+                {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9 
                   ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
@@ -349,7 +349,7 @@ const FlashcardComponent: React.FC = () => {
                 Deck:
                 </h1>
                 <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-xl text-white  uppercase">
-                {decks.find(deck => deck.deck_id === deckId)?.title?.length > 9 
+                {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9 
                   ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
