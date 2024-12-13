@@ -1,15 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
 import { FolderPlus, BookmarkMinus, Minus, CircleArrowLeft, FilePenLine } from "lucide-react";
-import { Flashcard } from "../../types/FlashCardTypes";
+import { Deck, Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-
-
 
 const token = localStorage.getItem('token');
 
@@ -36,59 +34,129 @@ const FlashcardComponent: React.FC = () => {
     deleteFlashcard,
     setDeckId,
     handleUpdateDeckTitle
-    
   } = useFlashcardHooks();
 
+  const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
+  const [editingAnswer, setEditingAnswer] = useState<string | null>(null);
 
-  const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({
-    flashcards,
-  }) => {
+  const handleEditQuestion = (flashcardId: string) => {
+    setEditingQuestion(flashcardId);
+  };
+
+  const handleEditAnswer = (flashcardId: string) => {
+    setEditingAnswer(flashcardId);
+  };
+
+  const handleSaveQuestion = (flashcardId: string, newQuestion: string) => {
+    updateFlashcard(flashcardId, newQuestion, "question");
+    setEditingQuestion(null);
+  };
+
+  const handleSaveAnswer = (flashcardId: string, newAnswer: string) => {
+    updateFlashcard(flashcardId, newAnswer, "answer");
+    setEditingAnswer(null);
+  };
+
+  const updateFlashcard = async (flashcardId: string, newValue: string, field: "question" | "answer") => {
+    try {
+      // API call to update the flashcard
+      await axios.put(`http://localhost:3002/cards/updateFlashcard/${flashcardId}`, {
+        [field]: newValue,
+      });
+
+      // Optimistically update the flashcards state to reflect the change
+      setFlashcards(prevFlashcards => 
+        prevFlashcards.map(flashcard => 
+          flashcard.unique_flashcard_id === flashcardId
+            ? { ...flashcard, [field]: newValue } // Update the modified field
+            : flashcard
+        )
+      );
+
+      console.log(`${field} updated successfully!`);
+    } catch (error) {
+      console.error("Error updating flashcard:", error);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent, flashcardId: string, newValue: string, field: "question" | "answer") => {
+    if (e.key === 'Enter') {
+      if (field === "question") {
+        handleSaveQuestion(flashcardId, newValue);
+      } else if (field === "answer") {
+        handleSaveAnswer(flashcardId, newValue);
+      }
+    }
+  };
+
+  const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
     return (
-      <ul className="h-[70vh] mr-[7rem] mt-[-1rem] flex flex-col items-center overflow-y-auto p-0 ">
-        {flashcards.map((flashcard, index) => {
-          const assignedColor = colors[index % colors.length];
-          return (
-            <li
-              key={index}
-              className="w-2/3 ml-[9rem] m-10 relative transform transition-transform duration-200 hover:scale-105"
-            >
-              <div
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className={`${assignedColor} rounded-2xl h-[15rem] w-full flex flex-col items-center justify-center overflow-auto relative shadow-lg`}
-              >
-                <button
-                  className="absolute top-4 right-12 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
-                  onClick={() => {
-                    if (flashcard.unique_flashcard_id) {
-                      deleteFlashcard(flashcard.unique_flashcard_id); 
-                    } else {
-                      console.error("Flashcard unique_flashcard_id is undefined");
-                    }
-                  }}
+      <div className="-mt-[2.5rem] p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-y-5 max-h-[250px] overflow-x-auto scrollbar-thin ">
+        {flashcards.map((flashcard) => (
+          <div
+            key={flashcard.unique_flashcard_id}
+            className="relative flex flex-col w-[40rem] h-[10rem] bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform hover:scale-100 transition mx-auto"
+          >
+            {/* Question Card */}
+            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mb-4 text-center">
+              {editingQuestion === flashcard.unique_flashcard_id ? (
+                <input
+                  type="text"
+                  defaultValue={flashcard.question}
+                  onBlur={(e) => handleSaveQuestion(flashcard.unique_flashcard_id, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, flashcard.unique_flashcard_id, e.currentTarget.value, "question")}
+                  className="w-full p-2 border rounded-lg"
+                  autoFocus
+                />
+              ) : (
+                <p
+                  className="font-semibold text-[#354F52] break-words cursor-pointer"
+                  onClick={() => handleEditQuestion(flashcard.unique_flashcard_id)}
                 >
-                  <FilePenLine className="text-lime-800 mt-[-.5rem] w-8 h-8" />
-                </button>
-                <button
-                  className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
-                  onClick={() => {
-                    if (flashcard.unique_flashcard_id) {
-                      deleteFlashcard(flashcard.unique_flashcard_id); 
-                    } else {
-                      console.error("Flashcard unique_flashcard_id is undefined");
-                    }
-                  }}
-                >
-                  <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
-                </button>
-                <h1 className="text-5xl mb-5 break-words">
                   {flashcard.question}
-                </h1>
-                <h2 className="text-xl">{flashcard.answer}</h2>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+                </p>
+              )}
+            </div>
+
+            {/* Answer Card (Hidden by default) */}
+            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-4 text-center text-[#52796F]">
+              {editingAnswer === flashcard.unique_flashcard_id ? (
+                <textarea
+                  defaultValue={flashcard.answer}
+                  onBlur={(e) => handleSaveAnswer(flashcard.unique_flashcard_id, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, flashcard.unique_flashcard_id, e.currentTarget.value, "answer")}
+                  className="w-full p-2 border rounded-lg"
+                  autoFocus
+                  aria-label="Edit answer"
+                />
+              ) : (
+                <p
+                  className="cursor-pointer"
+                  onClick={() => handleEditAnswer(flashcard.unique_flashcard_id)}
+                >
+                  {flashcard.answer}
+                </p>
+              )}
+            </div>
+
+            {/* Delete Button */}
+            <button
+              className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
+              onClick={() => {
+                if (flashcard.unique_flashcard_id) {
+                  deleteFlashcard(flashcard.unique_flashcard_id);
+                } else {
+                  console.error("Flashcard unique_flashcard_id is undefined");
+                }
+              }}
+            >
+              <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
+            </button>
+
+    </div>
+  ))}
+</div>
+
     );
   };
   const colors = [
@@ -97,11 +165,10 @@ const FlashcardComponent: React.FC = () => {
     "bg-[#E5EE91]",
     "bg-[#B692FE]",
   ];
-  
   return (
     <>
-      <ToastContainer />
-      {onFirstPage ? (
+     <ToastContainer />
+     {onFirstPage ? (
         <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
           <div className=" h-24 w-full mt-20 flex items-center ">
             <h1 className="text-[#354F52] font-serif text-3xl ">Decks</h1>
@@ -198,13 +265,13 @@ const FlashcardComponent: React.FC = () => {
                   No decks saved yet. Create one to get started!
                 </p>
               ) : (
-                decks.map(({ title, deck_id }, index) => {
+                decks.map(({ title, deck_id}, index) => {
                   const assignedColor = colors[index % colors.length];
 
                   return (
                     <li key={title} className="w-full ml-[3rem]">
                       <div
-                        onClick={() => { loadDeck(deck_id) }}
+                        onClick={() => {loadDeck(deck_id)}}
                         className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
                       >
                         <h1
@@ -228,8 +295,8 @@ const FlashcardComponent: React.FC = () => {
                         <button
                           className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
                           onClick={(e) => {
-                            e.stopPropagation();
-                            deleteDeck(deck_id);
+                          e.stopPropagation();
+                          deleteDeck(deck_id);
                           }}
                         >
                           <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
@@ -241,16 +308,21 @@ const FlashcardComponent: React.FC = () => {
               )}
             </ul>
           </div>
-          <div className="fixed top-[6rem] right-[3.9rem]"></div>
+          <div className="fixed top-[6rem] right-[3.9rem]">
+          </div>
         </div>
       ) : isReviewing ? (
         <div>
           <div className="flex">
-            <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-5 font-serif text-3xl m-10 text-[#354F52]">
-              Reviewing:
+          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-lg">
+                 <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="-ml-[0.1rem] mt-[0.2rem] mr-96 font-serif text-2xl text-white font-bold uppercase">
+              Deck: 
             </h1>
-            <h1 className=" mt-[-0.5rem] mr-20 font-serif text-2xl text-black font-bold uppercase">
-              {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
+            </div>
+            <h1  style={{ fontFamily: '"Signika Negative", sans-serif' }} className="-ml-[8.25rem] mt-[0.6rem] mr-96 font-serif text-2xl text-white font-bold uppercase">
+              {decks.find(deck => deck.deck_id === deckId)?.title?.length > 5 
+                  ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 5) + "..."
+                  : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
             </h1>
             <div className="flex justify-center items-center">
               <button
@@ -271,43 +343,46 @@ const FlashcardComponent: React.FC = () => {
       ) : (
         <div>
           <div className="flex">
-            <div className="flex justify-center items-center"></div>
-              <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-0 font-serif text-2xl text-[#354F52] font-bold uppercase">
+          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-lg">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="-ml-[0.1rem] mt-[0.2rem]  text-2xl text-white font-bold uppercase">
                 Deck:
-              </h1>
-              <h1 className="ml-5 mt-[-0.5rem] mr-96 font-serif text-2xl text-black font-bold uppercase">
-                {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
+                </h1>
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-2xl text-white font-bold uppercase">
+                {decks.find(deck => deck.deck_id === deckId)?.title?.length > 5 
+                  ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 5) + "..."
+                  : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
               <button
-                onClick={() => { setIsReviewing(true); setOnFirstPage(false); }}
+                onClick={() => {setIsReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="bg-[#657F83] text-white h-16 w-36 rounded-3xl m-10 ml-72 shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110"
-              >
+                className=" text-white text-2xl bg-[#354F52] p-4 w-[5rem] h-[3rem] rounded-lg m-10 mt-[10rem] -ml-[30rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110" >
                 Review Deck
               </button>
               <button
-                onClick={() => { setOnFirstPage(true); console.log("Clicked Review"); }}
-                className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
+          onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
+          className="text-4xl ml-[-0.5rem] text-center transform transition-transform duration-200 hover:scale-125"
               >
-                <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />
+          <CircleArrowLeft className="w-10 h-10 text-[#657F83] hover:text-[#52796F]" />
               </button>
             </div>
-            <CreateFlashcard
-              flashcards={flashcards}
-              setFlashcards={setFlashcards}
-              flashCardId={deckId}
-            />
-            {flashcards.length > 0 ? (
-              <FlashcardList flashcards={flashcards} />
-            ) : (
-              <p className="text-2xl text-gray-500 text-center mt-10" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                No flashcards available. Create one to get started!
-              </p>
-            )}
           </div>
+          <CreateFlashcard
+            flashcards={flashcards}
+            setFlashcards={setFlashcards}
+            flashCardId={deckId}          
+          />
+          {flashcards.length > 0 ? (
+            <FlashcardList flashcards={flashcards} />
+          ) : (
+            <p className="text-2xl text-gray-500 text-center mt-10" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+              No flashcards available. Create one to get started!
+            </p>
+          )}
+        </div>
       )}
     </>
   );
 };
+
 
 export default FlashcardComponent;

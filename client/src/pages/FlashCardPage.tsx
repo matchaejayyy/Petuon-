@@ -4,7 +4,6 @@ import Avatar from "../components/AvatarModal";
 
 import FlashcardComponent from "../components/flashcard/FlashCardComponent";
 
-
 const FlashCardPage = () => {
   return(
     <>  

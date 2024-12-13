@@ -124,10 +124,6 @@ router.delete('/deleteFlashcard/:unique_flashcard_id', async (req: Request, res:
     res.status(500).send('Failed to delete flashcard');
   }
 });
-
-
-//update flashcard
-
 // Update a deck's title
 router.put('/updateDeckTitle/:deckId', authenticateToken, async (req: Request, res: Response) => {
   const { deckId } = req.params; // Get the deck ID from the URL parameters
@@ -163,34 +159,43 @@ router.put('/updateDeckTitle/:deckId', authenticateToken, async (req: Request, r
   }
 });
 
-// Update a flashcard
-router.put('/updateFlashcard/:unique_flashcard_id', async (req: Request, res: Response) => {
+router.put('/updateFlashcard/:unique_flashcard_id', async (req, res) => {
   const { unique_flashcard_id } = req.params;
   const { question, answer } = req.body;
 
-  if (!question || !answer) {
-    return res.status(400).json({ message: "Question and answer are required" });
+  // Only update the fields that are provided
+  const updateFields = [];
+  const updateValues = [];
+
+  if (question) {
+    updateFields.push('question');
+    updateValues.push(question);
   }
+  if (answer) {
+    updateFields.push('answer');
+    updateValues.push(answer);
+  }
+
+  if (updateFields.length === 0) {
+    return res.status(400).send("No valid fields provided to update");
+  }
+
+  const updateQuery = `
+    UPDATE flashcards 
+    SET ${updateFields.map((field, idx) => `${field} = $${idx + 1}`).join(", ")} 
+    WHERE unique_flashcard_id = $${updateFields.length + 1}
+  `;
 
   try {
-    const query = `
-      UPDATE flashcards
-      SET question = $1, answer = $2
-      WHERE unique_flashcard_id = $3
-      RETURNING *`;
-    const values = [question, answer, unique_flashcard_id];
-
-    const result = await pool.query(query, values);
-
-    if (result.rowCount === 0) {
-      return res.status(404).json({ message: "Flashcard not found" });
-    }
-
-    res.status(200).json({ message: "Flashcard updated successfully", flashcard: result.rows[0] });
+    await pool.query(updateQuery, [...updateValues, unique_flashcard_id]);
+    res.status(200).send("Flashcard updated successfully");
   } catch (error) {
-    console.error(`Error updating flashcard with ID ${unique_flashcard_id}:`, error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error updating flashcard:", error);
+    res.status(500).send("Failed to update flashcard");
   }
 });
+
+
+
 
 export default router;
