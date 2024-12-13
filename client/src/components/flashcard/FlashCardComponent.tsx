@@ -357,7 +357,7 @@ const FlashcardComponent: React.FC = () => {
                 <button
                 onClick={() => {setIsReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[10rem] -ml-[36.75rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
+                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[10rem] -ml-[33.95rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
                 >
                 Review Deck
                 </button>
@@ -365,7 +365,7 @@ const FlashcardComponent: React.FC = () => {
               <div>
               <button
                 onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
-                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[17.5rem] -ml-[36.75rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
+                style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[17.5rem] -ml-[33.95rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
                 >
                 Back
               </button>
