@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
-import { FolderPlus, BookmarkMinus, Minus, CircleArrowLeft } from "lucide-react";
+import { FolderPlus, BookmarkMinus, Minus, CircleArrowLeft, FilePenLine } from "lucide-react";
 import { Deck, Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
+import Modal from "../modal";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const token = localStorage.getItem('token');
 
@@ -16,6 +19,10 @@ const FlashcardComponent: React.FC = () => {
     onFirstPage,
     deckTitle,
     deckId,
+    isModalOpen,
+    isEditModalOpen,
+    setIsEditModalOpen,
+    setIsModalOpen,
     setFlashcards,
     setDeckTitle,
     setDecks,
@@ -25,6 +32,8 @@ const FlashcardComponent: React.FC = () => {
     loadDeck,
     deleteDeck,
     deleteFlashcard,
+    setDeckId,
+    handleUpdateDeckTitle
   } = useFlashcardHooks();
 
   const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
@@ -158,46 +167,94 @@ const FlashcardComponent: React.FC = () => {
   ];
   return (
     <>
-      {onFirstPage ? (
+     <ToastContainer />
+     {onFirstPage ? (
         <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
           <div className=" h-24 w-full mt-20 flex items-center ">
-          <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-[#354F52] text-3xl ">
-            Create a new Deck
-          </h1>
-            <input
+            <h1 className="text-[#354F52] font-serif text-3xl ">Decks</h1>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg ml-10"
+            >
+              Create Deck
+            </button>
+
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <h2 className="text-2xl font-bold mb-4">Create a New Deck</h2>
+              <input
                 type="text"
                 value={deckTitle}
                 onChange={(e) => setDeckTitle(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    await saveDeck();
+                    const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
+                      headers: {
+                        Authorization: `Bearer ${token}`
+                      }
+                    });
+                    const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
+                      deck_id: deck.deck_id,
+                      title: deck.title,
+                    }));
+                    setDecks(deckData);
+                    setDeckTitle(''); // Clear input field
+                  }
+                }}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
-                placeholder="Title"
+                className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                placeholder="Enter deck title"
               />
-               <button
+              <button
                 onClick={async () => {
                   await saveDeck();
                   const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                  }
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                    }
                   });
                   const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
-                  deck_id: deck.deck_id,
-                  title: deck.title,
+                    deck_id: deck.deck_id,
+                    title: deck.title,
                   }));
                   setDecks(deckData);
-                  const newDeck = deckData.find((deck: Deck) => deck.title === deckTitle);
-                  if (newDeck) {
-                  loadDeck(newDeck.deck_id);
-                  }
+                  setDeckTitle(''); // Clear input field
+                  setIsModalOpen(false);
                 }}
                 className="flex"
-                >
+              >
                 <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
-                </button>
+              </button>
+            </Modal>
+            <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+              <h2 className="text-2xl font-bold mb-4">Edit Deck Title</h2>
+              <input
+                type="text"
+                value={deckTitle}
+                onChange={(e) => setDeckTitle(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    // Update deck title and refresh deck list
+                    await handleUpdateDeckTitle();
+                    setDeckTitle(''); // Clear input field
+                  }
+                }}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="w-full p-2 border border-gray-300 rounded-md mb-4"
+                placeholder="Enter new deck title"
+              />
+              <button
+                onClick={async () => {
+                  // Update deck title and refresh deck list
+                  await handleUpdateDeckTitle();
+                  setDeckTitle(''); // Clear input field
+                }}
+                className="flex"
+              >
+                <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
+              </button>
+            </Modal>
           </div>
-          <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-[#354F52] text-3xl m-10 mt-1 mr-[70rem]">
-            Decks
-          </h1>
           <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
             <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
               {Object.keys(decks).length === 0 ? (
@@ -225,6 +282,16 @@ const FlashcardComponent: React.FC = () => {
                         >
                           {title}
                         </h1>
+                        <button
+                          className="absolute top-3 right-12 h-8 w-8 rounded-full flex items-center justify-center"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setIsEditModalOpen(true);
+                            setDeckId(deck_id);
+                          }}
+                        >
+                          <FilePenLine className="w-5 h-5 transform transition-transform duration-200 hover:scale-125" />
+                        </button>
                         <button
                           className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
                           onClick={(e) => {
