@@ -11,13 +11,15 @@ import { Pet } from "../../types/PetTypes";
 
 interface PetSelectionModalProps {
   onClose: () => void;
-  onPetAdded: (pet: any) => void 
+  onPetAdded: (petData: any) => void 
 }
 
 const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAdded }) => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [petName, setPetName] = useState<string>("");
-  const { addPet } = usePets();
+  const { addPet, fetchPets } = usePets();
+
+  fetchPets()
 
   const petColors: Record<string, string> = {
     capybara: "border-red-500",

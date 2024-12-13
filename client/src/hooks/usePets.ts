@@ -12,22 +12,29 @@ export const usePets = () => {
   const fetchPets = async () => {
     setLoading(true); // Start loading
     setError(""); // Clear previous errors
-  
+
     try {
       const response = await axios.get("http://localhost:3002/pets/getPets", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-  
+      console.log(response)
       // Assuming the response data is an array of pet objects
-      const petsWithDateTime = response.data.map((pet: any) => ({
-        ...pet, // Spread each pet to ensure it has the necessary fields
-        // Optionally, you can modify or add additional fields here
+      const petsWithDateTime: Pet[] = response.data.map((pet: any) => ({
+        pet_id: pet.pet_id, // Assuming pet_id exists in response
+        pet_type: pet.pet_type, // Assuming pet_type exists in response
+        pet_name: pet.pet_name, // Assuming pet_name exists in response
+        pet_currency: pet.pet_currency || 0, // Default to 0 if not available
+        pet_progress_bar: pet.pet_progress_bar || 0, // Default to 0 if not available
+        pet_evolution_rank: pet.pet_evolution_rank || 1, // Default to 1 if not available
+        pet_max_value: pet.pet_max_value || 150, // Default to 150 if not available
+        created_date: pet.created_date || new Date().toISOString().split("T")[0], // Default current date if not available
+        created_time: pet.created_time || new Date().toTimeString().split(" ")[0], // Default current time if not available
       }));
-  
-      console.log("Mapped pets:", petsWithDateTime);
-  
+
+      console.log("Mapped pets:", petsWithDateTime); // Optional: log the mapped pets to check the data structure
+
       // Set the fetched data into state
       setPets(petsWithDateTime);
     } catch (error: any) {
@@ -38,9 +45,10 @@ export const usePets = () => {
     }
   };
 
+  // Call fetchPets on initial render
   useEffect(() => {
-    fetchPets(); // Fetch pets on mount
-  }, []);
+    fetchPets();
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   // Add Pet
   const addPet = async (newPet: Pet) => {

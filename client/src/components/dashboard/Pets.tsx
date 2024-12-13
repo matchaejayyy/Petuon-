@@ -4,24 +4,19 @@ import PetSelectionModal from "./PetSelectionModal";
 import axios from "axios";
 
 interface PetsProps {
+  petData: any;
   onPetAdded: (pet: any) => void;
   onPetUpdated: (updatedPet: any) => void;
 }
 
-const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
+const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
 
   // Use the custom hook to fetch pets
-  const { pets, loading, error, fetchPets } = usePets();
+  const { loading, error } = usePets();
 
   // Fetch pet data on initial render
-  useEffect(() => {
-    fetchPets(); // Fetch pets from API when component mounts
-  }, [fetchPets]);
-
-  // Use the first pet data as an example, or display a list if multiple pets are available
-  const petData = pets[0] || null;
 
   const handleClaimPet = () => {
     setShowModal(true);
