@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
+import CareMessageModal from "./CareMessageModal"; // Import the CareMessageModal component
 import axios from "axios";
 const token = localStorage.getItem("token");
 
@@ -11,6 +12,7 @@ interface PetsProps {
 
 const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showCareMessageModal, setShowCareMessageModal] = useState(false); // New state for care message modal
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
   const { pets, loading, error, fetchPets, setPets } = usePets(); // Ensure your hook supports updating pets state
 
@@ -144,9 +146,19 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
         <PetSelectionModal
           onClose={() => setShowModal(false)}
           onPetAdded={(pet) => {
-            // Immediately update the pet in the state without a page refresh
-            setPets([pet]); // Directly set the newly added pet in the state
-            onPetAdded(pet); // Pass the added pet to the parent component
+            setPets([pet]);
+            onPetAdded(pet);
+            setShowCareMessageModal(true); // Show the care message modal after claiming a pet
+          }}
+        />
+      )}
+
+      {showCareMessageModal && (
+        <CareMessageModal
+          onClose={() => {
+            setShowCareMessageModal(false);
+            // Refresh the page after closing the care message modal
+            window.location.reload();
           }}
         />
       )}
