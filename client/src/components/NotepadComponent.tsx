@@ -317,7 +317,8 @@ const NotepadComponent: React.FC = () => {
         /* Notes List */
         <div className="-ml-6 mt-0">
           <div className="-mt-2 overflow-x-auto p-6">
-            <div className="grid w-max grid-flow-col grid-rows-[repeat(2,minmax(0,1fr))] gap-x-5 gap-y-2">
+            <div className="grid w-max grid-flow-col grid-rows-[repeat(2,minmax(0,1fr))] gap-x-5 gap-y-2"  
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}>
               {/* New Note Button */}
               <div
                 className="active:scale-20, mb-2 flex transform cursor-pointer flex-col items-center justify-center rounded-3xl border shadow-lg transition-transform duration-200 hover:scale-105 hover:shadow-xl"
@@ -332,7 +333,7 @@ const NotepadComponent: React.FC = () => {
                 <FilePlus size={90} className="mb-2 text-[#354F52]" />
               </div>
               {loading ? (
-                <h1 className="ml-[36rem] mt-[-2.5rem] text-2xl text-gray-500">
+                <h1 className="ml-[36rem] mt-[-4.5rem] text-2xl text-gray-500">
                   Fetching notes...
                 </h1>
               ) : filteredNotes.length === 0 ? (
