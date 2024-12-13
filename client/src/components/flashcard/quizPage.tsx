@@ -1,11 +1,18 @@
 import { CircleArrowRight, CircleArrowLeft } from "lucide-react";
 import { quizFlashcardProps, Flashcard } from "../../types/FlashCardTypes";
+
+
+import axios from "axios";
+
+const token = localStorage.getItem('token');
+
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 const correctSound = new URL('../../assets/soundEffects/correct_sound.mp3', import.meta.url).href;
 const incorrectSound = new URL('../../assets/soundEffects/incorrect_sound.mp3', import.meta.url).href
+
 
 export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, flashcards }) => {
   const [tempFlashcards, setTempFlashcards] = useState<Flashcard[]>([]);
@@ -104,21 +111,25 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   
     if (userAnswer === correctAnswer) {
       toast.success("Correct answer! Well done!");
-      setUserScore(userScore + 1);
+      setUserScore((prevScore) => prevScore + 1); // Increment user score
   
+      // Update the progress if the answer is correct
+      await updateProgress(tempFlashcards[currentIndex].unique_flashcard_id);
+
       if (currentIndex === tempFlashcards.length - 1) {
-        setQuizState("finished"); // Mark quiz finished on correct answer for last question
+        setQuizState("finished"); // End quiz if it's the last question
       } else {
         setAttempts(3); // Reset attempts for the next question
         handleNextFlashcard();
       }
     } else if (attempts > 1) {
       toast.error("Incorrect answer, please try again.");
-      setAttempts(attempts - 1); // Reduce attempts
+      setAttempts((prevAttempts) => prevAttempts - 1); // Decrement attempts
     } else {
       toast.error("No more attempts left. Moving to the next question.");
+  
       if (currentIndex === tempFlashcards.length - 1) {
-        setQuizState("finished"); // Mark quiz finished on no attempts for last question
+        setQuizState("finished"); // End quiz if it's the last question
       } else {
         setAttempts(3); // Reset attempts for the next question
         handleNextFlashcard();
@@ -126,7 +137,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     }
   
     setUserInput(""); // Clear input field
-  };
+};
   
   
 
@@ -134,27 +145,36 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     setUserInput(e.target.value);
   };
 
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        if (currentFlashcard && document.querySelector('input')?.value.trim().toLowerCase() === currentFlashcard.answer.trim().toLowerCase()) {
-          handleNextFlashcard();
-          const clearTextBox = () => {
-            const inputElement = document.querySelector('input');
-            if (inputElement) {
-              inputElement.value = '';
-            }
-          };
-          clearTextBox();
-        }
+  const handleInputKeyPress = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      await handleCheckAnswer();
+    }
+  };
+  
+  const updateProgress = async (unique_flashcard_id: string) => {
+    try {
+      if (!token) throw new Error("No token found");
+      const response = await axios.put(`http://localhost:3002/cards/updateFlashcardProgress/${unique_flashcard_id}`,
+        { progress: true }, // Body payload, assuming `progress` is boolean
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+      if (response.status === 200) {
+        console.log("Progress updated successfully:", response.data);
+      } else {
+        console.error("Unexpected response status:", response.status);
       }
-    };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Failed to update progress:", error.response?.data?.message || error.message);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+    }
+};
+  
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [currentflashcard, currentIndex]);
 
   const currentFlashcard = tempFlashcards[currentIndex];
   const isQuizComplete =
