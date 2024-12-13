@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 // JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'Carmine_1';
 
-// Login route
+// For when user login
 router.post('/userLogin', async (req: Request, res: Response): Promise<void> => {
   const { user_name, user_password } = req.body;
 
@@ -50,6 +50,7 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
       userId: user.user_id,
       userName: user.user_name,
     });
+
   } catch (error) {
     console.error("Error during login:", error);
     res.status(500).json({ message: "Internal server error" });
