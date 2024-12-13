@@ -4,28 +4,28 @@ import PetSelectionModal from "./PetSelectionModal";
 import axios from "axios";
 
 interface PetsProps {
-  petData: any;
   onPetAdded: (pet: any) => void;
   onPetUpdated: (updatedPet: any) => void;
 }
 
-const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
+const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
+  const { pets, loading, error, fetchPets } = usePets(); // Use your hook to fetch pets
 
-  // Use the custom hook to fetch pets
-  const { loading, error } = usePets();
-
-  // Fetch pet data on initial render
+  // Fetch the pet data once the user is authenticated (after the initial render)
+  useEffect(() => {
+    fetchPets();
+  }, []); // Ensure the fetchPets function is only called once during the component mount
 
   const handleClaimPet = () => {
     setShowModal(true);
   };
 
-  const handleFeedPet = async () => {
-    if (petData?.pet_currency >= 100) {
-      const updatedPet = { ...petData }; // Clone petData to avoid direct mutation
-    
+  const handleFeedPet = async (petData: any) => {
+    if (petData.pet_currency >= 100) {
+      const updatedPet = { ...petData };
+
       if (updatedPet.pet_evolution_rank >= 3) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;
@@ -45,18 +45,22 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
         updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100); // Add 10 progress
       }
 
-      onPetUpdated(updatedPet); // Update pet data with new progress and currency
+      const response = await axios.patch(
+        `http://localhost:3002/pets/updatePet/${updatedPet.pet_id}`,
+        updatedPet
+      );
+      
+      if (response.status === 200) {
+        onPetUpdated(updatedPet); // Update pet data with new progress and currency
+      }
     } else {
       alert("Not enough currency to feed the pet.");
     }
   };
 
-  const handleAddCash = async () => {
-    if (!petData) return; // Prevent if no pet data is available
-
+  const handleAddCash = async (petData: any) => {
     const updatedPet = { ...petData, pet_currency: petData.pet_currency + 500 };
 
-    // Here you would call your API to update the pet data
     const response = await axios.post("http://localhost:3002/pets/updatePet", updatedPet);
     if (response.status === 200) {
       onPetUpdated(updatedPet); // Update the pet data after successful API call
@@ -70,6 +74,9 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  // Assuming pets is an array and each pet is displayed
+  const petData = pets.length > 0 ? pets[0] : null; // Just for simplicity, assume the first pet is being used
 
   return (
     <div className="bg-primary-300 w-full h-full rounded-xl flex flex-col bg-cover bg-center">
@@ -107,13 +114,13 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
           <div className="flex justify-center space-x-4 mt-4">
             <button
               className="bg-green-500 w-40 h-8 text-white rounded-xl"
-              onClick={handleFeedPet}
+              onClick={() => handleFeedPet(petData)}
             >
               Feed Pet
             </button>
             <button
               className="bg-blue-500 w-40 h-8 text-white rounded-xl"
-              onClick={handleAddCash}
+              onClick={() => handleAddCash(petData)}
             >
               Add Cash
             </button>

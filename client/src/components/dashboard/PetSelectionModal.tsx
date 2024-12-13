@@ -19,7 +19,6 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAd
   const [petName, setPetName] = useState<string>("");
   const { addPet, fetchPets } = usePets();
 
-  fetchPets()
 
   const petColors: Record<string, string> = {
     capybara: "border-red-500",
