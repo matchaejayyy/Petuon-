@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Deck, Flashcard } from "../types/FlashCardTypes";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from 'react-toastify';
 
 const token = localStorage.getItem("token");
 
@@ -64,7 +65,7 @@ export const useFlashcardHooks = () => {
 
   const saveDeck = async () => {
     if (!deckTitle.trim()) {
-      alert("Deck title cannot be empty.");
+      toast.warning("Deck title required!");
       return;
     }
 
@@ -77,7 +78,7 @@ export const useFlashcardHooks = () => {
       });
 
       setDeckTitle("");
-      alert("Deck saved successfully!");
+      toast.success("Deck saved successfully!");
     } catch (error) {
       console.error("Error saving deck:", error);
     }
@@ -118,6 +119,7 @@ export const useFlashcardHooks = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDecks(decks.filter((deck) => deck.deck_id !== deckId));
+      toast.success("Deck deleted successfully!");
     } catch (error) {
       console.error("Error deleting deck:", error);
     }
@@ -128,6 +130,7 @@ export const useFlashcardHooks = () => {
       await axios.delete(`http://localhost:3002/cards/deleteFlashcard/${unique_flashcard_id}`);
       setFlashcards(flashcards.filter((flashcard) => flashcard.unique_flashcard_id !== unique_flashcard_id));
       console.log("Flashcard deleted successfully!");
+      toast.success("Flashcard deleted!");
     } catch (error) {
       console.error("Error deleting flashcard:", error);
     }

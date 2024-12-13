@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Avatar from "../components/Avatar";
+import Avatar from "../components/AvatarModal";
 import SideBar from "../components/SideBar";
 import WhiteContainer from "../components/WhiteContainer";
 import Pets from "../components/dashboard/Pets";

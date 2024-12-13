@@ -9,9 +9,17 @@ router.post('/registerUser', ValidateRegister, async (req: Request, res: Respons
 
     try { 
 
+            // Check if the email already exists
+        const checkQuery = `SELECT user_email FROM users WHERE user_email = $1`;
+        const checkResult = await pool.query(checkQuery, [user_email]);
+
+        if (checkResult.rows.length > 0) {
+        // Email already exists
+        return res.status(400).json({ message: 'Email is already registered' });
+    }
+
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(user_password, saltRounds);
-
         const query = `
         INSERT INTO users (user_id, user_email, user_name, user_password)
         VALUES ($1, $2, $3, $4)

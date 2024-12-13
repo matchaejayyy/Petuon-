@@ -28,10 +28,17 @@ router.post("/insertPet", authenticateToken, async (req: Request, res: Response)
 
     const { pet_type, pet_name, pet_currency, pet_progress_bar, pet_evolution_rank, pet_max_value, created_date } = req.body;
 
-    const userId = req.user.user_id;
-
+    const userId = req.user?.user_id;
+    console.log(userId)
     if (!pet_type || !pet_name || pet_currency == null || pet_progress_bar == null || !created_date || !userId) {
       return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const checkQuery = `SELECT * FROM pets WHERE user_id = $1;`;
+    const existingPet = await pool.query(checkQuery, [userId]);
+
+    if (existingPet.rows.length > 0) {
+      return res.status(409).json({ message: "User already has a pet" }); // 409 Conflict
     }
 
     const query = `

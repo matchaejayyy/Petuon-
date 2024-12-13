@@ -5,34 +5,25 @@ import dinosaur from "../../assets/dinosaur_egg.png";
 import duck from "../../assets/duck_egg.png";
 import penguin from "../../assets/penguin_egg.png";
 import unicorn from "../../assets/unicorn_egg.png";
-import { supabase } from "../../SupabaseClient"; // Import Supabase client
-
-interface PetData {
-  pet_type: string;
-  pet_name: string;
-  pet_currency: number;
-  pet_progress_bar: number;
-  pet_evolution_rank: number;
-  pet_max_value: number;
-}
+import { usePets } from "../../hooks/usePets";
+import { v4 as uuidv4 } from "uuid";
+import { Pet } from "../../types/PetTypes";
 
 interface PetSelectionModalProps {
   onClose: () => void;
-  onPetAdded: (petData: PetData) => void;
+  onPetAdded: (pet: any) => void 
 }
 
-const PetSelectionModal: React.FC<PetSelectionModalProps> = ({
-  onClose,
-  onPetAdded,
-}) => {
+const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAdded }) => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [petName, setPetName] = useState<string>("");
+  const { addPet } = usePets();
 
   const petColors: Record<string, string> = {
     capybara: "border-red-500",
     cat: "border-yellow-200",
     dinosaur: "border-green-500",
-    duck: "border-yellow-400", // Gold-like color
+    duck: "border-yellow-400",
     penguin: "border-gray-500",
     unicorn: "border-pink-500",
   };
@@ -51,47 +42,33 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (!selectedPet || !petName) {
-      alert("Please select a pet and enter a name.");
+    if (!selectedPet || !petName.trim()) {
+      alert("Please select a pet and enter a valid name.");
       return;
     }
 
     // Prepare pet data to be inserted
-    const petData: PetData = {
+    const now = new Date();
+    const petData: Pet = {
+      pet_id: uuidv4(),
       pet_type: selectedPet,
-      pet_name: petName,
-      pet_currency: 1000, // Default currency
-      pet_progress_bar: 0, // Default progress
-      pet_evolution_rank: 1, // Default evolution rank starts at 1
-      pet_max_value: 150, // Default max value
+      pet_name: petName.trim(),
+      pet_currency: 1000,
+      pet_progress_bar: 0,
+      pet_evolution_rank: 1,
+      pet_max_value: 150,
+      created_date: now.toISOString().split("T")[0],
+      created_time: now.toTimeString().split(" ")[0],
     };
 
-    console.log("Inserting pet data:", petData); // Log the data before insertion
+    console.log("Adding pet data:", petData); // Log for debugging
 
     try {
-      // Insert pet data into Supabase
-      const { data, error } = await supabase
-        .from("pets")
-        .insert([petData])
-        .select("*"); // Explicitly select all columns to ensure the returned data
-
-      // If an error occurred, throw an error
-      if (error) {
-        console.error("Supabase Error:", error.message || error.details);
-        throw new Error(error.message || error.details);
-      }
-
-      // Check if the data was returned and inserted
-      if (data && data.length > 0) {
-        console.log("Inserted pet data:", data); // Log the inserted data
-        onPetAdded(data[0]); // Pass the added pet data back to the parent component
-        onClose(); // Close the modal after successfully adding the pet
-      } else {
-        console.error("No pet data returned after insert.");
-        throw new Error("No pet data returned after insert.");
-      }
+      await addPet(petData); // Add pet data to backend
+      onPetAdded(petData)
+      onClose(); // Close modal after successful submission
     } catch (error) {
-      console.error("Error inserting pet:", error);
+      console.error("Error adding pet:", error);
       alert("There was an issue adding your pet. Please try again.");
     }
   };

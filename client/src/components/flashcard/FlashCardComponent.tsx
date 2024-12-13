@@ -5,6 +5,7 @@ import { QuizFlashcard } from "./quizPage";
 import { FolderPlus, BookmarkMinus, Minus, CircleArrowLeft } from "lucide-react";
 import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const token = localStorage.getItem('token');
@@ -83,20 +84,35 @@ const FlashcardComponent: React.FC = () => {
             Create a new Deck
           </h1>
             <input
-                type="text"
-                value={deckTitle}
-                onChange={(e) => setDeckTitle(e.target.value)}
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
-                placeholder="Title"
-              />
+                  type="text"
+                  value={deckTitle}
+                  onChange={(e) => setDeckTitle(e.target.value)}
+                  onKeyDown={async (e) => {
+                  if (e.key === 'Enter') {
+                    await saveDeck();
+                    const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                    }
+                    });
+                    const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
+                    deck_id: deck.deck_id,
+                    title: deck.title,
+                    }));
+                    setDecks(deckData);
+                  }
+                  }}
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  className="h-16 m-5 rounded-3xl w-[30rem] p-5 shadow-lg mt-[1rem] transform transition-transform duration-200 hover:scale-105 focus:scale-105"
+                  placeholder="Title"
+                />
                 <button
                 onClick={async () => {
                   await saveDeck();
                   const response = await axios.get(`http://localhost:3002/cards/getDecks`, {
-                    headers: {
-                      Authorization: `Bearer ${token}`
-                    }
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                  }
                   });
                   const deckData = response.data.map((deck: { deck_id: string; title: string }) => ({
                   deck_id: deck.deck_id,

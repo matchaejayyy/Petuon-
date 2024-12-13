@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
 import { Pet } from "../types/PetTypes"; // Assuming a Pet interface exists
 
 export const usePets = () => {
@@ -9,37 +8,27 @@ export const usePets = () => {
   const [error, setError] = useState<string>(""); // To track error messages
   const token = localStorage.getItem("token");
 
-  // Helper function to extract user_id from the token
-  const getUserIdFromToken = (token: string): string | null => {
-    try {
-      const decodedToken: any = jwtDecode(token);
-      return decodedToken.user_id || null; // Adjust based on your token structure
-    } catch (error) {
-      console.error("Failed to decode token:", error);
-      return null;
-    }
-  };
-
   // Fetch Pets
   const fetchPets = async () => {
     setLoading(true); // Start loading
     setError(""); // Clear previous errors
-
+  
     try {
       const response = await axios.get("http://localhost:3002/pets/getPets", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-
-      console.log("Fetched pets:", response.data);
-
+  
+      // Assuming the response data is an array of pet objects
       const petsWithDateTime = response.data.map((pet: any) => ({
-        ...pet,
+        ...pet, // Spread each pet to ensure it has the necessary fields
+        // Optionally, you can modify or add additional fields here
       }));
-
+  
       console.log("Mapped pets:", petsWithDateTime);
-
+  
+      // Set the fetched data into state
       setPets(petsWithDateTime);
     } catch (error: any) {
       console.error("Error fetching pets:", error);
@@ -62,19 +51,8 @@ export const usePets = () => {
     }
 
     try {
-      // Get user_id from the authenticated session
-      const userId = getUserIdFromToken(token);
-
-      if (!userId) {
-        console.error("Failed to retrieve user_id.");
-        setError("Failed to retrieve user details. Please log in again.");
-        return;
-      }
-
-      // Include user_id in the payload
       const petWithUserId = {
         ...newPet,
-        user_id: userId,
       };
 
       console.log("Inserting pet data:", petWithUserId);

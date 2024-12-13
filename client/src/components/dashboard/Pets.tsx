@@ -1,104 +1,80 @@
 import { useState, useEffect } from "react";
-import { supabase } from "../../SupabaseClient"; // Import Supabase client
+import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
+import axios from "axios";
 
 interface PetsProps {
-  petData: any;
   onPetAdded: (pet: any) => void;
   onPetUpdated: (updatedPet: any) => void;
 }
 
-const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
+const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
 
-  // Fetch pet data from Supabase on initial render
+  // Use the custom hook to fetch pets
+  const { pets, loading, error, fetchPets } = usePets();
+
+  // Fetch pet data on initial render
   useEffect(() => {
-    const fetchPetData = async () => {
-      const { data, error } = await supabase
-        .from('pets') // Assuming your table is named 'pets'
-        .select('*')
-        .eq('pet_id', petData.pet_id); // Adjust the query as per your table structure
+    fetchPets(); // Fetch pets from API when component mounts
+  }, [fetchPets]);
 
-      if (error) {
-        console.error('Error fetching pet data:', error.message);
-      } else if (data) {
-        onPetUpdated(data[0]);
-      }
-    };
-
-    if (petData?.pet_id) {
-      fetchPetData();
-    }
-  }, [petData?.pet_id, onPetUpdated]);
+  // Use the first pet data as an example, or display a list if multiple pets are available
+  const petData = pets[0] || null;
 
   const handleClaimPet = () => {
     setShowModal(true);
   };
 
   const handleFeedPet = async () => {
-    if (petData.pet_currency >= 100) {
-      let updatedPet = { ...petData };
-
+    if (petData?.pet_currency >= 100) {
+      const updatedPet = { ...petData }; // Clone petData to avoid direct mutation
+    
       if (updatedPet.pet_evolution_rank >= 3) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;
       }
 
       if (updatedPet.pet_progress_bar >= 100) {
-        updatedPet.pet_progress_bar = 0;
-        updatedPet.pet_evolution_rank += 1;
+        updatedPet.pet_progress_bar = 0; // Reset the progress bar
+        updatedPet.pet_evolution_rank += 1; // Increase evolution rank
+        updatedPet.pet_max_value = updatedPet.pet_evolution_rank === 3 ? 200 : 150;
 
-        if (updatedPet.pet_evolution_rank === 3) {
-          updatedPet.pet_max_value = Math.min(updatedPet.pet_max_value + 100, 200);
-          setShowCongratulatoryMessage("Congratulations! Your pet has reached its final evolution!");
-        } else {
-          updatedPet.pet_max_value = Math.min(updatedPet.pet_max_value + 50, 150);
-          setShowCongratulatoryMessage("Congratulations! Your pet has evolved!");
-        }
-
+        setShowCongratulatoryMessage("Congratulations! Your pet has evolved!");
         setTimeout(() => {
           setShowCongratulatoryMessage("");
         }, 3000);
       } else {
-        updatedPet.pet_currency -= 100;
-        updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100);
+        updatedPet.pet_currency -= 100; // Deduct 100 currency
+        updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100); // Add 10 progress
       }
 
-      // Update pet in Supabase
-      const { error } = await supabase
-        .from('pets')
-        .update(updatedPet)
-        .eq('pet_id', updatedPet.pet_id);
-
-      if (error) {
-        console.error('Error updating pet data:', error.message);
-      }
-
-      onPetUpdated(updatedPet);
+      onPetUpdated(updatedPet); // Update pet data with new progress and currency
     } else {
       alert("Not enough currency to feed the pet.");
     }
   };
 
   const handleAddCash = async () => {
-    const updatedPet = {
-      ...petData,
-      pet_currency: petData.pet_currency + 500,
-    };
+    if (!petData) return; // Prevent if no pet data is available
 
-    // Update pet currency in Supabase
-    const { error } = await supabase
-      .from('pets')
-      .update({ pet_currency: updatedPet.pet_currency })
-      .eq('pet_id', updatedPet.pet_id);
+    const updatedPet = { ...petData, pet_currency: petData.pet_currency + 500 };
 
-    if (error) {
-      console.error('Error updating pet data:', error.message);
+    // Here you would call your API to update the pet data
+    const response = await axios.post("http://localhost:3002/pets/updatePet", updatedPet);
+    if (response.status === 200) {
+      onPetUpdated(updatedPet); // Update the pet data after successful API call
     }
-
-    onPetUpdated(updatedPet);
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="bg-primary-300 w-full h-full rounded-xl flex flex-col bg-cover bg-center">
