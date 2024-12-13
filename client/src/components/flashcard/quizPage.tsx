@@ -198,7 +198,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         <div className="flex flex-col items-center">
           <div
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center  cursor-pointer"
+            className="w-[800px] h-[400px] -mt-[27rem] bg-white rounded-xl shadow-xl flex  items-center justify-center text-center  cursor-pointer"
           >
             <h2 className="text-3xl font-semibold text-[#354F52] break-words max-w-full p-5">
               {currentFlashcard ? `Fill in the blank: ${currentFlashcard.question.replace(
@@ -263,7 +263,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
 
     {/* Navigation Controls */}
           <div className="flex items-center justify-between w-auto mt-5">
-            <div className="bg-[#354F52] rounded-lg p-2 mt-[2rem]">
+            <div className="bg-[#354F52] rounded-lg p-2 mt-[0.5rem]">
               <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
                 {currentIndex + 1} / {tempFlashcards.length}
               </span>
@@ -274,7 +274,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       ) : isQuizComplete ? (
         <div className="flex flex-col items-center">
           {/* Quiz Completion UI */}
-          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#354F52] font-bold mb-4 -mt-[16rem]">
+          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#354F52] font-bold mb-4 -mt-[25rem]">
             FlashCard Complete! Well Done!
           </h2>
           <p
@@ -309,7 +309,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         // Regular quiz UI before it's finished
         <div className="flex flex-col items-center">
           <div
-            className="w-[800px] h-[400px] -mt-[15rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            className="w-[800px] h-[400px] -mt-[29rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{
               fontFamily: '"Signika Negative", sans-serif',
               transformStyle: 'preserve-3d',
