@@ -72,7 +72,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         setAttempts(attempts - 1);
         toast.warn("Incorrect answer. Try again.");
       }
-    }    
+    }
   };
 
   const handlePreviousFlashcard = () => {
