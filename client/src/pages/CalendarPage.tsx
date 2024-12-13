@@ -1,4 +1,4 @@
-import Avatar from "../components/Avatar";
+import Avatar from "../components/AvatarModal";
 import SideBar from "../components/SideBar";
 import WhiteContainer from "../components/WhiteContainer";
 
