@@ -96,26 +96,73 @@ router.delete("/deletePet/:pet_id", authenticateToken, async (req: Request, res:
 });
 
 // Update a pet
+// Update a pet
+// Update a pet
 router.patch("/updatePet/:pet_id", authenticateToken, async (req: Request, res: Response) => {
   try {
     if (!req.user || !req.user.user_id) {
       return res.status(401).json({ message: "Unauthorized: No user information" });
     }
+
     const { pet_id } = req.params;
-    const { pet_currency, pet_progress_bar, updated_date } = req.body;
+    const { pet_currency, pet_progress_bar, pet_evolution_rank, updated_date } = req.body;
     const userId = req.user.user_id;
 
-    if (pet_currency == null || pet_progress_bar == null) {
-      return res.status(400).json({ message: "Pet currency and progress bar are required." });
+    if (pet_currency == null || pet_progress_bar == null || pet_evolution_rank == null) {
+      return res.status(400).json({ message: "Pet currency, progress bar, and evolution rank are required." });
+    }
+
+    // Fetch the current pet data to check evolution status
+    const petResult = await pool.query(
+      "SELECT * FROM pets WHERE pet_id = $1 AND user_id = $2",
+      [pet_id, userId]
+    );
+
+    if (petResult.rowCount === 0) {
+      return res.status(404).json({ message: "Pet not found." });
+    }
+
+    const pet = petResult.rows[0];
+    let newProgressBar = pet_progress_bar;
+    let newEvolutionRank = pet_evolution_rank || pet.pet_evolution_rank;  // Ensure it's updated
+    let newMaxValue = pet.pet_max_value;
+
+    // Check if progress bar exceeds max value
+    if (newProgressBar >= pet.pet_max_value) {
+      newProgressBar = 0; // Reset progress bar
+      newEvolutionRank += 1; // Increment evolution rank
+
+      // Adjust max value based on evolution rank
+      if (newEvolutionRank === 4) {
+        newMaxValue = 250; // Set max value for rank 4
+      } else if (newEvolutionRank === 3) {
+        newMaxValue = 200;
+      } else {
+        newMaxValue = 150;
+      }
+
+      if (newEvolutionRank > 4) {
+        return res.status(400).json({
+          message: "Pet has reached its maximum evolution rank.",
+        });
+      }
     }
 
     const query = `
       UPDATE pets 
-      SET pet_currency = $1, pet_progress_bar = $2, updated_date = $3
-      WHERE pet_id = $4 AND user_id = $5
+      SET pet_currency = $1, pet_progress_bar = $2, pet_evolution_rank = $3, pet_max_value = $4, updated_date = $5
+      WHERE pet_id = $6 AND user_id = $7
       RETURNING *;
     `;
-    const values = [pet_currency, pet_progress_bar, updated_date || new Date().toISOString(), pet_id, userId];
+    const values = [
+      pet_currency,
+      newProgressBar,
+      newEvolutionRank,
+      newMaxValue,
+      updated_date || new Date().toISOString(),
+      pet_id,
+      userId,
+    ];
 
     const result = await pool.query(query, values);
 
@@ -123,13 +170,14 @@ router.patch("/updatePet/:pet_id", authenticateToken, async (req: Request, res: 
       return res.status(404).json({ message: "Pet not found." });
     }
 
-    return res
-      .status(200)
-      .json({ message: "Pet updated successfully.", pet: result.rows[0] });
+    return res.status(200).json({ message: "Pet updated successfully.", pet: result.rows[0] });
   } catch (error) {
     console.error("Error updating pet:", error);
     return res.status(500).json({ message: "Internal server error." });
   }
 });
+
+
+
 
 export default router;
