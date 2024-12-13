@@ -125,4 +125,72 @@ router.delete('/deleteFlashcard/:unique_flashcard_id', async (req: Request, res:
   }
 });
 
+
+//update flashcard
+
+// Update a deck's title
+router.put('/updateDeckTitle/:deckId', authenticateToken, async (req: Request, res: Response) => {
+  const { deckId } = req.params; // Get the deck ID from the URL parameters
+  const { title } = req.body; // Get the new title from the request body
+  const userId = req.user?.user_id; // Get the user ID from the authenticated token
+
+  if (!title || title.trim() === "") {
+    return res.status(400).json({ message: "Title is required and cannot be empty" });
+  }
+
+  if (!userId) {
+    return res.status(401).json({ message: "Unauthorized: User ID not found" });
+  }
+
+  try {
+    const query = `
+      UPDATE decks
+      SET title = $1
+      WHERE deck_id = $2 AND user_id = $3
+      RETURNING *`;
+    const values = [title, deckId, userId];
+
+    const result = await pool.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Deck not found or not owned by the user" });
+    }
+
+    res.status(200).json({ message: "Deck title updated successfully", deck: result.rows[0] });
+  } catch (error) {
+    console.error(`Error updating deck title for deck ID ${deckId}:`, error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// Update a flashcard
+router.put('/updateFlashcard/:unique_flashcard_id', async (req: Request, res: Response) => {
+  const { unique_flashcard_id } = req.params;
+  const { question, answer } = req.body;
+
+  if (!question || !answer) {
+    return res.status(400).json({ message: "Question and answer are required" });
+  }
+
+  try {
+    const query = `
+      UPDATE flashcards
+      SET question = $1, answer = $2
+      WHERE unique_flashcard_id = $3
+      RETURNING *`;
+    const values = [question, answer, unique_flashcard_id];
+
+    const result = await pool.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Flashcard not found" });
+    }
+
+    res.status(200).json({ message: "Flashcard updated successfully", flashcard: result.rows[0] });
+  } catch (error) {
+    console.error(`Error updating flashcard with ID ${unique_flashcard_id}:`, error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
 export default router;
