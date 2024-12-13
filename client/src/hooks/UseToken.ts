@@ -10,11 +10,17 @@ interface TokenResponse {
   token: string | null;
 }
 
+interface LogoutResponse {
+  message: string;
+}
+
 interface UseTokenReturn {
   token: string | null;
   error: string | null;
   fetchTokenFromDatabase: (user_id: string) => Promise<string | null>;
+  logout: (user_id: string) => Promise<void>;
 }
+
 export const useToken = (): UseTokenReturn => {
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,5 +48,23 @@ export const useToken = (): UseTokenReturn => {
     }
   };
 
-  return { token, error, fetchTokenFromDatabase };
+  const logout = async (user_id: string): Promise<void> => {
+    try {
+      console.log("Logging out user with userId:", user_id);
+      const response = await axios.post<LogoutResponse>(`http://localhost:3002/token/logout/${user_id}`);
+
+      if (response.data.message) {
+        console.log(response.data.message);
+        // Handle successful logout (e.g., clear token from state)
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error("Axios error while logging out:", error.response?.data);
+      } else {
+        console.error("Unexpected error while logging out:", error);
+      }
+    }
+  };
+
+  return { token, error, fetchTokenFromDatabase, logout };
 };

@@ -57,12 +57,6 @@ const LoginPage: React.FC<Props> = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    toast.success("Logged out successfully!");
-    navigate("/login");
-  };
-  
   return (
     <>
      <ToastContainer
@@ -121,7 +115,7 @@ const LoginPage: React.FC<Props> = () => {
                 <input
                   type="password"
                   id="password"
-                  placeholder="••••••••"
+                  placeholder="At least 8 characters"
                   className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   {...register("user_password")}
                 />
