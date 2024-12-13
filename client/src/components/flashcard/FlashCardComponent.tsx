@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
-import { FolderPlus, BookmarkMinus, Minus, CircleArrowLeft, FilePenLine } from "lucide-react";
-import { Deck, Flashcard } from "../../types/FlashCardTypes";
+import { FolderPlus, BookmarkMinus, Minus, FilePenLine } from "lucide-react";
+import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
 import { ToastContainer } from "react-toastify";
@@ -13,6 +13,8 @@ const token = localStorage.getItem('token');
 
 const FlashcardComponent: React.FC = () => {
   const {
+    loadDecks,
+    loadCards,
     flashcards,
     decks,
     isReviewing,
@@ -257,55 +259,63 @@ const FlashcardComponent: React.FC = () => {
           </div>
           <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
             <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
-              {Object.keys(decks).length === 0 ? (
-                <p
-                  className="text-2xl text-gray-500 text-center col-span-full "
-                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                >
-                  No decks saved yet. Create one to get started!
-                </p>
-              ) : (
-                decks.map(({ title, deck_id}, index) => {
-                  const assignedColor = colors[index % colors.length];
+              {/* Loading State */}
+                {loadDecks ? (
+                  <p className="text-2xl text-gray-500 text-center col-span-full">
+                    Fetching cards...
+                  </p>
+                ) : Object.keys(decks).length === 0 ? (
+                  <p
+                    className="text-2xl text-gray-500 text-center col-span-full"
+                    style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  >
+                    No decks saved yet. Create one to get started!
+                  </p>
+                ) : null}
 
-                  return (
-                    <li key={title} className="w-full ml-[3rem]">
-                      <div
-                        onClick={() => {loadDeck(deck_id)}}
-                        className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
-                      >
-                        <h1
-                          className="text-2xl font-bold uppercase text-center flex items-center justify-center h-full w-full overflow-hidden text-ellipsis whitespace-nowrap"
-                          style={{
-                            fontFamily: '"Signika Negative", sans-serif',
-                          }}
+                {/* Render Decks */}
+                {!loadDecks && Object.keys(decks).length > 0 && (
+                  decks.map((deck, index) => {
+                    const assignedColor = colors[index % colors.length];
+
+                    return (
+                      <li key={deck.title} className="w-full ml-[3rem]">
+                        <div
+                          onClick={() => { loadDeck(deck.deck_id); }}
+                          className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
                         >
-                          {title}
-                        </h1>
-                        <button
-                          className="absolute top-3 right-12 h-8 w-8 rounded-full flex items-center justify-center"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setIsEditModalOpen(true);
-                            setDeckId(deck_id);
-                          }}
-                        >
-                          <FilePenLine className="w-5 h-5 transform transition-transform duration-200 hover:scale-125" />
-                        </button>
-                        <button
-                          className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
-                          onClick={(e) => {
-                          e.stopPropagation();
-                          deleteDeck(deck_id);
-                          }}
-                        >
-                          <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
-                        </button>
-                      </div>
-                    </li>
-                  );
-                })
-              )}
+                          <h1
+                            className="text-2xl font-bold uppercase text-center flex items-center justify-center h-full w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                            style={{
+                              fontFamily: '"Signika Negative", sans-serif',
+                            }}
+                          >
+                            {deck.title}
+                          </h1>
+                          <button
+                            className="absolute top-3 right-12 h-8 w-8 rounded-full flex items-center justify-center"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsEditModalOpen(true);
+                              setDeckId(deck.deck_id);
+                            }}
+                          >
+                            <FilePenLine className="w-5 h-5 transform transition-transform duration-200 hover:scale-125" />
+                          </button>
+                          <button
+                            className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteDeck(deck.deck_id);
+                            }}
+                          >
+                            <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })
+                )}
             </ul>
           </div>
           <div className="fixed top-[6rem] right-[3.9rem]">
@@ -377,7 +387,11 @@ const FlashcardComponent: React.FC = () => {
             setFlashcards={setFlashcards}
             flashCardId={deckId}          
           />
-          {flashcards.length > 0 ? (
+         {loadCards ? (
+            <p className="text-2xl text-gray-500 text-center mt-10" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+              Fetching flashcards...
+            </p>
+          ) : flashcards.length > 0 ? (
             <FlashcardList flashcards={flashcards} />
           ) : (
             <p className="text-2xl text-gray-500 text-center mt-10" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
