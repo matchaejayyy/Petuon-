@@ -33,39 +33,40 @@ const FlashcardComponent: React.FC = () => {
     flashcards,
   }) => {
     return (
-      <ul className="h-[70vh] mr-[7rem] mt-[-1rem] flex flex-col items-center overflow-y-auto p-0 ">
-        {flashcards.map((flashcard, index) => {
-          const assignedColor = colors[index % colors.length];
-          return (
-            <li
-              key={index}
-              className="w-2/3 ml-[9rem] m-10 relative transform transition-transform duration-200 hover:scale-105"
-            >
-              <div
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className={`${assignedColor} rounded-2xl h-[15rem] w-full flex flex-col items-center justify-center overflow-auto relative shadow-lg`}
-              >
-                <button
-                  className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
-                  onClick={() => {
-                    if (flashcard.unique_flashcard_id) {
-                      deleteFlashcard(flashcard.unique_flashcard_id); 
-                    } else {
-                      console.error("Flashcard unique_flashcard_id is undefined");
-                    }
-                  }}
-                >
-                  <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
-                </button>
-                <h1 className="text-5xl mb-5 break-words">
-                  {flashcard.question}
-                </h1>
-                <h2 className="text-xl">{flashcard.answer}</h2>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+      <div className="-mt-[2.5rem] p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-y-5 max-h-[250px] overflow-x-auto scrollbar-thin ">  
+  {flashcards.map((flashcard) => (
+    <div
+      key={flashcard.unique_flashcard_id}
+      className="relative flex flex-col w-[40rem] h-[10rem] bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform hover:scale-100 transition mx-auto"
+    >
+      {/* Question Card */}
+      <div className="mb-4 text-center">
+      <p className="font-semibold text-[#354F52] break-words">{flashcard.question}</p>
+      </div>
+
+      {/* Answer Card (Hidden by default) */}
+      <div className="mt-4 text-center text-[#52796F]">
+      <p>{flashcard.answer}</p>
+      </div>
+
+      {/* Delete Button */}
+      <button
+      className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
+      onClick={() => {
+        if (flashcard.unique_flashcard_id) {
+        deleteFlashcard(flashcard.unique_flashcard_id); 
+        } else {
+        console.error("Flashcard unique_flashcard_id is undefined");
+        }
+      }}
+      >
+      <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
+      </button>
+
+    </div>
+  ))}
+</div>
+
     );
   };
   const colors = [
@@ -191,10 +192,10 @@ const FlashcardComponent: React.FC = () => {
         <div>
           <div className="flex">
             <div className="flex justify-center items-center">
-                <h1 className="ml-[2.1rem] mt-[-0.5rem] mr-0 font-serif text-2xl text-[#354F52] font-bold uppercase">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="ml-[0.5rem] -mt-[5rem]  text-2xl text-[#354F52] font-bold uppercase">
                 Deck:
                 </h1>
-                <h1 className="ml-5 mt-[-0.5rem] mr-96 font-serif text-2xl text-black font-bold uppercase">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="ml-5 -mt-[5rem] mr-96 font-serif text-2xl text-[#354F52] font-bold uppercase">
                 {decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
                 </h1>
               <button

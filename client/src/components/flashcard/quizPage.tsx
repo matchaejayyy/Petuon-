@@ -137,56 +137,56 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
 
           {/* Input for fill-in-the-blank */}
           <div className="mt-5 flex items-center space-x-2">
-            <style>
-              {`
-                @keyframes shake {
-                  0%, 100% { transform: translateX(0); }
-                  25% { transform: translateX(-5px); }
-                  50% { transform: translateX(5px); }
-                  75% { transform: translateX(-5px); }
-                }
-                .animate-shake {
-                  animation: shake 0.3s ease-in-out;
-                }
-              `}
-            </style>
-            <div
-              className={`transition-transform ${
-                answerStatus === 'incorrect' ? 'animate-shake' : ''
-              }`}
-            >
-              <input
-                type="text"
-                placeholder="Your answer"
-                ref={inputRef}
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className={`p-2 border rounded-md transition-all duration-300 focus:outline-none 
-                  ${
-                    answerStatus === 'correct'
-                      ? 'focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50'
-                      : answerStatus === 'incorrect'
-                      ? 'focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50'
-                      : 'focus:ring-2 focus:ring-[#354F52] focus:border-transparent border-[#354F52]'
-                  }`}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleSubmit(); // Trigger submission when pressing "Enter"
-                  }
-                }}
-                onChange={() => {
-                  // Reset answer status when typing
-                  setAnswerStatus(null);
-                }}
-              />
-            </div>
-            <button
-              onClick={handleSubmit}
+          <style>
+            {`
+              @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                50% { transform: translateX(5px); }
+                75% { transform: translateX(-5px); }
+              }
+              .animate-shake {
+                animation: shake 0.3s ease-in-out;
+              }
+            `}
+          </style>
+          <div
+            className={`transition-transform ${
+              answerStatus === 'incorrect' ? 'animate-shake' : ''
+            }`}
+          >
+            <input
+              type="text"
+              placeholder="Your answer"
+              ref={inputRef}
               style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="p-2 bg-[#354F52] text-white rounded-md transition-all hover:bg-[#456B65]"
-            >
-              Submit
-            </button>
+              className={`p-2 border rounded-md transition-all duration-300 focus:outline-none 
+                ${
+                  answerStatus === 'correct'
+                    ? 'focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50'
+                    : answerStatus === 'incorrect'
+                    ? 'focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50'
+                    : 'focus:ring-2 focus:ring-[#354F52] focus:border-transparent border-[#354F52]'
+                }`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSubmit(); // Trigger submission when pressing "Enter"
+                }
+              }}
+              onChange={() => {
+                // Reset answer status when typing
+                setAnswerStatus(null);
+              }}
+            />
           </div>
+          <button
+            onClick={handleSubmit}
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="p-2 bg-[#354F52] text-white rounded-md transition-all hover:bg-[#456B65]"
+          >
+            Submit
+          </button>
+        </div>
 
             {isQuizComplete && (
               <div className="flex flex-col items-center mt-5">
@@ -266,7 +266,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         // Regular quiz UI before it's finished
         <div className="flex flex-col items-center">
           <div
-            className="w-[800px] h-[400px] -mt-[17rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            className="w-[800px] h-[400px] -mt-[15rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{
               fontFamily: '"Signika Negative", sans-serif',
               transformStyle: 'preserve-3d',
@@ -296,19 +296,19 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           <div className="flex items-center justify-between w-[600px] mt-5">
             <button
               onClick={handlePreviousFlashcard}
-              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[1rem]"
               disabled={currentIndex === 0}
             >
               <CircleArrowLeft className="w-10 h-10 text-[#354F52]" />
             </button>
-            <div className="bg-[#354F52] rounded-lg p-2 mt-[2rem]">
+            <div className="bg-[#354F52] rounded-lg p-2 mt-[1.5rem]">
               <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
                 {currentIndex + 1} / {tempFlashcards.length}
               </span>
             </div>
             <button
               onClick={handleNextFlashcard}
-              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[2rem]"
+              className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[1rem]"
             >
               <CircleArrowRight className="w-10 h-10 text-[#354F52]" />
             </button>
