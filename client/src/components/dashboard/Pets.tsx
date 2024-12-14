@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
 import CareMessageModal from "./CareMessageModal"; // Import the CareMessageModal component
-import axios from "axios";
-const token = localStorage.getItem("token");
 
 interface PetsProps {
   onPetAdded: (pet: any) => void;
@@ -14,11 +12,13 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCareMessageModal, setShowCareMessageModal] = useState(false); // New state for care message modal
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
-  const { pets, loading, error, fetchPets, setPets } = usePets(); // Ensure your hook supports updating pets state
+  const { pets, loading, error, fetchPets, setPets, updatePet, hasPet } = usePets(); // Ensure your hook supports updating pets state
+  
 
   useEffect(() => {
     fetchPets();
   }, []);
+
 
   const handleClaimPet = () => {
     setShowModal(true);
@@ -46,21 +46,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
       }
 
       try {
-        await axios.patch(
-          `http://localhost:3002/pets/updatePet/${updatedPet.pet_id}`,
-          {
-            pet_currency: updatedPet.pet_currency,
-            pet_progress_bar: updatedPet.pet_progress_bar,
-            pet_evolution_rank: updatedPet.pet_evolution_rank,  // Ensure evolution rank is updated
-            updated_date: new Date(),
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        await updatePet(updatedPet);
         // Update the pet in the local state
         setPets((prevPets) =>
           prevPets.map((pet) => (pet.pet_id === updatedPet.pet_id ? updatedPet : pet))
@@ -75,9 +61,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -87,12 +71,12 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
 
   return (
     <div className="bg-primary-300 w-full h-full rounded-xl flex flex-col bg-cover bg-center">
+        <h1 className="text-xl font-bold ml-4 mt-4">Pets</h1>
       {petData ? (
-        <>
+        <>  
           <div className="flex flex-row justify-between">
-            <h1 className="text-xl font-bold ml-4 mt-4">Pets</h1>
             <div className="w-28 h-8 bg-shades-light rounded-xl ml-auto mr-5 mt-5 flex justify-center items-center text-lg font-semibold">
-              {petData.pet_currency}
+              <h1>{petData.pet_currency}</h1>
             </div>
           </div>
           <div className="flex justify-center">
@@ -133,7 +117,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
             </div>
           )}
         </>
-      ) : (
+      ): !hasPet && (
         <button
           className="bg-primary-dark py-2 px-4 text-white rounded-xl"
           onClick={handleClaimPet}
@@ -158,7 +142,6 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
           onClose={() => {
             setShowCareMessageModal(false);
             // Refresh the page after closing the care message modal
-            window.location.reload();
           }}
         />
       )}
