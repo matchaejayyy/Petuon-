@@ -76,6 +76,7 @@ const Avatar = () => {
       } else {
         console.error("Unexpected error fetching user data:", error);
       }
+      setError("Error fetching user data. Please try again later.");
     }
   };
 
