@@ -4,15 +4,17 @@ import { Pet } from "../types/PetTypes"; // Assuming a Pet interface exists
 
 export const usePets = () => {
   const [pets, setPets] = useState<Pet[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); // To track loading state
+  const [afterLoading, setAfterLoading] = useState<boolean>(false); // To track loading state
   const [error, setError] = useState<string>(""); // To track error messages
   const token = localStorage.getItem("token");
   const [hasPet, setHasPet] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
   // Fetch Pets
   const fetchPets = async () => {
-    setLoading(true); // Start loading
     setError(""); // Clear previous errors
     setHasPet(true)
+    setLoading(true)
     try {
       const response = await axios.get("http://localhost:3002/pets/getPets", {
         headers: {
@@ -39,7 +41,8 @@ export const usePets = () => {
       setError("Failed to fetch pets. Please try again later.");
       setHasPet(false)
     } finally {
-      setLoading(false); // End loading
+      setLoading(false)
+      setAfterLoading(true); // End loading
     }
   };
 
@@ -145,9 +148,10 @@ export const usePets = () => {
     setPets,
     savePet,
     deletePet,
-    loading,
+    afterLoading,
     updatePet,
     hasPet,
     error, // Return loading and error states
+    loading
   };
 };
