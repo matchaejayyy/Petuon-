@@ -29,7 +29,6 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
       const updatedPet = { ...petData };
 
       if (updatedPet.pet_evolution_rank >= 4) {
-
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;
       }

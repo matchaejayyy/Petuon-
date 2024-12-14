@@ -1,10 +1,16 @@
 import { useState } from "react";
+
+//eggs
 import capybara from "../../assets/eggs/capibara_egg.png";
 import cat from "../../assets/eggs/cat_egg.png";
 import dinosaur from "../../assets/eggs/dinosaur_egg.png";
 import duck from "../../assets/eggs/duck_egg.png";
 import penguin from "../../assets/eggs/penguin_egg.png";
 import unicorn from "../../assets/eggs/unicorn_egg.png";
+
+//babies
+
+
 import { usePets } from "../../hooks/usePets";
 import { v4 as uuidv4 } from "uuid";
 import { Pet } from "../../types/PetTypes";
@@ -17,8 +23,8 @@ interface PetSelectionModalProps {
 const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAdded }) => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [petName, setPetName] = useState<string>("");
-
   const { addPet, fetchPets } = usePets();
+
 
   const petColors: Record<string, string> = {
     capybara: "border-red-500",
