@@ -8,8 +8,6 @@ import duck from "../../assets/eggs/duck_egg.png";
 import penguin from "../../assets/eggs/penguin_egg.png";
 import unicorn from "../../assets/eggs/unicorn_egg.png";
 
-//babies
-
 
 import { usePets } from "../../hooks/usePets";
 import { v4 as uuidv4 } from "uuid";
