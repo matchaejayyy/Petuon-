@@ -1,64 +1,77 @@
 import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
+import CareMessageModal from "./CareMessageModal"; // Import the CareMessageModal component
 import axios from "axios";
+const token = localStorage.getItem("token");
 
 interface PetsProps {
-  petData: any;
   onPetAdded: (pet: any) => void;
   onPetUpdated: (updatedPet: any) => void;
 }
 
-const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
+const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
+  const [showCareMessageModal, setShowCareMessageModal] = useState(false); // New state for care message modal
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
+  const { pets, loading, error, fetchPets, setPets } = usePets(); // Ensure your hook supports updating pets state
 
-  // Use the custom hook to fetch pets
-  const { loading, error } = usePets();
-
-  // Fetch pet data on initial render
+  useEffect(() => {
+    fetchPets();
+  }, []);
 
   const handleClaimPet = () => {
     setShowModal(true);
   };
 
-  const handleFeedPet = async () => {
-    if (petData?.pet_currency >= 100) {
-      const updatedPet = { ...petData }; // Clone petData to avoid direct mutation
-      if (updatedPet.pet_evolution_rank >= 3) {
+  const handleFeedPet = async (petData: any) => {
+    if (petData.pet_currency >= 100) {
+      const updatedPet = { ...petData };
+
+      if (updatedPet.pet_evolution_rank >= 4) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         return;
       }
 
       if (updatedPet.pet_progress_bar >= 100) {
-        updatedPet.pet_progress_bar = 0; // Reset the progress bar
-        updatedPet.pet_evolution_rank += 1; // Increase evolution rank
-        updatedPet.pet_max_value = updatedPet.pet_evolution_rank === 3 ? 200 : 150;
+        updatedPet.pet_progress_bar = 0;
+        updatedPet.pet_evolution_rank += 1;  // Update evolution rank here
+        updatedPet.pet_max_value = updatedPet.pet_evolution_rank === 4 ? 250 : (updatedPet.pet_evolution_rank === 3 ? 200 : 150);
 
         setShowCongratulatoryMessage("Congratulations! Your pet has evolved!");
-        setTimeout(() => {
-          setShowCongratulatoryMessage("");
-        }, 3000);
+        setTimeout(() => setShowCongratulatoryMessage(""), 3000);
       } else {
-        updatedPet.pet_currency -= 100; // Deduct 100 currency
-        updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100); // Add 10 progress
+        updatedPet.pet_currency -= 100;
+        updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100);
       }
 
-      onPetUpdated(updatedPet); // Update pet data with new progress and currency
+      try {
+        await axios.patch(
+          `http://localhost:3002/pets/updatePet/${updatedPet.pet_id}`,
+          {
+            pet_currency: updatedPet.pet_currency,
+            pet_progress_bar: updatedPet.pet_progress_bar,
+            pet_evolution_rank: updatedPet.pet_evolution_rank,  // Ensure evolution rank is updated
+            updated_date: new Date(),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Update the pet in the local state
+        setPets((prevPets) =>
+          prevPets.map((pet) => (pet.pet_id === updatedPet.pet_id ? updatedPet : pet))
+        );
+
+        onPetUpdated(updatedPet);
+      } catch (error) {
+        console.error("Error updating pet data:", error);
+      }
     } else {
       alert("Not enough currency to feed the pet.");
-    }
-  };
-
-  const handleAddCash = async () => {
-    if (!petData) return; // Prevent if no pet data is available
-
-    const updatedPet = { ...petData, pet_currency: petData.pet_currency + 500 };
-
-    // Here you would call your API to update the pet data
-    const response = await axios.post("http://localhost:3002/pets/updatePet", updatedPet);
-    if (response.status === 200) {
-      onPetUpdated(updatedPet); // Update the pet data after successful API call
     }
   };
 
@@ -69,6 +82,8 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  const petData = pets.length > 0 ? pets[0] : null;
 
   return (
     <div className="bg-primary-300 w-full h-full rounded-xl flex flex-col bg-cover bg-center">
@@ -106,15 +121,9 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
           <div className="flex justify-center space-x-4 mt-4">
             <button
               className="bg-green-500 w-40 h-8 text-white rounded-xl"
-              onClick={handleFeedPet}
+              onClick={() => handleFeedPet(petData)}
             >
               Feed Pet
-            </button>
-            <button
-              className="bg-blue-500 w-40 h-8 text-white rounded-xl"
-              onClick={handleAddCash}
-            >
-              Add Cash
             </button>
           </div>
 
@@ -134,7 +143,24 @@ const Pets: React.FC<PetsProps> = ({ petData, onPetAdded, onPetUpdated }) => {
       )}
 
       {showModal && (
-        <PetSelectionModal onClose={() => setShowModal(false)} onPetAdded={onPetAdded} />
+        <PetSelectionModal
+          onClose={() => setShowModal(false)}
+          onPetAdded={(pet) => {
+            setPets([pet]);
+            onPetAdded(pet);
+            setShowCareMessageModal(true); // Show the care message modal after claiming a pet
+          }}
+        />
+      )}
+
+      {showCareMessageModal && (
+        <CareMessageModal
+          onClose={() => {
+            setShowCareMessageModal(false);
+            // Refresh the page after closing the care message modal
+            window.location.reload();
+          }}
+        />
       )}
     </div>
   );
