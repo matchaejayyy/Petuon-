@@ -22,7 +22,6 @@ const LoginPage: React.FC<Props> = () => {
 
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
-        setLoading(true);
         const response = await axios.post("http://localhost:3002/login/userLogin", {
           user_name: form.user_name,
           user_password: form.user_password,
@@ -39,7 +38,6 @@ const LoginPage: React.FC<Props> = () => {
           }, 2000);
         } 
     } catch (error: unknown) {
-      setLoading(false);
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Error connecting to the server.");
       } else {
