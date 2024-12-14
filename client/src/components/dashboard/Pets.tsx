@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
@@ -12,7 +13,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCareMessageModal, setShowCareMessageModal] = useState(false); // New state for care message modal
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
-  const { loading, afterLoading, pets, error, fetchPets, setPets, updatePet, hasPet } = usePets(); // Ensure your hook supports updating pets state
+  const {afterLoading, pets, error, fetchPets, setPets, updatePet, hasPet } = usePets(); // Ensure your hook supports updating pets state
   
 
   useEffect(() => {
@@ -148,13 +149,12 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
 
           {showModal && (
             <PetSelectionModal
-              onClose={() => setShowModal(false)}
-              onPetAdded={(pet) => {
-                setPets([pet]);
-                onPetAdded(pet);
-                setShowCareMessageModal(true); // Show the care message modal after claiming a pet
-              }}
-            />
+            onClose={() => {
+              setShowModal(false);
+              setShowCareMessageModal(true);
+              fetchPets()
+            }}
+          />
           )}
 
           {showCareMessageModal && (

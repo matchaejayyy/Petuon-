@@ -6,7 +6,7 @@ import Pets from "../components/dashboard/Pets";
 import ToDoListComponent from "../components/ToDoListComponent";
 
 const DashboardPage = () => {
-  const [petData, setPetData] = useState<any>(null);
+  const [setPetData] = useState<any>(null);
 
   const handlePetAdded = (pet: any) => {
     setPetData(pet); // Update pet data state
@@ -41,7 +41,6 @@ const DashboardPage = () => {
             className="font-bold text-[#354F52] fixed bg-white w-[45.5rem] h-[37rem] left-[47.5rem] rounded-[1.5rem] top-[6rem] text-xl shadow-lg"
           >
             <Pets
-              petData={petData}
               onPetAdded={handlePetAdded}
               onPetUpdated={handlePetUpdated}
             />
