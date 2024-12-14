@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import { FilePen, Trash2, FilePlus } from "lucide-react";
 import axios from "axios";
@@ -16,9 +16,8 @@ const NotepadComponent: React.FC = () => {
     const [selectedNote, setSelectedNote] = useState<any | null>(null);
 
     const {notes, addNote, saveNOte, deleteNOte, loading, afterLoading, setNotes} = useNotepad();
+  
     
-    const notesContainerRef = useRef<HTMLDivElement | null>(null);
-    const newNoteRef = useRef<HTMLDivElement | null>(null); // Ref for the new note
     
 
     const getRandomPastelColor = () => {
@@ -72,14 +71,6 @@ const NotepadComponent: React.FC = () => {
           setEditingNote(null)
         } else {
           await addNote(newNote)
-
-          if (notesContainerRef.current && newNoteRef.current) {
-            // Scroll the new note into view
-            newNoteRef.current.scrollIntoView({
-              behavior: 'smooth', // Optional: adds smooth scrolling
-              block: 'nearest', // Adjusts where the note appears in the view
-            });
-          }
           resetForm();
           setEditingNote(null)
         }
@@ -185,7 +176,7 @@ const NotepadComponent: React.FC = () => {
       visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
     };
     const staggerTime = 1; // Total duration for all tasks to be rendered (in seconds)
-    const delayPerItem = staggerTime / notes.length; // Time delay per task
+    const delayPerItem = staggerTime / filteredNotes.length; // Time delay per task
 
     const formatContent = (content: string) => {
       // If content is an object, convert it to a string or access the correct property
@@ -336,7 +327,7 @@ const NotepadComponent: React.FC = () => {
                 <h1 className="ml-[36rem] mt-[-4.5rem] text-2xl text-gray-500">
                   Fetching notes...
                 </h1>
-              ) : filteredNotes.length === 0 ? (
+              ) : notes.length === 0  || filteredNotes.length === 0 && (
                 <div className="ml-5 mt-4 text-center">
                   <img
                     src="src\assets\sleeping_penguin2.gif"
@@ -350,7 +341,7 @@ const NotepadComponent: React.FC = () => {
                     No notes available.
                   </p>
                 </div>
-              ) : null}
+              )}
 
               {filteredNotes.map((note, index) => (
                 <motion.div

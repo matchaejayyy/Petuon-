@@ -17,8 +17,12 @@ export const useFlashcardHooks = () => {
   const [deckTitle, setDeckTitle] = useState<string>("");
   const [deckId, setDeckId] = useState<string | null>(null);
 
+  const [loadCards, setLoadCards] = useState<boolean>(false);
+  const [loadDecks, setLoadDecks] = useState<boolean>(false);
+
   // Fetch decks and flashcards on mount
   const fetchDecks = async () => {
+    setLoadDecks(true)
     try {
       if (!token) throw new Error("No token found");
 
@@ -33,28 +37,8 @@ export const useFlashcardHooks = () => {
       setDecks(deckData);
     } catch (error) {
       console.error("Error fetching decks:", error);
-    }
-  };
-
-  const fetchFlashcards = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3002/cards/getFlashcards`);
-      const flashcardData = response.data.map((flashcard: {
-        question: string;
-        answer: string;
-        flashcard_id: string;
-        unique_flashcard_id: string;
-        progress: boolean;
-      }) => ({
-        question: flashcard.question,
-        answer: flashcard.answer,
-        flashcard_id: flashcard.flashcard_id,
-        unique_flashcard_id: flashcard.unique_flashcard_id,
-        progress: flashcard.progress,
-      }));
-      setFlashcards(flashcardData);
-    } catch (error) {
-      console.error("Error fetching flashcards:", error);
+    } finally {
+      setLoadDecks(false)
     }
   };
 
@@ -62,7 +46,6 @@ export const useFlashcardHooks = () => {
 
   useEffect(() => {
     fetchDecks();
-    fetchFlashcards();
   }, []);
 
   // Watch for deckId changes
@@ -93,6 +76,7 @@ export const useFlashcardHooks = () => {
   };
 
   const loadDeck = async (deck_id: string) => {
+    setLoadCards(true)
     try {
       setDeckId(deck_id);
       setIsReviewing(false);
@@ -118,6 +102,8 @@ export const useFlashcardHooks = () => {
     } catch (error) {
       console.error("Error loading deck:", error);
       setFlashcards([]);
+    } finally {
+      setLoadCards(false)
     }
   };
 
@@ -212,6 +198,8 @@ export const useFlashcardHooks = () => {
   
 
   return {
+    loadDecks,
+    loadCards,
     flashcards,
     decks,
     isReviewing,
@@ -234,7 +222,6 @@ export const useFlashcardHooks = () => {
     deleteFlashcard,
     updateFlashcard,
     fetchDecks,
-    fetchFlashcards,
     openEditModal,
     handleUpdateDeckTitle
 
