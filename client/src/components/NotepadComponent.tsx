@@ -16,9 +16,8 @@ const NotepadComponent: React.FC = () => {
     const [selectedNote, setSelectedNote] = useState<any | null>(null);
 
     const {notes, addNote, saveNOte, deleteNOte, loading, afterLoading, setNotes} = useNotepad();
+  
     
-    const notesContainerRef = useRef<HTMLDivElement | null>(null);
-    const newNoteRef = useRef<HTMLDivElement | null>(null); // Ref for the new note
     
 
     const getRandomPastelColor = () => {
@@ -72,14 +71,6 @@ const NotepadComponent: React.FC = () => {
           setEditingNote(null)
         } else {
           await addNote(newNote)
-
-          if (notesContainerRef.current && newNoteRef.current) {
-            // Scroll the new note into view
-            newNoteRef.current.scrollIntoView({
-              behavior: 'smooth', // Optional: adds smooth scrolling
-              block: 'nearest', // Adjusts where the note appears in the view
-            });
-          }
           resetForm();
           setEditingNote(null)
         }
@@ -185,7 +176,7 @@ const NotepadComponent: React.FC = () => {
       visible: { opacity: 1, y: 0 }, // Final state: visible and at the correct position
     };
     const staggerTime = 1; // Total duration for all tasks to be rendered (in seconds)
-    const delayPerItem = staggerTime / notes.length; // Time delay per task
+    const delayPerItem = staggerTime / filteredNotes.length; // Time delay per task
 
     const formatContent = (content: string) => {
       // If content is an object, convert it to a string or access the correct property

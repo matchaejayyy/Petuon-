@@ -18,6 +18,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const [attempts, setAttempts] = useState(3);
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [totalCoins, setTotalCoins] = useState<number>(0); // State for total coins
 
   const correctAudio = new Audio(correctSound);
   const incorrectAudio = new Audio(incorrectSound);
@@ -117,8 +118,32 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     }
   };
 
+  
+
   const currentFlashcard = tempFlashcards[currentIndex];
   const isQuizComplete = quizState === "finished";
+
+   // On Component Mount: Retrieve total coins from local storage
+   useEffect(() => {
+    const coins = localStorage.getItem("totalCoins");
+    setTotalCoins(coins ? parseInt(coins, 10) : 0);
+  }, []);
+
+  const updateTotalCoins = (newCoins: number) => {
+    localStorage.setItem("totalCoins", newCoins.toString());
+    setTotalCoins(newCoins);
+  };
+
+  const calculatePrizeMoney = (score: number, total: number): number => {
+    const percentage = (score / total) * 100;
+  
+    if (percentage >= 90) return 100; // 90% and above
+    if (percentage >= 80) return 80; // 80% to 89%
+    if (percentage >= 70) return 60; // 70% to 79%
+    if (percentage >= 60) return 40; // 60% to 69%
+    return 20; // Below 60%
+  };
+  
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
@@ -137,7 +162,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       </style>
 
       {quizState === "fillBlanks" ? (
-        <div className="flex flex-col items-center -mt-[28rem]">
+        <div className="flex flex-col items-center -mt-[15rem]">
           <div
             className="w-[800px] h-[400px] bg-white rounded-xl shadow-xl flex items-center justify-center text-center"
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
@@ -189,42 +214,50 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
         </div>
 
       ) : isQuizComplete ? (
-        <div className="flex flex-col items-center">
-          {/* Quiz Completion UI */}
-          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#354F52] font-bold mb-4 -mt-[25rem]">
-            FlashCard Complete! Well Done!
-          </h2>
-          <p
-          style={{ fontFamily: '"Signika Negative", sans-serif' }}
-          className="text-2xl text-[#354F52] mt-4"
-            >
-          Your Score: {userScore} / {tempFlashcards.length}
-          </p>
-          <button
+        <div className="flex flex-col items-center mt-[12rem]">
+    <h2
+      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+      className="text-5xl text-[#354F52] font-bold mb-4 -mt-[25rem]"
+    >
+      FlashCard Complete! Well Done!
+    </h2>
+    <p
+      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+      className="text-2xl text-[#354F52] mt-4"
+    >
+      Your Score: {userScore} / {tempFlashcards.length}
+    </p>
+    <p
+      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+      className="text-2xl text-[#52796F] mt-2"
+    >
+      You earned: 🪙{calculatePrizeMoney(userScore, tempFlashcards.length)} coins!
+    </p>
+    <button
             onClick={() => { shuffleFlashcards(); setQuizState("fillBlanks"); }}
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
             className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-10 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
           >
             Shuffle & Restart
-          </button>
-          <button
-            onClick={() => setOnFirstPage(true)}
-            style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
-          >
-            Go to Decks
-          </button>
-          <button
-            onClick={handleStartNewQuiz}
-            style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
-          >
-            Start Quiz
-          </button>
-        </div>
+    </button>
+    <button
+      onClick={() => setOnFirstPage(true)}
+      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+      className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+    >
+      Go to Decks
+    </button>
+    <button
+      onClick={handleStartNewQuiz}
+      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+      className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+    >
+      Restart Quiz
+    </button>
+  </div>
       ) : (
         // Regular quiz UI before it's finished
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-[13rem]">
           <div
             className="w-[800px] h-[400px] -mt-[29rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{
@@ -278,3 +311,4 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     </div>
   );
 };
+export default QuizFlashcard;
