@@ -2,12 +2,9 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 // Typing for the response and errors
-// interface DecodedToken {
-//   exp: number;
-// }
-
 interface TokenResponse {
   token: string | null;
+  user_id: string | null;
 }
 
 interface LogoutResponse {
@@ -19,56 +16,51 @@ interface UseTokenReturn {
   error: string | null;
   fetchTokenFromDatabase: (user_id: string) => Promise<string | null>;
   logout: (user_id: string) => Promise<void>;
+  clearToken: () => void;
+  userId: string | null;
 }
 
 export const useToken = (): UseTokenReturn => {
   const [token, setToken] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null); 
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch the token from the database when the userId changes
   const fetchTokenFromDatabase = async (user_id: string): Promise<string | null> => {
     try {
-      console.log("Fetching token for userId:", user_id);
       const response = await axios.get<TokenResponse>(`http://localhost:3002/token/${user_id}`);
-
-      if (response.data.token) {
-        console.log("Token found:", response.data.token);
-        setToken(response.data.token); // This triggers re-render with updated token
-        return response.data.token;
+      console.log("Response from token fetch:", response.data);
+      const { token, user_id: fetchedUserId } = response.data;
+  
+      if (token) {
+        setToken(token);
+        setUserId(fetchedUserId); // Set the userId from the response
+        return token;
       } else {
-        console.error("No token found for userId:", user_id);
         setError("No token found for user.");
         return null;
       }
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Axios error while fetching token:", error.response?.data);
-        setError("Failed to fetch token.");
-      } else {
-        console.error("Unexpected error while fetching token:", error);
-        setError("An unexpected error occurred while fetching token.");
-      }
+      setError("Failed to fetch token.");
       return null;
     }
   };
+  
 
   const logout = async (user_id: string): Promise<void> => {
     try {
-      console.log("Logging out user with userId:", user_id);
       const response = await axios.post<LogoutResponse>(`http://localhost:3002/token/logout/${user_id}`);
-
-      if (response.data.message) {
-        console.log(response.data.message);
-        // Handle successful logout (e.g., clear token from state)
-      }
+      setToken(null);
+      setUserId(null); // Clear userId on logout
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error("Axios error while logging out:", error.response?.data);
-        setError("Logout failed.");
-      } else {
-        console.error("Unexpected error while logging out:", error);
-      }
+      setError("Logout failed.");
     }
   };
 
-  return { token, error, fetchTokenFromDatabase, logout };
+  const clearToken = () => {
+    setToken(null);
+    setUserId(null); // Clear userId as well
+  };
+
+  return { token, userId, error, fetchTokenFromDatabase, logout, clearToken };
 };
