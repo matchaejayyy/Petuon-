@@ -8,11 +8,13 @@ import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import LogInOut from "../components/logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useToken } from "../hooks/UseToken";
 
 const LoginPage: React.FC<Props> = () => {
-  const [error] = useState<string | null>(null); // Track error message
+  const [loading, setLoading] = useState(false); // Track loading state
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { token, setToken,fetchTokenFromDatabase } = useToken(); // Use the hook
 
   const {
     register,
@@ -22,6 +24,7 @@ const LoginPage: React.FC<Props> = () => {
 
   const handleLogin = async (form: LoginFormsInputs) => {
     try {
+
         const response = await axios.post("http://localhost:3002/login/userLogin", {
           user_name: form.user_name,
           user_password: form.user_password,
@@ -30,23 +33,49 @@ const LoginPage: React.FC<Props> = () => {
           // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
           // alert("Login successful! Redirecting to dashboard...");
-          toast.success("Login successful! Redirecting to dashboard...");
 
-      // Redirect to the dashboard after showing the notification
+      setLoading(true);
+      const response = await axios.post("http://localhost:3002/login/userLogin", {
+        user_name: form.user_name,
+        user_password: form.user_password,
+      });
+  
+      console.log("Login response:", response.data); // Log the login response
+  
+      // Check if user_id is returned
+      if (response.data.user_id) {
+        console.log("User  ID fetched successfully:", response.data.user_id); // Debugging log for user_id
+        toast.success("Login successful! Fetching token...");
+        
+        const fetchedToken = await fetchTokenFromDatabase(response.data.user_id);
+        console.log("Fetched token:", fetchedToken); // Log the fetched token
+  
+        if (fetchedToken) {
+          console.log("Token successfully retrieved:", fetchedToken);
+          localStorage.setItem("token", fetchedToken);
+          setToken(fetchedToken); // Set token in state
+
+          toast.success("Login successful! Redirecting to dashboard...");
           setTimeout(() => {
             navigate("/dashboard");
           }, 2000);
-        } 
+        } else {
+          toast.error("Failed to retrieve token. Please try again.");
+        }
+      } else {
+        console.error("Login failed: User ID not returned."); // Log error if user_id is not returned
+        toast.error("Login failed. User ID not returned.");
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Error connecting to the server.");
+        toast.error(error.response?.data?.message || "Error connecting to the server.");
       } else {
-        alert("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
       }
+    } finally {
+      setLoading(false); // Ensure loading is set to false in finally
     }
   };
-
-  
 
   return (
     <>
@@ -61,10 +90,8 @@ const LoginPage: React.FC<Props> = () => {
         draggable
       />
     {loading && (
-      
       <LogInOut/>
     )}
-   
     <section  
       className="flex h-screen items-center justify-center"
       style={{
@@ -73,7 +100,6 @@ const LoginPage: React.FC<Props> = () => {
         backgroundPosition: "center",
       }}
     >
-      
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div
           className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0"
@@ -109,7 +135,7 @@ const LoginPage: React.FC<Props> = () => {
                 <input
                   type="password"
                   id="password"
-                  placeholder="••••••••"
+                  placeholder="At least 8 characters"
                   className="bg-[#719191] text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                   {...register("user_password")}
                 />
@@ -128,11 +154,13 @@ const LoginPage: React.FC<Props> = () => {
                   Don’t have an account yet?{" "}
                   <Link
                     to="/register"
-                    className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+                    className="text-white font-medium hover:underline"
                   >
                     Sign up
                   </Link>
                 </p>
+              </div>
+              <div className="flex items-center justify-center">
               </div>
             </form>
           </div>
