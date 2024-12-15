@@ -188,12 +188,13 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
                 onKeyDown={(e) => e.key === "Enter" && handleCheckAnswer()}
                 placeholder="Your answer"
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className={`p-2 border rounded-md focus:outline-none transition-all duration-300 ${
+                className={`p-2 border rounded-md focus:outline-none transition-all duration-400 ${
                   answerStatus === "correct"
-                    ? "focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50"
-                    : answerStatus === "incorrect"
-                    ? "focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50"
-                    : "focus:ring-2 focus:ring-[#354F52] focus:border-[#354F52] border-[#354F52]"
+                  ? "focus:ring-2 focus:ring-green-500 focus:border-green-500 border-green-500 bg-green-50 "
+                  : answerStatus === "incorrect"
+                  ? "focus:ring-2 focus:ring-red-500 focus:border-red-500 border-red-500 bg-red-50 "
+                  : "focus:ring-2 focus:ring-[#354F52] focus:border-[#354F52] border-[#354F52]  "
+                  
                 }`}
               />
             </div>

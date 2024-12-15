@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
-import { Minus, FilePenLine, FolderMinus } from "lucide-react";
+import { Minus, FilePenLine } from "lucide-react";
 import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
@@ -165,17 +165,21 @@ const FlashcardComponent: React.FC = () => {
     <>
      <ToastContainer />
      {onFirstPage ? (
-        <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
-          <div className=" h-24 w-full mt-20 flex items-center ">
-            <h1 className="text-[#354F52] font-serif text-3xl ">Decks</h1>
+        <div className="flex flex-col items-center mt-[-3rem] mr-[7rem] ">
+          <div className=" h-24 w-full mt-20 flex items-center "> 
+            <h1 style={{ fontFamily: '"Signika Negative", sans-serif'}} className="text-[#354F52] ml-[3.5rem] text-5xl absolute left-1/3 transform -translate-x-1/4 -mt-[8rem]">Decks of Flash Cards</h1>
             <button
-              onClick={() => setIsModalOpen(true)}
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg ml-10"
-            >
-              Create Deck
+                onClick={() => setIsModalOpen(true)}
+                className="absolute right-[11rem] top-[6.5rem] flex items-center justify-center w-[10rem] h-[3rem] rounded-xl bg-[#354F52] hover:bg-[#52796F] transition duration-300"
+              >
+                {/* Text */}
+                <span
+                  className="text-white font-semibold"
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                >
+                  Create Deck
+                </span>
             </button>
-
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
               <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl font-bold mb-4">Create a New Deck</h2>
               <input
@@ -252,65 +256,87 @@ const FlashcardComponent: React.FC = () => {
             </button>
             </Modal>
           </div>
-          <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
-            <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
+          <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-4rem] ">
+            <ul  className="w-[94vw] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[500px] overflow-y-auto overflow-x-hidden p-2 [&::-webkit-scrollbar]:w-2">
               {/* Loading State */}
                 {loadDecks ? (
                   <p className="text-2xl text-gray-500 text-center col-span-full">
                     Fetching cards...
                   </p>
                 ) : Object.keys(decks).length === 0 ? (
+                  <div className="flex flex-col items-center justify-center mt-[16rem] text-center">
+                  <img
+                    src="src\assets\sleeping_penguin2.gif"
+                    alt="No notes available"
+                    className="ml-[66rem] mt-[-13rem] h-[15rem] w-[15rem] "
+                  />
                   <p
-                    className="text-2xl text-gray-500 text-center col-span-full"
                     style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                   className="text-2xl text-gray-500 -mr-[66rem] -mt-[1.5rem]"
                   >
                     No decks saved yet. Create one to get started!
                   </p>
+                </div>
                 ) : null}
 
                 {/* Render Decks */}
-                {!loadDecks && Object.keys(decks).length > 0 && (
-                  decks.map((deck, index) => {
-                    const assignedColor = colors[index % colors.length];
+            {!loadDecks && Object.keys(decks).length > 0 && (
+              decks.map((deck, index) => {
+                const assignedColor = colors[index % colors.length];
 
-                    return (
-                      <li key={deck.title} className="w-full ml-[3rem]">
-                        <div
-                          onClick={() => { loadDeck(deck.deck_id); }}
-                          className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
-                        >
-                          <h1
-                            className="text-2xl font-bold uppercase text-center flex items-center justify-center h-full w-full overflow-hidden text-ellipsis whitespace-nowrap"
-                            style={{
-                              fontFamily: '"Signika Negative", sans-serif',
-                            }}
-                          >
-                            {deck.title}
-                          </h1>
+                return (
+                  <li key={deck.title} className="w-full ml-[3rem] ">
+                    <div
+                      onClick={() => { loadDeck(deck.deck_id); }}
+                      className="shadow-lg rounded-3xl w-[18rem] flex flex-col cursor-pointer transform transition-transform duration-200 hover:scale-105 relative"
+                    >
+                      {/* Top Colored Section */}
+                      <div
+                        className={`${assignedColor} rounded-t-3xl h-[4.5rem] w-full p-4 flex justify-between items-center relative`}
+                      >
+                        {/* Container for Buttons positioned at the top right */}
+                        <div className="absolute top-1 right-0 flex space-x-[-0.2rem] p-2">
+                          {/* Edit Button */}
                           <button
-                            className="absolute top-[0.7rem] right-10 h-8 w-8 rounded-full flex items-center justify-center"
+                            className="h-8 w-8 rounded-full flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsEditModalOpen(true);
                               setDeckId(deck.deck_id);
                             }}
                           >
-                            <FilePenLine className="w-5 h-5 transform  text-black transition-transform duration-200 hover:scale-125" />
+                            <FilePenLine className="w-5 h-5 transform text-[#354F52] transition-transform duration-200 hover:scale-125" />
                           </button>
+
+                          {/* Delete Button */}
                           <button
-                            className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
+                            className="h-8 w-8 rounded-full flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
                               deleteDeck(deck.deck_id);
                             }}
                           >
-                            <FolderMinus className="text-red-800 w-5.5 h-5.5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
+                            <Minus className="text-red-800 w-8 h-8 transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
                           </button>
                         </div>
-                      </li>
-                    );
-                  })
-                )}
+                      </div>
+
+                      {/* Bottom White Section */}
+                      <div className="bg-white rounded-b-3xl p-4 flex justify-center items-center h-[10rem]">
+                        <h1
+                          className="text-2xl text-[#354F52] font-bold uppercase text-center overflow-hidden text-ellipsis whitespace-nowrap"
+                          style={{
+                            fontFamily: '"Signika Negative", sans-serif',
+                          }}
+                        >
+                          {deck.title}
+                        </h1>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })
+            )}
             </ul>
           </div>
           <div className="fixed top-[6rem] right-[3.9rem]">
