@@ -15,12 +15,12 @@ const Avatar = () => {
   const [openSettings, setOpenSettings] = useState<boolean>(false);
 
   const navigate = useNavigate();
-  const { token, userId, clearToken, fetchTokenFromDatabase, logout } = useToken();
+  const { token, user_id, clearToken, fetchTokenFromDatabase, logout } = useToken();
 
   useEffect(() => {
-    console.log('userId:', userId);
+    console.log('userId:', user_id);
     console.log('token:', token);
-  }, [userId, token]);
+  }, [user_id, token]);
 
   // Fetch user data from the backend
   const fetchUserData = async () => {
@@ -52,9 +52,16 @@ const Avatar = () => {
 
   const handleLogout = async () => {
     setLoading(true);
-
+  
+    if (!user_id) {
+      console.error("Cannot log out: userId is null");
+      setLoading(false);
+      return;
+    }
+  
     try {
-      await logout();
+      console.log("Logging out userId:", user_id);
+      await logout(user_id);
       toast.info("You are being logged out. Redirecting to the login page...");
       setTimeout(() => {
         navigate("/login");
@@ -65,7 +72,6 @@ const Avatar = () => {
       setLoading(false);
     }
   };
-
   return (
     <>
       <ToastContainer

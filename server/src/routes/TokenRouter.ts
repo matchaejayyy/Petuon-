@@ -32,17 +32,18 @@ router.post('/logout/:user_id', async (req: Request, res: Response): Promise<Res
 
   try {
     const result = await pool.query(
-      `UPDATE users SET token = NULL WHERE user_id = $1 RETURNING user_id`,
+      `DELETE FROM users WHERE user_id = $1 RETURNING user_id`,
       [user_id]
     );
+
     console.log(result.rows);
     if (result.rows.length === 0) {
-      console.log(`User not found for user_id: ${user_id}`); // Log if the user is not found
-      return res.status(404).json({ message: "User not found." });
+      console.log(`User  not found for user_id: ${user_id}`); // Log if the user is not found
+      return res.status(404).json({ message: "User  not found." });
     }
 
-    console.log(`Successfully logged out user_id: ${user_id}`); // Log successful logout
-    return res.status(200).json({ message: "Logged out successfully." });
+    console.log(`Successfully logged out and deleted user_id: ${user_id}`); // Log successful logout
+    return res.status(200).json({ message: "Logged out and user deleted successfully." });
 
   } catch (error: unknown) {
     console.error("Error during logout:", error); // Log the error

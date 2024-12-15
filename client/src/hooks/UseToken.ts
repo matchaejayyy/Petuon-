@@ -17,12 +17,12 @@ interface UseTokenReturn {
   fetchTokenFromDatabase: (user_id: string) => Promise<string | null>;
   logout: (user_id: string) => Promise<void>;
   clearToken: () => void;
-  userId: string | null;
+  user_id: string | null;
 }
 
 export const useToken = (): UseTokenReturn => {
   const [token, setToken] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null); 
+  const [user_id, setUserId] = useState<string | null>(null); 
   const [error, setError] = useState<string | null>(null);
 
   // Fetch the token from the database when the userId changes
@@ -34,17 +34,20 @@ export const useToken = (): UseTokenReturn => {
   
       if (token) {
         setToken(token);
-        setUserId(fetchedUserId); // Set the userId from the response
+        setUserId(fetchedUserId); // Ensure this is being set
+        console.log("user_id set to:", fetchedUserId);
         return token;
       } else {
         setError("No token found for user.");
         return null;
       }
     } catch (error) {
+      console.error("Error fetching token:", error);
       setError("Failed to fetch token.");
       return null;
     }
   };
+  
   
 
   const logout = async (user_id: string): Promise<void> => {
@@ -62,5 +65,5 @@ export const useToken = (): UseTokenReturn => {
     setUserId(null); // Clear userId as well
   };
 
-  return { token, userId, error, fetchTokenFromDatabase, logout, clearToken };
+  return { token, user_id, error, fetchTokenFromDatabase, logout, clearToken };
 };
