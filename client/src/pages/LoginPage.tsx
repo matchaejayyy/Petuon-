@@ -14,7 +14,7 @@ const LoginPage: React.FC<Props> = () => {
   const [loading, setLoading] = useState(false); // Track loading state
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { token, fetchTokenFromDatabase } = useToken(); // Use the hook
+  const { token, setToken,fetchTokenFromDatabase } = useToken(); // Use the hook
 
   const {
     register,
@@ -30,13 +30,20 @@ const LoginPage: React.FC<Props> = () => {
         user_password: form.user_password,
       });
   
+      console.log("Login response:", response.data); // Log the login response
+  
+      // Check if user_id is returned
       if (response.data.user_id) {
+        console.log("User  ID fetched successfully:", response.data.user_id); // Debugging log for user_id
         toast.success("Login successful! Fetching token...");
+        
         const fetchedToken = await fetchTokenFromDatabase(response.data.user_id);
+        console.log("Fetched token:", fetchedToken); // Log the fetched token
   
         if (fetchedToken) {
           console.log("Token successfully retrieved:", fetchedToken);
           localStorage.setItem("token", fetchedToken);
+          setToken(fetchedToken); // Set token in state
           toast.success("Login successful! Redirecting to dashboard...");
           setTimeout(() => {
             navigate("/dashboard");
@@ -44,16 +51,18 @@ const LoginPage: React.FC<Props> = () => {
         } else {
           toast.error("Failed to retrieve token. Please try again.");
         }
+      } else {
+        console.error("Login failed: User ID not returned."); // Log error if user_id is not returned
+        toast.error("Login failed. User ID not returned.");
       }
     } catch (error: unknown) {
-      setLoading(false);
       if (axios.isAxiosError(error)) {
         toast.error(error.response?.data?.message || "Error connecting to the server.");
       } else {
         toast.error("An unexpected error occurred.");
       }
     } finally {
-      setLoading(false);
+      setLoading(false); // Ensure loading is set to false in finally
     }
   };
 

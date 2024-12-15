@@ -18,6 +18,7 @@ interface UseTokenReturn {
   logout: (user_id: string) => Promise<void>;
   clearToken: () => void;
   user_id: string | null;
+  setToken: (token: string | null) => void;
 }
 
 export const useToken = (): UseTokenReturn => {
@@ -25,20 +26,20 @@ export const useToken = (): UseTokenReturn => {
   const [user_id, setUserId] = useState<string | null>(null); 
   const [error, setError] = useState<string | null>(null);
 
+  
   // Fetch the token from the database when the userId changes
   const fetchTokenFromDatabase = async (user_id: string): Promise<string | null> => {
     try {
       const response = await axios.get<TokenResponse>(`http://localhost:3002/token/${user_id}`);
-      console.log("Response from token fetch:", response.data);
       const { token, user_id: fetchedUserId } = response.data;
   
-      if (token) {
+      if (token && fetchedUserId) {
+        console.log(`Fetched token: ${token} for user_id: ${fetchedUserId}`);
         setToken(token);
-        setUserId(fetchedUserId); // Ensure this is being set
-        console.log("user_id set to:", fetchedUserId);
+        setUserId(fetchedUserId);
         return token;
       } else {
-        setError("No token found for user.");
+        setError("No token or user ID found.");
         return null;
       }
     } catch (error) {
@@ -48,22 +49,37 @@ export const useToken = (): UseTokenReturn => {
     }
   };
   
-  
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUserId = localStorage.getItem("user_id");
+    if (storedToken && storedUserId) {
+      setToken(storedToken);
+      setUserId(storedUserId);
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log('userId:', user_id); // Log user_id
+    console.log('token:', token); // Log token
+  }, [user_id, token]);
 
   const logout = async (user_id: string): Promise<void> => {
     try {
-      const response = await axios.post<LogoutResponse>(`http://localhost:3002/token/logout/${user_id}`);
-      setToken(null);
-      setUserId(null); // Clear userId on logout
+      await axios.post(`http://localhost:3002/token/logout/${user_id}`);
+      console.log(`Logged out user_id: ${user_id}`);
+      clearToken();
+      localStorage.removeItem("token");
     } catch (error) {
       setError("Logout failed.");
     }
   };
-
+  
   const clearToken = () => {
     setToken(null);
-    setUserId(null); // Clear userId as well
+    localStorage.removeItem("token");
   };
+  
 
-  return { token, user_id, error, fetchTokenFromDatabase, logout, clearToken };
+
+  return { token, user_id, error, fetchTokenFromDatabase, logout, clearToken, setToken };
 };
