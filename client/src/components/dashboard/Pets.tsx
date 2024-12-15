@@ -2,9 +2,7 @@ import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
 import CareMessageModal from "./CareMessageModal"; // Import the CareMessageModal component
-import CinematicEvolutionModal from "./CinematicEvolutionModal"; // Import the new modal component
 import axios from "axios";
-
 const token = localStorage.getItem("token");
 
 interface PetsProps {
@@ -14,11 +12,9 @@ interface PetsProps {
 
 const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showModal, setShowModal] = useState(false);
-  const [showCareMessageModal, setShowCareMessageModal] = useState(false);
-  const [showEvolutionCinematic, setShowEvolutionCinematic] = useState(false); // New state for evolution cinematic
-  const [tempGif, setTempGif] = useState<string | null>(null); // State for temporary GIF display
-  const [isFeeding, setIsFeeding] = useState(false); // State for button cooldown
-  const { pets, loading, error, fetchPets, setPets } = usePets();
+  const [showCareMessageModal, setShowCareMessageModal] = useState(false); // New state for care message modal
+  const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
+  const { pets, loading, error, fetchPets, setPets } = usePets(); // Ensure your hook supports updating pets state
 
   useEffect(() => {
     fetchPets();
@@ -29,42 +25,21 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   };
 
   const handleFeedPet = async (petData: any) => {
-    if (isFeeding) {
-      return; // Prevent feeding if cooldown is active
-    }
-
     if (petData.pet_currency >= 100) {
-      setIsFeeding(true); // Start cooldown
-
       const updatedPet = { ...petData };
 
       if (updatedPet.pet_evolution_rank >= 4) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
-        setIsFeeding(false); // Reset cooldown
         return;
-      }
-
-      if (updatedPet.pet_evolution_rank > 1) {
-        // Display eating GIF
-        const eatingGif = `src/assets/pets/${updatedPet.pet_type}/evolution_${updatedPet.pet_evolution_rank}_eating.gif`;
-        setTempGif(eatingGif);
-
-        setTimeout(() => {
-          setTempGif(null);
-        }, 2000); // Reset to original GIF after 2 seconds
       }
 
       if (updatedPet.pet_progress_bar >= 100) {
         updatedPet.pet_progress_bar = 0;
-        updatedPet.pet_evolution_rank += 1; // Update evolution rank here
-        updatedPet.pet_max_value =
-          updatedPet.pet_evolution_rank === 4
-            ? 250
-            : updatedPet.pet_evolution_rank === 3
-            ? 200
-            : 150;
+        updatedPet.pet_evolution_rank += 1;  // Update evolution rank here
+        updatedPet.pet_max_value = updatedPet.pet_evolution_rank === 4 ? 250 : (updatedPet.pet_evolution_rank === 3 ? 200 : 150);
 
-        setShowEvolutionCinematic(true); // Trigger evolution cinematic
+        setShowCongratulatoryMessage("Congratulations! Your pet has evolved!");
+        setTimeout(() => setShowCongratulatoryMessage(""), 3000);
       } else {
         updatedPet.pet_currency -= 100;
         updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100);
@@ -76,7 +51,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
           {
             pet_currency: updatedPet.pet_currency,
             pet_progress_bar: updatedPet.pet_progress_bar,
-            pet_evolution_rank: updatedPet.pet_evolution_rank,
+            pet_evolution_rank: updatedPet.pet_evolution_rank,  // Ensure evolution rank is updated
             updated_date: new Date(),
           },
           {
@@ -86,6 +61,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
           }
         );
 
+        // Update the pet in the local state
         setPets((prevPets) =>
           prevPets.map((pet) => (pet.pet_id === updatedPet.pet_id ? updatedPet : pet))
         );
@@ -93,24 +69,10 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
         onPetUpdated(updatedPet);
       } catch (error) {
         console.error("Error updating pet data:", error);
-      } finally {
-        setTimeout(() => {
-          setIsFeeding(false); // End cooldown after 2 seconds
-        }, 1000);
       }
     } else {
       alert("Not enough currency to feed the pet.");
     }
-  };
-
-  const getEvolutionGif = (petType: string, evolutionRank: number): string => {
-    if (tempGif) {
-      return tempGif;
-    }
-    if (evolutionRank === 1) {
-      return `src/assets/pets/${petType}/evolution_1.png`;
-    }
-    return `src/assets/pets/${petType}/evolution_${evolutionRank}.gif`;
   };
 
   if (loading) {
@@ -138,7 +100,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
           </div>
           <div className="flex flex-col items-center">
             <img
-              src={getEvolutionGif(petData.pet_type, petData.pet_evolution_rank)}
+              src={`src/assets/${petData.pet_type}_final.gif`}
               alt="Pet"
               className="w-10 h-64 md:w-96 md:h-96 object-contain transition-all duration-500"
             />
@@ -158,13 +120,18 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
           </div>
           <div className="flex justify-center space-x-4 mt-4">
             <button
-              className={`bg-green-500 w-40 h-8 text-white rounded-xl ${isFeeding ? "opacity-50 cursor-not-allowed" : ""}`}
+              className="bg-green-500 w-40 h-8 text-white rounded-xl"
               onClick={() => handleFeedPet(petData)}
-              disabled={isFeeding} // Disable button during cooldown
             >
               Feed Pet
             </button>
           </div>
+
+          {showCongratulatoryMessage && (
+            <div className="mt-4 text-center text-xl font-bold text-green-500">
+              {showCongratulatoryMessage}
+            </div>
+          )}
         </>
       ) : (
         <button
@@ -181,7 +148,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
           onPetAdded={(pet) => {
             setPets([pet]);
             onPetAdded(pet);
-            setShowCareMessageModal(true);
+            setShowCareMessageModal(true); // Show the care message modal after claiming a pet
           }}
         />
       )}
@@ -190,15 +157,9 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
         <CareMessageModal
           onClose={() => {
             setShowCareMessageModal(false);
+            // Refresh the page after closing the care message modal
             window.location.reload();
           }}
-        />
-      )}
-
-      {showEvolutionCinematic && petData && (
-        <CinematicEvolutionModal
-          pet={petData}
-          onClose={() => setShowEvolutionCinematic(false)}
         />
       )}
     </div>
