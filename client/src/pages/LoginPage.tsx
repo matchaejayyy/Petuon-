@@ -21,6 +21,7 @@ const LoginPage: React.FC<Props> = () => {
   } = useForm<LoginFormsInputs>();
 
   const handleLogin = async (form: LoginFormsInputs) => {
+    setLoading(true)
     try {
         const response = await axios.post("http://localhost:3002/login/userLogin", {
           user_name: form.user_name,
@@ -42,7 +43,9 @@ const LoginPage: React.FC<Props> = () => {
         alert(error.response?.data?.message || "Error connecting to the server.");
       } else {
         alert("An unexpected error occurred.");
-      }
+      } 
+    } finally {
+      setLoading(false)
     }
   };
 
