@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bell, User, Trophy, Moon, Settings } from "lucide-react";
+import { Bell, User, Moon, Settings } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import LogInOut from "./logInOutComponent";
