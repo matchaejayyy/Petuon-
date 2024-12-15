@@ -18,7 +18,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const [attempts, setAttempts] = useState(3);
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [totalCoins, setTotalCoins] = useState<number>(0); // State for total coins
+
 
   const correctAudio = new Audio(correctSound);
   const incorrectAudio = new Audio(incorrectSound);
@@ -124,15 +124,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const isQuizComplete = quizState === "finished";
 
    // On Component Mount: Retrieve total coins from local storage
-   useEffect(() => {
-    const coins = localStorage.getItem("totalCoins");
-    setTotalCoins(coins ? parseInt(coins, 10) : 0);
-  }, []);
 
-  const updateTotalCoins = (newCoins: number) => {
-    localStorage.setItem("totalCoins", newCoins.toString());
-    setTotalCoins(newCoins);
-  };
 
   const calculatePrizeMoney = (score: number, total: number): number => {
     const percentage = (score / total) * 100;
