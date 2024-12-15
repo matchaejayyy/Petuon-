@@ -16,7 +16,6 @@ interface UseTokenReturn {
   error: string | null;
   fetchTokenFromDatabase: (user_id: string) => Promise<string | null>;
   logout: (user_id: string) => Promise<void>;
-  clearToken: () => void;
   user_id: string | null;
   setToken: (token: string | null) => void;
 }
@@ -67,19 +66,17 @@ export const useToken = (): UseTokenReturn => {
     try {
       await axios.post(`http://localhost:3002/token/logout/${user_id}`);
       console.log(`Logged out user_id: ${user_id}`);
-      clearToken();
+      setToken(null);
       localStorage.removeItem("token");
     } catch (error) {
       setError("Logout failed.");
     }
   };
   
-  const clearToken = () => {
-    setToken(null);
-    localStorage.removeItem("token");
-  };
-  
+
+    
 
 
-  return { token, user_id, error, fetchTokenFromDatabase, logout, clearToken, setToken };
+
+  return { token, user_id, error, fetchTokenFromDatabase, logout, setToken };
 };

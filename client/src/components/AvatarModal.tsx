@@ -51,27 +51,21 @@ const Avatar = () => {
   };
 
   const handleLogout = async () => {
-    setLoading(true);
-  
-    if (!user_id) {
-      console.error("Cannot log out: userId is null");
-      setLoading(false);
-      return;
-    }
-  
+    setLoading(true); // Start loading animation
     try {
-      console.log("Logging out userId:", user_id);
-      await logout(user_id);
+      // Simulate an async operation (e.g., API request)
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      localStorage.removeItem("token");
       toast.info("You are being logged out. Redirecting to the login page...");
       setTimeout(() => {
         navigate("/login");
       }, 2000);
     } catch (error) {
+      setLoading(false)
       console.error("Logout failed:", error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
+  
   return (
     <>
       <ToastContainer
