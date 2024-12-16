@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import { FilePen, Trash2, FilePlus } from "lucide-react";
 import axios from "axios";
@@ -327,7 +327,7 @@ const NotepadComponent: React.FC = () => {
                 <h1 className="ml-[36rem] mt-[-4.5rem] text-2xl text-gray-500">
                   Fetching notes...
                 </h1>
-              ) : notes.length === 0  || filteredNotes.length === 0 && (
+              ) : filteredNotes.length === 0 ? (
                 <div className="ml-5 mt-4 text-center">
                   <img
                     src="src\assets\sleeping_penguin2.gif"
@@ -341,7 +341,7 @@ const NotepadComponent: React.FC = () => {
                     No notes available.
                   </p>
                 </div>
-              )}
+              ) : null}
 
               {filteredNotes.map((note, index) => (
                 <motion.div
