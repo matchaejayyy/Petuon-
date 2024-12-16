@@ -1,10 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import RoutesComponent from '../src/Routes';  
 import './index.css';
-import RoutesComponent from './routes/Routes';  // Import Routes
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RoutesComponent />  {/* Render the Routes component */}
+    <RoutesComponent /> 
   </StrictMode>
 );
