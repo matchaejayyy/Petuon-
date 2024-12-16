@@ -113,7 +113,7 @@ const FlashcardComponent: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (highlightIndex < visibleDecksCount - 1) {
+    if (highlightIndex < getVisibleDecks().length - 1) {
       setHighlightIndex(prevIndex => prevIndex + 1);
     } else if (currentIndex + visibleDecksCount < decks.length) {
       setCurrentIndex(prevIndex => prevIndex + visibleDecksCount);
@@ -372,28 +372,31 @@ const FlashcardComponent: React.FC = () => {
                   {/* Left Button */}
                   <button
                     onClick={handlePrev}
-                    className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex === 0 && highlightIndex === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                    className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex === 0 && highlightIndex === 0 ? '' : ''}`}
                     disabled={currentIndex === 0 && highlightIndex === 0}
                   >
                     <ChevronLeft size={40} />
                   </button>
 
-                  {/* Select Button */}
-                  <div className="flex justify-center">
-                    {decks.length > 0 && (
+                 
+                    {/* Select Button */}
+                    <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="flex justify-center">
+                      {decks.length > 0 && (
                       <button
                         onClick={() => handleSelect(getVisibleDecks()[highlightIndex])}
-                        className="px-6 py-2 text-white bg-[#354F52] rounded-full hover:bg-[#4F6F72] transition-all duration-300 transform hover:scale-110"
+                        className="px-6 py-2 text-white bg-[#354F52] rounded-full transition-all duration-300 transform hover:scale-110"
                       >
-                        Select Deck
+                        {getVisibleDecks()[highlightIndex].title.length > 8
+                        ? getVisibleDecks()[highlightIndex].title.slice(0, 8).toUpperCase() + "..."
+                        : getVisibleDecks()[highlightIndex].title.toUpperCase()}
                       </button>
-                    )}
-                  </div>
+                      )}
+                    </div>
 
                   {/* Right Button */}
                   <button
                     onClick={handleNext}
-                    className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex + visibleDecksCount >= decks.length && highlightIndex === visibleDecksCount - 1 ? 'cursor-not-allowed opacity-50' : ''}`}
+                    className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex + visibleDecksCount >= decks.length && highlightIndex === visibleDecksCount - 1 ? '' : ''}`}
                     disabled={currentIndex + visibleDecksCount >= decks.length && highlightIndex === visibleDecksCount - 1}
                   >
                     <ChevronRight size={40} />
