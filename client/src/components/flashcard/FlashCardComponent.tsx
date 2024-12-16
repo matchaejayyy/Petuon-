@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { SetStateAction, useEffect, useState } from 'react';
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
@@ -38,38 +38,94 @@ const FlashcardComponent: React.FC = () => {
     handleUpdateDeckTitle
   } = useFlashcardHooks();
 
+  const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
+  const [editingAnswer, setEditingAnswer] = useState<string | null>(null);
 
-  const [currentIndex, setCurrentIndex] = useState(0); // Tracks the starting index of visible decks
-  const visibleDecksCount = 3; // Number of decks visible at a time
-  const [, setSelectedDeck] = useState<{ deck_id: string; title: string } | null>(null); // Track selected deck
-
-  // Move to the previous set of decks
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? decks.length - visibleDecksCount : prevIndex - 1
-    );
+  const handleEditQuestion = (flashcardId: string) => {
+    setEditingQuestion(flashcardId);
   };
 
-  // Move to the next set of decks
-  const handleNext = () => {
-    setCurrentIndex((prevIndex) => {
-      const newIndex = prevIndex + visibleDecksCount;
-      return newIndex >= decks.length ? 0 : newIndex;
-    });
+  const handleEditAnswer = (flashcardId: string) => {
+    setEditingAnswer(flashcardId);
   };
 
-  // Function to get the decks currently visible
-   const getVisibleDecks = () => {
-    const endIndex = currentIndex + visibleDecksCount;
-    if (endIndex <= decks.length) {
-      return decks.slice(currentIndex, endIndex);
-    } else {
-      // Wrap around to show the remaining decks
-      return [...decks.slice(currentIndex), ...decks.slice(0, endIndex - decks.length)];
+  const handleSaveQuestion = (flashcardId: string, newQuestion: string) => {
+    updateFlashcard(flashcardId, newQuestion, "question");
+    setEditingQuestion(null);
+  };
+
+  const handleSaveAnswer = (flashcardId: string, newAnswer: string) => {
+    updateFlashcard(flashcardId, newAnswer, "answer");
+    setEditingAnswer(null);
+  };
+
+  const updateFlashcard = async (flashcardId: string, newValue: string, field: "question" | "answer") => {
+    try {
+      // API call to update the flashcard
+      await axios.put(`http://localhost:3002/cards/updateFlashcard/${flashcardId}`, {
+        [field]: newValue,
+      });
+
+      // Optimistically update the flashcards state to reflect the change
+      setFlashcards(prevFlashcards => 
+        prevFlashcards.map(flashcard => 
+          flashcard.unique_flashcard_id === flashcardId
+            ? { ...flashcard, [field]: newValue } // Update the modified field
+            : flashcard
+        )
+      );
+
+      console.log(`${field} updated successfully!`);
+    } catch (error) {
+      console.error("Error updating flashcard:", error);
     }
   };
 
-  // Get the middle deck from the visible decks
+  const handleKeyDown = (e: React.KeyboardEvent, flashcardId: string, newValue: string, field: "question" | "answer") => {
+    if (e.key === 'Enter') {
+      if (field === "question") {
+        handleSaveQuestion(flashcardId, newValue);
+      } else if (field === "answer") {
+        handleSaveAnswer(flashcardId, newValue);
+      }
+    }
+  };
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const visibleDecksCount = 4; // Define the number of decks to be visible at a time
+  const [highlightIndex, setHighlightIndex] = useState(0); // Define highlightIndex state
+
+  const totalGroups = Math.ceil(decks.length / visibleDecksCount); // Total number of groups
+
+  // Get the current set of visible decks based on the `currentIndex` and `visibleDecksCount`
+  const getVisibleDecks = () => {
+    return decks.slice(currentIndex, currentIndex + visibleDecksCount);
+  };
+
+
+  // Update the highlighted deck within the current group
+  const handlePrev = () => {
+    if (highlightIndex > 0) {
+      setHighlightIndex(prevIndex => prevIndex - 1);
+    } else if (currentIndex > 0) {
+      setCurrentIndex(prevIndex => prevIndex - visibleDecksCount);
+      setHighlightIndex(visibleDecksCount - 1);  // Go to the last deck in the previous set
+    }
+  };
+
+  const handleNext = () => {
+    if (highlightIndex < visibleDecksCount - 1) {
+      setHighlightIndex(prevIndex => prevIndex + 1);
+    } else if (currentIndex + visibleDecksCount < decks.length) {
+      setCurrentIndex(prevIndex => prevIndex + visibleDecksCount);
+      setHighlightIndex(0);  // Reset to the first deck in the next set
+    }
+  };
+
+  const handleDotClick = (index: number) => {
+    setCurrentIndex(index * visibleDecksCount);  // Clicking a dot will take you to the first deck in that group
+    setHighlightIndex(0);  // Highlight the first deck in the new set
+  };
+
 
   // Handle selecting a deck (Open the deck in the middle)
   const handleSelect = (deck: { deck_id: string; title: string }) => {
@@ -238,86 +294,125 @@ const FlashcardComponent: React.FC = () => {
             </Modal>
           </div>
             {/* Added flashcard */}
-            <div className="w-full flex flex-col items-center justify-center mt-10 space-y-6">
-            {/* Carousel Container */}
-            <div className="relative w-full flex items-center justify-center">
-              {/* Left Navigation Button */}
-              <button
-                onClick={handlePrev}
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-gray-700 hover:text-gray-900 p-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-all duration-300"
-              >
-                <ChevronLeft size={40} />
-              </button>
+            <div className="relative w-full flex items-center justify-center flex-col">
+            {decks.length === 0 ? (
+              <div className="flex flex-col items-center mt-4 ml-[3rem]">
+                <img
+                  src="src/assets/sleeping_penguin2.gif"
+                  alt="No decks available"
+                  className="h-[15rem] w-[15rem]"
+                />
+                <p
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  className="mt-4 text-2xl text-gray-500"
+                >
+                  No Decks Available
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* Visible Decks */}
+                <ul className="flex items-center justify-center transition-all duration-700 ease-in-out -mt-5 ml-[5rem]">
+                  {getVisibleDecks().map((deck, index) => {
+                    const isHighlighted = highlightIndex === index;  // Check if the deck is currently highlighted
+                    let scaleClass = isHighlighted ? "scale-110 opacity-100" : "scale-90 opacity-60";
+                    let zIndexClass = isHighlighted ? "z-20" : "z-10";
+                    let bgColorClass = isHighlighted ? "bg-[#4F6F72]" : "bg-[#A4B7B5]";
 
-              {/* Visible Decks */}
-              <ul className="flex items-center justify-center space-x-15 transition-all duration-500 ease-in-out">
-                {getVisibleDecks().map((deck, index) => {
-                  const isMiddle = index === Math.floor(visibleDecksCount / 2); // Identify the middle card
-
-                  return (
-                    <li key={deck.title} className="w-[260px]  flex-shrink-0 relative -mt-[3rem] ml-[4rem]">
-                      <div
-                        onClick={() => handleSelect(deck)} // Select deck when clicked
-                        className={`shadow-lg rounded-3xl w-[260px] h-[350px] cursor-pointer transition-all transform ${
-                          isMiddle ? "scale-110 opacity-100" : "scale-95 opacity-70"
-                        } relative hover:scale-110 hover:opacity-90 hover:shadow-xl ease-in-out duration-300`}
-                      >
-                        {/* Edit and Delete buttons */}
-                        <div className="absolute top-2 right-2 flex space-x-2 z-20">
-                          {/* Edit Button */}
-                          <button
-                            className="h-8 w-8 rounded-full flex items-center justify-center bg-white p-1 shadow-md hover:bg-gray-100"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setIsEditModalOpen(true);
-                              setDeckId(deck.deck_id);
-                            }}
-                          >
-                            <FilePenLine className="w-5 h-5 text-[#354F52]" />
-                          </button>
-
-                          {/* Delete Button */}
-                          <button
-                            className="h-8 w-8 rounded-full flex items-center justify-center bg-white p-1 shadow-md hover:bg-gray-100"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteDeck(deck.deck_id);
-                            }}
-                          >
-                            <Minus className="w-5 h-5 text-red-800" />
-                          </button>
-                        </div>
-
-                        {/* Top Colored Section */}
+                    return (
+                      <li key={deck.deck_id} className="w-[300px] flex-shrink-0 relative transition-all ease-in-out duration-500">
                         <div
-                          className={`h-[35%] rounded-t-3xl transition-all ease-in-out ${
-                            isMiddle ? "bg-[#4F6F72]" : "bg-[#A4B7B5]"
-                          }`}
-                        ></div>
+                          onClick={() => handleSelect(deck)} // Select deck when clicked
+                          className={`shadow-lg rounded-3xl w-[260px] h-[350px] cursor-pointer transition-all transform ${scaleClass} ${zIndexClass} relative hover:opacity-100 hover:shadow-xl ease-in-out duration-300`}
+                        >
+                          {/* Edit and Delete buttons */}
+                          <div className="absolute top-2 right-2 flex space-x-2 z-20">
+                            {/* Edit Button */}
+                            <button
+                              className="h-8 w-8 rounded-full flex items-center justify-center bg-white p-1 shadow-md hover:bg-gray-100"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setIsEditModalOpen(true);
+                                setDeckId(deck.deck_id);
+                              }}
+                            >
+                              <FilePenLine className="w-5 h-5 text-[#354F52]" />
+                            </button>
 
-                        {/* Bottom White Section */}
-                        <div className="h-[65%] bg-white rounded-b-3xl p-4 flex justify-center items-center">
-                          <h1
-                            className="text-xl text-[#354F52] font-bold uppercase text-center"
-                            style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                          >
-                            {deck.title}
-                          </h1>
+                            {/* Delete Button */}
+                            <button
+                              className="h-8 w-8 rounded-full flex items-center justify-center bg-white p-1 shadow-md hover:bg-gray-100"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteDeck(deck.deck_id);
+                              }}
+                            >
+                              <Minus className="w-5 h-5 text-red-800" />
+                            </button>
+                          </div>
+
+                          {/* Top Colored Section */}
+                          <div
+                            className={`h-[30%] rounded-t-3xl transition-all ease-in-out ${bgColorClass}`}
+                          ></div>
+
+                          {/* Bottom White Section */}
+                          <div className="h-[65%] bg-white rounded-b-3xl p-4 flex justify-center items-center">
+                            <h1 className="text-xl text-[#354F52] font-bold uppercase text-center" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+                              {deck.title}
+                            </h1>
+                          </div>
                         </div>
-                      </div>
-                    </li>
-                  );
-                })}
-              </ul>
-              {/* Right Navigation Button */}
-              <button
-                onClick={handleNext}
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-gray-700 hover:text-gray-900 p-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-all duration-300"
-              >
-                <ChevronRight size={40} />
-              </button>
-            </div>       
-          </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+                {/* Navigation Buttons Below */}
+                <div className="mt-8 flex justify-center items-center space-x-5 ml-[3rem]">
+                  {/* Left Button */}
+                  <button
+                    onClick={handlePrev}
+                    className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex === 0 && highlightIndex === 0 ? 'cursor-not-allowed opacity-50' : ''}`}
+                    disabled={currentIndex === 0 && highlightIndex === 0}
+                  >
+                    <ChevronLeft size={40} />
+                  </button>
+
+                  {/* Select Button */}
+                  <div className="flex justify-center">
+                    {decks.length > 0 && (
+                      <button
+                        onClick={() => handleSelect(getVisibleDecks()[highlightIndex])}
+                        className="px-6 py-2 text-white bg-[#354F52] rounded-full hover:bg-[#4F6F72] transition-all duration-300 transform hover:scale-110"
+                      >
+                        Select Deck
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Right Button */}
+                  <button
+                    onClick={handleNext}
+                    className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex + visibleDecksCount >= decks.length && highlightIndex === visibleDecksCount - 1 ? 'cursor-not-allowed opacity-50' : ''}`}
+                    disabled={currentIndex + visibleDecksCount >= decks.length && highlightIndex === visibleDecksCount - 1}
+                  >
+                    <ChevronRight size={40} />
+                  </button>
+                </div>
+
+                  {/* Dots Navigation */}
+                  <div className="-mt-[2] flex space-x-2 ml-[3rem]">
+                    {Array.from({ length: totalGroups }).map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleDotClick(index)}
+                        className={`w-3 h-3 rounded-full ${currentIndex === index * visibleDecksCount ? 'bg-[#354F52]' : 'bg-gray-600'} transition-all duration-300`}
+                      ></button>
+                    ))}
+                  </div>
+            </>
+          )}
+        </div>
         </div>
       ) : isReviewing ? (
         <div>
@@ -429,3 +524,7 @@ const FlashcardComponent: React.FC = () => {
 
 
 export default FlashcardComponent;
+
+function setSelectedDeck(deck: { deck_id: string; title: string; }) {
+  throw new Error("Function not implemented.");
+}
