@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
-import { Minus, FilePenLine } from "lucide-react";
+import { Minus, FilePenLine, ChevronRight, ChevronLeft } from "lucide-react";
 import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
@@ -38,57 +38,43 @@ const FlashcardComponent: React.FC = () => {
     handleUpdateDeckTitle
   } = useFlashcardHooks();
 
-  const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
-  const [editingAnswer, setEditingAnswer] = useState<string | null>(null);
 
-  const handleEditQuestion = (flashcardId: string) => {
-    setEditingQuestion(flashcardId);
+  const [currentIndex, setCurrentIndex] = useState(0); // Tracks the starting index of visible decks
+  const visibleDecksCount = 3; // Number of decks visible at a time
+  const [, setSelectedDeck] = useState<{ deck_id: string; title: string } | null>(null); // Track selected deck
+
+  // Move to the previous set of decks
+  const handlePrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? decks.length - visibleDecksCount : prevIndex - 1
+    );
   };
 
-  const handleEditAnswer = (flashcardId: string) => {
-    setEditingAnswer(flashcardId);
+  // Move to the next set of decks
+  const handleNext = () => {
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex + visibleDecksCount;
+      return newIndex >= decks.length ? 0 : newIndex;
+    });
   };
 
-  const handleSaveQuestion = (flashcardId: string, newQuestion: string) => {
-    updateFlashcard(flashcardId, newQuestion, "question");
-    setEditingQuestion(null);
-  };
-
-  const handleSaveAnswer = (flashcardId: string, newAnswer: string) => {
-    updateFlashcard(flashcardId, newAnswer, "answer");
-    setEditingAnswer(null);
-  };
-
-  const updateFlashcard = async (flashcardId: string, newValue: string, field: "question" | "answer") => {
-    try {
-      // API call to update the flashcard
-      await axios.put(`http://localhost:3002/cards/updateFlashcard/${flashcardId}`, {
-        [field]: newValue,
-      });
-
-      // Optimistically update the flashcards state to reflect the change
-      setFlashcards(prevFlashcards => 
-        prevFlashcards.map(flashcard => 
-          flashcard.unique_flashcard_id === flashcardId
-            ? { ...flashcard, [field]: newValue } // Update the modified field
-            : flashcard
-        )
-      );
-
-      console.log(`${field} updated successfully!`);
-    } catch (error) {
-      console.error("Error updating flashcard:", error);
+  // Function to get the decks currently visible
+   const getVisibleDecks = () => {
+    const endIndex = currentIndex + visibleDecksCount;
+    if (endIndex <= decks.length) {
+      return decks.slice(currentIndex, endIndex);
+    } else {
+      // Wrap around to show the remaining decks
+      return [...decks.slice(currentIndex), ...decks.slice(0, endIndex - decks.length)];
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, flashcardId: string, newValue: string, field: "question" | "answer") => {
-    if (e.key === 'Enter') {
-      if (field === "question") {
-        handleSaveQuestion(flashcardId, newValue);
-      } else if (field === "answer") {
-        handleSaveAnswer(flashcardId, newValue);
-      }
-    }
+  // Get the middle deck from the visible decks
+
+  // Handle selecting a deck (Open the deck in the middle)
+  const handleSelect = (deck: { deck_id: string; title: string }) => {
+    loadDeck(deck.deck_id);
+    setSelectedDeck(deck); // Optionally store the selected deck for further use (e.g., open it in a modal)
   };
   
 
@@ -155,12 +141,7 @@ const FlashcardComponent: React.FC = () => {
       </div>
         );
       };
-  const colors = [
-    "bg-[#FE9B72]",
-    "bg-[#FFC973]",
-    "bg-[#E5EE91]",
-    "bg-[#B692FE]",
-  ];
+ 
   return (
     <>
      <ToastContainer />
@@ -256,90 +237,86 @@ const FlashcardComponent: React.FC = () => {
             </button>
             </Modal>
           </div>
-          <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-4rem] ">
-            <ul  className="w-[94vw] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[500px] overflow-y-auto overflow-x-hidden p-2 [&::-webkit-scrollbar]:w-2">
-              {/* Loading State */}
-                {loadDecks ? (
-                  <p className="text-2xl text-gray-500 text-center col-span-full">
-                    Fetching cards...
-                  </p>
-                ) : Object.keys(decks).length === 0 ? (
-                  <div className="flex flex-col items-center justify-center mt-[16rem] text-center">
-                  <img
-                    src="src\assets\sleeping_penguin2.gif"
-                    alt="No notes available"
-                    className="ml-[66rem] mt-[-13rem] h-[15rem] w-[15rem] "
-                  />
-                  <p
-                    style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                   className="text-2xl text-gray-500 -mr-[66rem] -mt-[1.5rem]"
-                  >
-                    No decks saved yet. Create one to get started!
-                  </p>
-                </div>
-                ) : null}
+            {/* Added flashcard */}
+            <div className="w-full flex flex-col items-center justify-center mt-10 space-y-6">
+            {/* Carousel Container */}
+            <div className="relative w-full flex items-center justify-center">
+              {/* Left Navigation Button */}
+              <button
+                onClick={handlePrev}
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-gray-700 hover:text-gray-900 p-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-all duration-300"
+              >
+                <ChevronLeft size={40} />
+              </button>
 
-                {/* Render Decks */}
-            {!loadDecks && Object.keys(decks).length > 0 && (
-              decks.map((deck, index) => {
-                const assignedColor = colors[index % colors.length];
+              {/* Visible Decks */}
+              <ul className="flex items-center justify-center space-x-15 transition-all duration-500 ease-in-out">
+                {getVisibleDecks().map((deck, index) => {
+                  const isMiddle = index === Math.floor(visibleDecksCount / 2); // Identify the middle card
 
-                return (
-                  <li key={deck.title} className="w-full ml-[3rem] ">
-                    <div
-                      onClick={() => { loadDeck(deck.deck_id); }}
-                      className="shadow-lg rounded-3xl w-[18rem] flex flex-col cursor-pointer transform transition-transform duration-200 hover:scale-105 relative"
-                    >
-                      {/* Top Colored Section */}
+                  return (
+                    <li key={deck.title} className="w-[260px]  flex-shrink-0 relative -mt-[3rem] ml-[4rem]">
                       <div
-                        className={`${assignedColor} rounded-t-3xl h-[4.5rem] w-full p-4 flex justify-between items-center relative`}
+                        onClick={() => handleSelect(deck)} // Select deck when clicked
+                        className={`shadow-lg rounded-3xl w-[260px] h-[350px] cursor-pointer transition-all transform ${
+                          isMiddle ? "scale-110 opacity-100" : "scale-95 opacity-70"
+                        } relative hover:scale-110 hover:opacity-90 hover:shadow-xl ease-in-out duration-300`}
                       >
-                        {/* Container for Buttons positioned at the top right */}
-                        <div className="absolute top-1 right-0 flex space-x-[-0.2rem] p-2">
+                        {/* Edit and Delete buttons */}
+                        <div className="absolute top-2 right-2 flex space-x-2 z-20">
                           {/* Edit Button */}
                           <button
-                            className="h-8 w-8 rounded-full flex items-center justify-center"
+                            className="h-8 w-8 rounded-full flex items-center justify-center bg-white p-1 shadow-md hover:bg-gray-100"
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsEditModalOpen(true);
                               setDeckId(deck.deck_id);
                             }}
                           >
-                            <FilePenLine className="w-5 h-5 transform text-[#354F52] transition-transform duration-200 hover:scale-125" />
+                            <FilePenLine className="w-5 h-5 text-[#354F52]" />
                           </button>
 
                           {/* Delete Button */}
                           <button
-                            className="h-8 w-8 rounded-full flex items-center justify-center"
+                            className="h-8 w-8 rounded-full flex items-center justify-center bg-white p-1 shadow-md hover:bg-gray-100"
                             onClick={(e) => {
                               e.stopPropagation();
                               deleteDeck(deck.deck_id);
                             }}
                           >
-                            <Minus className="text-red-800 w-8 h-8 transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
+                            <Minus className="w-5 h-5 text-red-800" />
                           </button>
                         </div>
-                      </div>
 
-                      {/* Bottom White Section */}
-                      <div className="bg-white rounded-b-3xl p-4 flex justify-center items-center h-[10rem]">
-                        <h1
-                          className="text-2xl text-[#354F52] font-bold uppercase text-center overflow-hidden text-ellipsis whitespace-nowrap"
-                          style={{
-                            fontFamily: '"Signika Negative", sans-serif',
-                          }}
-                        >
-                          {deck.title}
-                        </h1>
+                        {/* Top Colored Section */}
+                        <div
+                          className={`h-[35%] rounded-t-3xl transition-all ease-in-out ${
+                            isMiddle ? "bg-[#4F6F72]" : "bg-[#A4B7B5]"
+                          }`}
+                        ></div>
+
+                        {/* Bottom White Section */}
+                        <div className="h-[65%] bg-white rounded-b-3xl p-4 flex justify-center items-center">
+                          <h1
+                            className="text-xl text-[#354F52] font-bold uppercase text-center"
+                            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                          >
+                            {deck.title}
+                          </h1>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                );
-              })
-            )}
-            </ul>
-          </div>
-          <div className="fixed top-[6rem] right-[3.9rem]">
+                    </li>
+                  );
+                })}
+              </ul>
+              {/* Right Navigation Button */}
+              <button
+                onClick={handleNext}
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-gray-700 hover:text-gray-900 p-4 rounded-full bg-gray-200 hover:bg-gray-300 transition-all duration-300"
+              >
+                <ChevronRight size={40} />
+              </button>
+            </div>       
           </div>
         </div>
       ) : isReviewing ? (
