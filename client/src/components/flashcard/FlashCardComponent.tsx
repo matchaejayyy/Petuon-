@@ -14,6 +14,7 @@ const token = localStorage.getItem('token');
 
 const FlashcardComponent: React.FC = () => {
   const {
+    loadDecks,
     loadCards,
     flashcards,
     decks,

@@ -298,17 +298,20 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     setEditText("");
   }
 
-  async function saveEditing(task_id: string) {
+  async function saveEditing(task_id: string, due_at: Date) {
     setIsEditing(false);
     cancelEditing();
-
+    console.log(due_at)
+    console.log(due_at.getTime() == editTaskDateTime().getTime())
     if (
       editTaskDateTime() < new Date() &&
-      !(editTime === "--:-- --" && editDate == "mm/dd/yyyy")
+      !(editTime === "--:-- --" && editDate == "mm/dd/yyyy") &&
+      !(due_at.getTime() == editTaskDateTime().getTime())
     ) {
       alert("The due date and time cannot be in the past.");
       return;
     }
+
 
     await saveEditedTask(task_id, editText, editTaskDateTime());
   }
@@ -704,7 +707,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         </button>
 
                         <button
-                          onClick={() => saveEditing(task.task_id!)}
+                          onClick={() => saveEditing(task.task_id, task.dueAt)}
                           className="absolute right-[7rem] mt-[0rem] transform transition-transform duration-200 hover:scale-125 active:scale-90"
                         >
                           <Save size={20} />
