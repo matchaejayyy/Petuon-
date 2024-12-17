@@ -117,7 +117,7 @@ const DeckProgress: React.FC = () => {
 
       {/* Progress List with Individual Progress Bars */}
       <div className="space-y-4">
-        {progressItems.map((item, index) => (
+        {progressItems.slice(0, 2).map((item, index) => (
           <div key={index} className="bg-gray-100 rounded-lg p-3 mt-[-8.4rem] ml-[7rem] scale-95 w-[25rem]">
             <div className="flex items-center justify-between">
 
