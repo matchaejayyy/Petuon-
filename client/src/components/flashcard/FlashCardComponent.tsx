@@ -295,7 +295,14 @@ const FlashcardComponent: React.FC = () => {
           </div>
             {/* Added flashcard */}
             <div className="relative w-full flex items-center justify-center flex-col">
-            {decks.length === 0 ? (
+
+            {loadDecks && (
+              <h1 className="mt-[-1.5rem] text-[1.5rem] text-gray-500 font-normal" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+              Fetching Decks...
+              </h1>
+            )}
+            
+            {decks.length === 0 && !loadDecks ? (
               <div className="flex flex-col items-center mt-4 ml-[3rem]">
                 <img
                   src="src/assets/sleeping_penguin2.gif"
@@ -370,6 +377,7 @@ const FlashcardComponent: React.FC = () => {
                 {/* Navigation Buttons Below */}
                 <div className="mt-12 flex justify-center items-center space-x-5 ml-[3.5rem]">
                   {/* Left Button */}
+                  {!loadDecks && decks.length > 0 && (
                   <button
                     onClick={handlePrev}
                     className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex === 0 && highlightIndex === 0 ? '' : ''}`}
@@ -377,7 +385,7 @@ const FlashcardComponent: React.FC = () => {
                   >
                     <ChevronLeft size={40} />
                   </button>
-
+                  )}
                  
                     {/* Select Button */}
                     <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="flex justify-center">
@@ -394,6 +402,7 @@ const FlashcardComponent: React.FC = () => {
                     </div>
 
                   {/* Right Button */}
+                  {!loadDecks && decks.length > 0 && (
                   <button
                     onClick={handleNext}
                     className={`text-[#354F52] hover:text-gray-500 p-4 transition-all duration-300 transform hover:scale-125 ${currentIndex + visibleDecksCount >= decks.length && highlightIndex === visibleDecksCount - 1 ? '' : ''}`}
@@ -401,8 +410,9 @@ const FlashcardComponent: React.FC = () => {
                   >
                     <ChevronRight size={40} />
                   </button>
+                  )}
                 </div>
-
+                    
                   {/* Dots Navigation */}
                   <div className="-mt-[2] flex space-x-2 ml-[3rem]">
                     {Array.from({ length: totalGroups }).map((_, index) => (

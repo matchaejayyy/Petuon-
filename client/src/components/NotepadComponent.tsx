@@ -326,7 +326,7 @@ const NotepadComponent: React.FC = () => {
                 <h1 className="ml-[36rem] mt-[-4.5rem] text-2xl text-gray-500">
                   Fetching notes...
                 </h1>
-              ) : notes.length === 0  || filteredNotes.length === 0 && (
+              ) : notes.length == 0  && filteredNotes.length == 0 && (
                 <div className="ml-5 mt-4 text-center">
                   <img
                     src="src\assets\sleeping_penguin2.gif"
