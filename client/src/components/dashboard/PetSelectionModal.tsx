@@ -8,6 +8,8 @@ import duck from "../../assets/eggs/duck_egg.png";
 import penguin from "../../assets/eggs/penguin_egg.png";
 import unicorn from "../../assets/eggs/unicorn_egg.png";
 
+//babies
+
 
 import { usePets } from "../../hooks/usePets";
 import { v4 as uuidv4 } from "uuid";
@@ -15,10 +17,9 @@ import { Pet } from "../../types/PetTypes";
 
 interface PetSelectionModalProps {
   onClose: () => void;
-  onPetAdded: (petData: any) => void 
 }
 
-const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAdded }) => {
+const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose}) => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [petName, setPetName] = useState<string>("");
   const { addPet } = usePets();
@@ -41,7 +42,7 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAd
     penguin: penguin,
     unicorn: unicorn,
   };
-
+  
   const handlePetSelection = (pet: string) => {
     setSelectedPet(pet);
   };
@@ -70,7 +71,6 @@ const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose,  onPetAd
 
     try {
       await addPet(petData); // Add pet data to backend
-      onPetAdded(petData)
       onClose(); // Close modal after successful submission
     } catch (error) {
       console.error("Error adding pet:", error);
