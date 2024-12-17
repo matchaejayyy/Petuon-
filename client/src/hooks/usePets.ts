@@ -35,7 +35,7 @@ export const usePets = () => {
       }));
       // Set the fetched data into state
       setPets(petsWithDateTime);
-      setHasPet(response.data.length == 1);
+      setHasPet(response.data.length > 0);
     } catch (error: any) {
       console.error("Error fetching pets:", error);
       setError("Failed to fetch pets. Please try again later.");
@@ -58,20 +58,21 @@ export const usePets = () => {
       setError("User not authenticated. No token found.");
       return;
     }
+
     try {
       const petWithUserId = {
         ...newPet,
       };
 
       console.log("Inserting pet data:", petWithUserId);
-      
+
       await axios.post("http://localhost:3002/pets/insertPet", petWithUserId, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setPets((prevPets) => [...prevPets, newPet]);
-     
+
+      fetchPets(); // Refresh the pet list after adding
     } catch (error: any) {
       console.error("Error adding pet:", error);
       setError("Failed to add pet. Please try again later.");

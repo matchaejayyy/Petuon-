@@ -73,7 +73,7 @@ const Avatar = () => {
       )}
    
       {/* Top-right section for Bell and Profile */}
-      <div className="fixed right-12 top-9 hidden items-center space-x-4 lg:flex">
+      <div className="fixed right-12 top-9 hidden items-center space-x-4 lg:flex z-50">
         {/* Bell Icon */}
         <Bell className="h-8 w-8 cursor-pointer text-[#354F52]" />
         {/* Profile Icon with Dropdown */}

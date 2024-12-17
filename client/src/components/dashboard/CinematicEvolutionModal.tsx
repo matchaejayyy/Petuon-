@@ -1,5 +1,36 @@
 import React, { useEffect, useState } from "react";
 
+// Import pet evolution images and GIFs
+import evolution1Capybara from '../../assets/pets/capybara/evolution_1.png';
+import evolution2Capybara from '../../assets/pets/capybara/evolution_2.gif';
+import evolution3Capybara from '../../assets/pets/capybara/evolution_3.gif';
+import evolution4Capybara from '../../assets/pets/capybara/evolution_4.gif';
+
+import evolution1Cat from '../../assets/pets/cat/evolution_1.png';
+import evolution2Cat from '../../assets/pets/cat/evolution_2.gif';
+import evolution3Cat from '../../assets/pets/cat/evolution_3.gif';
+import evolution4Cat from '../../assets/pets/cat/evolution_4.gif';
+
+import evolution1Dinosaur from '../../assets/pets/dinosaur/evolution_1.png';
+import evolution2Dinosaur from '../../assets/pets/dinosaur/evolution_2.gif';
+import evolution3Dinosaur from '../../assets/pets/dinosaur/evolution_3.gif';
+import evolution4Dinosaur from '../../assets/pets/dinosaur/evolution_4.gif';
+
+import evolution1Duck from '../../assets/pets/duck/evolution_1.png';
+import evolution2Duck from '../../assets/pets/duck/evolution_2.gif';
+import evolution3Duck from '../../assets/pets/duck/evolution_3.gif';
+import evolution4Duck from '../../assets/pets/duck/evolution_4.gif';
+
+import evolution1Penguin from '../../assets/pets/penguin/evolution_1.png';
+import evolution2Penguin from '../../assets/pets/penguin/evolution_2.gif';
+import evolution3Penguin from '../../assets/pets/penguin/evolution_3.gif';
+import evolution4Penguin from '../../assets/pets/penguin/evolution_4.gif';
+
+import evolution1Unicorn from '../../assets/pets/unicorn/evolution_1.png';
+import evolution2Unicorn from '../../assets/pets/unicorn/evolution_2.gif';
+import evolution3Unicorn from '../../assets/pets/unicorn/evolution_3.gif';
+import evolution4Unicorn from '../../assets/pets/unicorn/evolution_4.gif';
+
 interface CinematicEvolutionModalProps {
   pet: any;
   onClose: () => void;
@@ -28,11 +59,42 @@ const CinematicEvolutionModal: React.FC<CinematicEvolutionModalProps> = ({ pet, 
     return () => clearTimeout(timer);
   }, []);
 
+  // Function to return the appropriate evolution image/GIF based on pet type and evolution rank
   const getEvolutionGif = (petType: string, evolutionRank: number): string => {
-    if (evolutionRank === 1) {
-      return `src/assets/pets/${petType}/evolution_1.png`;
+    switch (petType) {
+      case 'capybara':
+        if (evolutionRank === 1) return evolution1Capybara;
+        if (evolutionRank === 2) return evolution2Capybara;
+        if (evolutionRank === 3) return evolution3Capybara;
+        return evolution4Capybara;
+      case 'cat':
+        if (evolutionRank === 1) return evolution1Cat;
+        if (evolutionRank === 2) return evolution2Cat;
+        if (evolutionRank === 3) return evolution3Cat;
+        return evolution4Cat;
+      case 'dinosaur':
+        if (evolutionRank === 1) return evolution1Dinosaur;
+        if (evolutionRank === 2) return evolution2Dinosaur;
+        if (evolutionRank === 3) return evolution3Dinosaur;
+        return evolution4Dinosaur;
+      case 'duck':
+        if (evolutionRank === 1) return evolution1Duck;
+        if (evolutionRank === 2) return evolution2Duck;
+        if (evolutionRank === 3) return evolution3Duck;
+        return evolution4Duck;
+      case 'penguin':
+        if (evolutionRank === 1) return evolution1Penguin;
+        if (evolutionRank === 2) return evolution2Penguin;
+        if (evolutionRank === 3) return evolution3Penguin;
+        return evolution4Penguin;
+      case 'unicorn':
+        if (evolutionRank === 1) return evolution1Unicorn;
+        if (evolutionRank === 2) return evolution2Unicorn;
+        if (evolutionRank === 3) return evolution3Unicorn;
+        return evolution4Unicorn;
+      default:
+        return '';
     }
-    return `src/assets/pets/${petType}/evolution_${evolutionRank}.gif`;
   };
 
   return (
