@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";

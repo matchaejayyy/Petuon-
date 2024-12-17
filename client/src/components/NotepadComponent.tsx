@@ -180,7 +180,6 @@ const NotepadComponent: React.FC = () => {
 
     const formatContent = (content: string) => {
       // If content is an object, convert it to a string or access the correct property
-      console.log(content)
       if (typeof content === 'object') {
         content = JSON.stringify(content); // or access a specific property like content.text
       }

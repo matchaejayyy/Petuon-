@@ -27,7 +27,6 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
       };
       const updatedFlashcards = [...flashcards, newFlashcard];
       setFlashcards(updatedFlashcards);
-      console.log(`question: ${question}, answer: ${answer}, flashcardid: ${flashcard_id}, uniqueId: ${unique_flashcard_id}`);
       try {
         const flashcardData: Flashcard = {
           question, answer, flashcard_id, unique_flashcard_id,

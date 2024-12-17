@@ -70,7 +70,6 @@ const DeckProgress: React.FC = () => {
             completedFlashcards += flashcards.filter((flashcard: any) => flashcard.progress === true).length;
           }
           const overallProgress = totalFlashcards > 0 ? (completedFlashcards / totalFlashcards) * 100 : 0;
-          console.log(overallProgress)
 
          setProgress(Math.round(overallProgress)); 
     
