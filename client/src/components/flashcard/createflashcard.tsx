@@ -81,7 +81,7 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
         <div className="flex items-center justify-between">
           <button
             onClick={createFlashcard}
-            className="bg-[#52796F] text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center hover:bg-[#354F52] transition-transform duration-100 hover:scale-105 "
+            className="bg-[#354F52] text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center hover:bg-[#52796F] transition-transform duration-100 hover:scale-105 "
           >
             <ListPlus className="w-5 h-5 mr-2" />
             Add Flashcard
