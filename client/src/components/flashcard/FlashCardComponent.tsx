@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
@@ -13,7 +13,6 @@ const token = localStorage.getItem('token');
 
 const FlashcardComponent: React.FC = () => {
   const {
-    loadDecks,
     loadCards,
     flashcards,
     decks,
@@ -81,15 +80,6 @@ const FlashcardComponent: React.FC = () => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent, flashcardId: string, newValue: string, field: "question" | "answer") => {
-    if (e.key === 'Enter') {
-      if (field === "question") {
-        handleSaveQuestion(flashcardId, newValue);
-      } else if (field === "answer") {
-        handleSaveAnswer(flashcardId, newValue);
-      }
-    }
-  };
   const [currentIndex, setCurrentIndex] = useState(0);
   const visibleDecksCount = 3; // Define the number of decks to be visible at a time
   const [highlightIndex, setHighlightIndex] = useState(0); // Define highlightIndex state
@@ -168,30 +158,60 @@ const FlashcardComponent: React.FC = () => {
     
           {/* Main Content */}
           <div className="flex flex-col w-full items-start p-4 -mt-1 gap-4">
-            {/* Question Field */}
-            <div className="flex flex-col w-full">
-              <label className="text-[#354F52] text-sm ml-1 mb-1">Question</label>
-              <input
-                type="text"
-                className="bg-gray-200 text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
-                value={flashcard.question}
-                readOnly
-                placeholder="QUESTION"
-              />
-            </div>
+              {/* Question Field */}
+              <div className="flex flex-col w-full">
+                <label className="text-[#354F52] text-sm ml-1 mb-1">Question</label>
+                {editingQuestion === flashcard.unique_flashcard_id ? (
+                  <input
+                    type="text"
+                    className="bg-white border-2 border-[#3498db] text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
+                    defaultValue={flashcard.question}
+                    onBlur={(e) => handleSaveQuestion(flashcard.unique_flashcard_id, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSaveQuestion(flashcard.unique_flashcard_id, e.currentTarget.value);
+                      }
+                    }}
+                    autoFocus
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="bg-gray-200 text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db] cursor-pointer"
+                    value={flashcard.question}
+                    onClick={() => handleEditQuestion(flashcard.unique_flashcard_id)}
+                    readOnly
+                  />
+                )}
+              </div>
 
-            {/* Answer Field */}
-            <div className="flex flex-col w-full">
-              <label className="text-[#354F52] text-sm ml-1 mb-1">Answer</label>
-              <input
-                type="text"
-                className="bg-gray-200 text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
-                value={flashcard.answer}
-                readOnly
-                placeholder="ANSWER"
-              />
+              {/* Answer Field */}
+              <div className="flex flex-col w-full">
+                <label className="text-[#354F52] text-sm ml-1 mb-1">Answer</label>
+                {editingAnswer === flashcard.unique_flashcard_id ? (
+                  <input
+                    type="text"
+                    className="bg-white border-2 border-[#3498db] text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
+                    defaultValue={flashcard.answer}
+                    onBlur={(e) => handleSaveAnswer(flashcard.unique_flashcard_id, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSaveAnswer(flashcard.unique_flashcard_id, e.currentTarget.value);
+                      }
+                    }}
+                    autoFocus
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    className="bg-gray-200 text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db] cursor-pointer"
+                    value={flashcard.answer}
+                    onClick={() => handleEditAnswer(flashcard.unique_flashcard_id)}
+                    readOnly
+                  />
+                )}
+              </div>
             </div>
-          </div>
           </div>
         ))}
       </div>
