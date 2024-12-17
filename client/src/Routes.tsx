@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import LandingPage from '../src/pages/LandingPage';
+import LandingPage from './pages/LandingPage';
 import Dashboard from '../src/pages/DashboardPage';
 import Calendar from '../src/pages/CalendarPage';
 import Flashcard from '../src/pages/FlashCardPage';
