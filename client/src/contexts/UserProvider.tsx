@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { createClient } from "@supabase/supabase-js";
 import jwt_decode from "jwt-decode";
 import { User } from "@supabase/supabase-js";
-import { useToken } from "../hooks/UseToken"; // Import the custom hook
 
 interface DecodedToken {
   exp: number; // Expiration time of the JWT
@@ -29,7 +28,6 @@ const UserContext = createContext<UserContextType>({} as UserContextType);
 
 export const UserProvider = ({ children }: Props) => {
   const navigate = useNavigate();
-  const { fetchTokenFromDatabase } = useToken(); // Use the function from the hook
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
@@ -40,26 +38,22 @@ export const UserProvider = ({ children }: Props) => {
 
         if (session) {
           setUser(session.user);
-          
-          // Await the fetchTokenFromDatabase function here and handle its result
-          const fetchedToken = await fetchTokenFromDatabase(session.user.id);
-          
-          // Make sure fetchedToken is not void
-          if (fetchedToken) {
-            const decodedToken = jwt_decode<DecodedToken>(fetchedToken);
+          setToken(session.access_token);
+        } else {
+          const savedToken = localStorage.getItem("token");
+          if (savedToken) {
+            // Decode token to check expiry
+            const decodedToken = jwt_decode<DecodedToken>(savedToken); // Typecast as DecodedToken
             const currentTime = Math.floor(Date.now() / 1000);
+
+            // If token is expired, log out user
             if (decodedToken.exp < currentTime) {
-              console.log("Token has expired.");
+              localStorage.removeItem("token");
               setToken(null);
             } else {
-              setToken(fetchedToken);
+              setToken(savedToken);
             }
-          } else {
-            console.log("No token found in the database.");
-            setToken(null);
           }
-        } else {
-          setToken(null);
         }
       } catch (error) {
         console.error("Error initializing session:", error);
@@ -77,7 +71,7 @@ export const UserProvider = ({ children }: Props) => {
     return () => {
       data?.subscription.unsubscribe();
     };
-  }, [navigate, fetchTokenFromDatabase]); // Ensure fetchTokenFromDatabase is in dependencies
+  }, [navigate]);
 
   const logout = async () => {
     await supabase.auth.signOut();

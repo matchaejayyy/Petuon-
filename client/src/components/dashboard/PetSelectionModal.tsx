@@ -22,7 +22,7 @@ interface PetSelectionModalProps {
 const PetSelectionModal: React.FC<PetSelectionModalProps> = ({ onClose}) => {
   const [selectedPet, setSelectedPet] = useState<string>("");
   const [petName, setPetName] = useState<string>("");
-  const { addPet, fetchPets } = usePets();
+  const { addPet } = usePets();
 
 
   const petColors: Record<string, string> = {
