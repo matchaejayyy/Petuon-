@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Deck, Flashcard } from "../types/FlashCardTypes";
 import { v4 as uuidv4 } from "uuid";
@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 const token = localStorage.getItem("token");
-
+//main flashcard hooks
 export const useFlashcardHooks = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
@@ -226,4 +226,135 @@ export const useFlashcardHooks = () => {
     handleUpdateDeckTitle
 
   };
+};
+
+// quiz flashcard hooks
+
+const correctSound = new URL("../../assets/soundEffects/correct_sound.mp3", import.meta.url).href;
+const incorrectSound = new URL("../../assets/soundEffects/incorrect_sound.mp3", import.meta.url).href;
+
+export const useQuizState = (flashcards: Flashcard[], setTempFlashcards: React.Dispatch<React.SetStateAction<Flashcard[]>>, setOnFirstPage: React.Dispatch<React.SetStateAction<boolean>>) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [userInput, setUserInput] = useState("");
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [quizState, setQuizState] = useState<"review" | "fillBlanks" | "finished">("review");
+  const [userScore, setUserScore] = useState(0);
+  const [attempts, setAttempts] = useState(3);
+  const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const correctAudio = new Audio(correctSound);
+  const incorrectAudio = new Audio(incorrectSound);
+
+  useEffect(() => {
+    if (flashcards?.length) {
+      setTempFlashcards(shuffleArray(flashcards));
+    }
+  }, [flashcards]);
+
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    return [...array].sort(() => Math.random() - 0.5);
+  };
+
+  const resetFlashcardState = () => {
+    setShowAnswer(false);
+    setUserInput("");
+    setAnswerStatus(null);
+    setAttempts(3);
+  };
+
+  const handleNextFlashcard = () => {
+    if (currentIndex < flashcards.length - 1) {
+      setCurrentIndex((prev) => prev + 1);
+      resetFlashcardState();
+    } else {
+      setQuizState("finished");
+    }
+  };
+
+  const handlePreviousFlashcard = () => {
+    if (currentIndex > 0) {
+      setCurrentIndex((prev) => prev - 1);
+      resetFlashcardState();
+    }
+  };
+
+  const handleCheckAnswer = async () => {
+    const userAnswer = userInput.trim().toLowerCase();
+    const correctAnswer = flashcards[currentIndex]?.answer.trim().toLowerCase();
+
+    if (userAnswer === correctAnswer) {
+      toast.success("Correct answer! Well done!");
+      correctAudio.play();
+      setUserScore((prev) => prev + 1);
+      setAnswerStatus("correct");
+      await updateProgress(flashcards[currentIndex].unique_flashcard_id);
+      handleNextFlashcard();
+    } else {
+      setAttempts((prev) => prev - 1);
+      setAnswerStatus("incorrect");
+      incorrectAudio.play();
+
+      if (attempts <= 1) {
+        toast.error("No more attempts left. Moving to the next question.");
+        handleNextFlashcard();
+      } else {
+        toast.warn(`Incorrect answer. ${attempts - 1} ${attempts - 1 === 1 ? 'attempt' : 'attempts'} left.`);
+      }
+    }
+    setUserInput("");
+  };
+
+  const updateProgress = async (uniqueFlashcardId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("No token found");
+
+      const response = await axios.put(
+        `http://localhost:3002/cards/updateFlashcardProgress/${uniqueFlashcardId}`,
+        { progress: true },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status !== 200) {
+        console.error("Unexpected response status", response.status);
+      }
+    } catch (error) {
+      console.error("Failed to update progress", error);
+    }
+  };
+
+  return {
+    currentIndex,
+    userInput,
+    showAnswer,
+    quizState,
+    userScore,
+    attempts,
+    answerStatus,
+    inputRef,
+    handleNextFlashcard,
+    handlePreviousFlashcard,
+    handleCheckAnswer,
+    resetFlashcardState,
+    setShowAnswer,
+    setQuizState,
+    setOnFirstPage,
+    setCurrentIndex,
+    setUserInput,
+    setUserScore,
+    setAttempts,
+    setAnswerStatus,
+  };
+};
+
+export const useFlashcardUtils = () => {
+  const [tempFlashcards, setTempFlashcards] = useState<Flashcard[]>([]);
+
+  const shuffleFlashcards = (flashcards: Flashcard[]) => {
+    const shuffled = [...flashcards].sort(() => Math.random() - 0.5);
+    setTempFlashcards(shuffled);
+  };
+
+  return { tempFlashcards, shuffleFlashcards, setTempFlashcards };
 };

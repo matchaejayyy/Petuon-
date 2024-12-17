@@ -6,8 +6,6 @@ import { Minus, FilePenLine, ChevronRight, ChevronLeft } from "lucide-react";
 import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
-import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
 
 const token = localStorage.getItem('token');
 
@@ -200,7 +198,6 @@ const FlashcardComponent: React.FC = () => {
  
   return (
     <>
-     <ToastContainer />
      {onFirstPage ? (
         <div className="flex flex-col items-center mt-[-3rem] mr-[7rem] ">
           <div className=" h-24 w-full mt-20 flex items-center "> 
