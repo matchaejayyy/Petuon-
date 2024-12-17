@@ -62,6 +62,11 @@ import unicornEvol2Eating from '../../assets/pets/unicorn/evolution_2_eating.gif
 import unicornEvol3Eating from '../../assets/pets/unicorn/evolution_3_eating.gif';
 import unicornEvol4Eating from '../../assets/pets/unicorn/evolution_4_eating.gif';
 
+//background
+import beachBackground from '../../assets/backgrounds/beach_background.gif'
+import hillBackground from '../../assets/backgrounds/hill_background.gif'
+import spaceBackground from '../../assets/backgrounds/space_background.gif'
+
 
 
 
@@ -80,6 +85,9 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [tempGif, setTempGif] = useState<string | null>(null); // State for temporary GIF display
   const [isFeeding, setIsFeeding] = useState(false); // State for button cooldown
   const { pets, loading, error, fetchPets, setPets } = usePets();
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
+  const backgrounds = [beachBackground, hillBackground, spaceBackground];
+
 
   useEffect(() => {
     fetchPets();
@@ -88,6 +96,15 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const handleClaimPet = () => {
     setShowModal(true);
   };
+
+  // Function to change the background
+const changeBackground = (direction: "left" | "right") => {
+  setBackgroundIndex((prevIndex) =>
+    direction === "left"
+      ? (prevIndex - 1 + backgrounds.length) % backgrounds.length
+      : (prevIndex + 1) % backgrounds.length
+  );
+};
 
   const handleFeedPet = async (petData: any) => {
     if (isFeeding) {
@@ -279,11 +296,8 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
 
   return (
     <div
-      className={`w-full h-full rounded-xl border-black flex flex-col bg-cover bg-center transition-all duration-500 ${
-        petData
-          ? "bg-[url('src/assets/backgrounds/beach_background.png')]"
-          : "bg-[url('src/assets/backgrounds/claimed_background.png')]"
-      }`}
+      style={{ backgroundImage: `url(${backgrounds[backgroundIndex]})` }}
+      className="w-full h-full rounded-xl border-black flex flex-col bg-cover bg-center transition-all duration-500"
     >
       {petData ? (
         <>
@@ -319,17 +333,33 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
             </div>
           </div>
           <div className="flex justify-center space-x-4 mt-4">
-            <button
-              className={`relative w-40 h-10 bg-red-600 text-black text-2xl font-bold rounded-md border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
-                active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] 
-                transition-transform duration-75
-                ${isFeeding ? "opacity-50 cursor-not-allowed" : ""}`}
-              onClick={() => handleFeedPet(petData)}
-              disabled={isFeeding}
-            >
-              Feed
-            </button>
-          </div>
+  <button
+    className="relative w-20 h-10 bg-gray-500 text-black font-bold rounded-md border-4 border-black shadow-md 
+              active:translate-y-1 active:shadow-none transition-transform duration-75"
+    onClick={() => changeBackground("left")}
+  >
+    Left
+  </button>
+
+  <button
+    className={`relative w-40 h-10 bg-red-600 text-black text-2xl font-bold rounded-md border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] 
+              active:translate-y-1 active:shadow-[0px_0px_0px_0px_rgba(0,0,0,1)] 
+              transition-transform duration-75 ${isFeeding ? "opacity-50 cursor-not-allowed" : ""}`}
+    onClick={() => handleFeedPet(petData)}
+    disabled={isFeeding}
+  >
+    Feed
+  </button>
+
+  <button
+    className="relative w-20 h-10 bg-gray-500 text-black font-bold rounded-md border-4 border-black shadow-md 
+              active:translate-y-1 active:shadow-none transition-transform duration-75"
+    onClick={() => changeBackground("right")}
+  >
+    Right
+  </button>
+</div>
+
         </>
       ) : (
         <button
