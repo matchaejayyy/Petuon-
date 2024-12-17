@@ -510,13 +510,13 @@ const FlashcardComponent: React.FC = () => {
 
                 </div>
               </div>
-              <button
+              {/* <button
                //  onClick={handleStartNewQuiz}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
                 className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
               >
                 Start Quiz
-              </button>
+              </button> */}
  
             </div>
           </div>
