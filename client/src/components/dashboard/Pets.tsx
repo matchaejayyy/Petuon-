@@ -36,6 +36,33 @@ import unicornEvol2 from '../../assets/pets/unicorn/evolution_2.gif';
 import unicornEvol3 from '../../assets/pets/unicorn/evolution_3.gif';
 import unicornEvol4 from '../../assets/pets/unicorn/evolution_4.gif';
 
+// Import the eating GIFs for evolution ranks 2-4
+import capybaraEvol2Eating from '../../assets/pets/capybara/evolution_2_eating.gif';
+import capybaraEvol3Eating from '../../assets/pets/capybara/evolution_3_eating.gif';
+import capybaraEvol4Eating from '../../assets/pets/capybara/evolution_4_eating.gif';
+
+import catEvol2Eating from '../../assets/pets/cat/evolution_2_eating.gif';
+import catEvol3Eating from '../../assets/pets/cat/evolution_3_eating.gif';
+import catEvol4Eating from '../../assets/pets/cat/evolution_4_eating.gif';
+
+import dinosaurEvol2Eating from '../../assets/pets/dinosaur/evolution_2_eating.gif';
+import dinosaurEvol3Eating from '../../assets/pets/dinosaur/evolution_3_eating.gif';
+import dinosaurEvol4Eating from '../../assets/pets/dinosaur/evolution_4_eating.gif';
+
+import duckEvol2Eating from '../../assets/pets/duck/evolution_2_eating.gif';
+import duckEvol3Eating from '../../assets/pets/duck/evolution_3_eating.gif';
+import duckEvol4Eating from '../../assets/pets/duck/evolution_4_eating.gif';
+
+import penguinEvol2Eating from '../../assets/pets/penguin/evolution_2_eating.gif';
+import penguinEvol3Eating from '../../assets/pets/penguin/evolution_3_eating.gif';
+import penguinEvol4Eating from '../../assets/pets/penguin/evolution_4_eating.gif';
+
+import unicornEvol2Eating from '../../assets/pets/unicorn/evolution_2_eating.gif';
+import unicornEvol3Eating from '../../assets/pets/unicorn/evolution_3_eating.gif';
+import unicornEvol4Eating from '../../assets/pets/unicorn/evolution_4_eating.gif';
+
+
+
 
 
 const token = localStorage.getItem("token");
@@ -65,28 +92,28 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
     if (isFeeding) {
       return; // Prevent feeding if cooldown is active
     }
-
+  
     if (petData.pet_currency >= 100) {
       setIsFeeding(true); // Start cooldown
-
+  
       const updatedPet = { ...petData };
-
+  
       if (updatedPet.pet_evolution_rank >= 4) {
         alert("Your pet has reached its final evolution rank! It cannot be fed anymore.");
         setIsFeeding(false); // Reset cooldown
         return;
       }
-
+  
       if (updatedPet.pet_evolution_rank > 1) {
-        // Display eating GIF
-        const eatingGif = `src/assets/pets/${updatedPet.pet_type}/evolution_${updatedPet.pet_evolution_rank}_eating.gif`;
+        // Only show eating GIF if the evolution rank is greater than 1
+        const eatingGif = getEatingGif(updatedPet.pet_type, updatedPet.pet_evolution_rank);
         setTempGif(eatingGif);
-
+  
         setTimeout(() => {
           setTempGif(null);
         }, 2000); // Reset to original GIF after 2 seconds
       }
-
+  
       if (updatedPet.pet_progress_bar >= 100) {
         updatedPet.pet_progress_bar = 0;
         updatedPet.pet_evolution_rank += 1; // Update evolution rank here
@@ -96,13 +123,13 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
             : updatedPet.pet_evolution_rank === 3
             ? 200
             : 150;
-
+  
         setShowEvolutionCinematic(true); // Trigger evolution cinematic
       } else {
         updatedPet.pet_currency -= 100;
         updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100);
       }
-
+  
       try {
         await axios.patch(
           `http://localhost:3002/pets/updatePet/${updatedPet.pet_id}`,
@@ -118,11 +145,11 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
             },
           }
         );
-
+  
         setPets((prevPets) =>
           prevPets.map((pet) => (pet.pet_id === updatedPet.pet_id ? updatedPet : pet))
         );
-
+  
         onPetUpdated(updatedPet);
       } catch (error) {
         console.error("Error updating pet data:", error);
@@ -135,6 +162,51 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
       alert("Not enough currency to feed the pet.");
     }
   };
+  
+  // Function to get the appropriate eating GIF
+  const getEatingGif = (petType: string, evolutionRank: number): string => {
+    switch (petType) {
+      case "capybara":
+        return evolutionRank === 2
+          ? capybaraEvol2Eating
+          : evolutionRank === 3
+          ? capybaraEvol3Eating
+          : capybaraEvol4Eating;
+      case "cat":
+        return evolutionRank === 2
+          ? catEvol2Eating
+          : evolutionRank === 3
+          ? catEvol3Eating
+          : catEvol4Eating;
+      case "dinosaur":
+        return evolutionRank === 2
+          ? dinosaurEvol2Eating
+          : evolutionRank === 3
+          ? dinosaurEvol3Eating
+          : dinosaurEvol4Eating;
+      case "duck":
+        return evolutionRank === 2
+          ? duckEvol2Eating
+          : evolutionRank === 3
+          ? duckEvol3Eating
+          : duckEvol4Eating;
+      case "penguin":
+        return evolutionRank === 2
+          ? penguinEvol2Eating
+          : evolutionRank === 3
+          ? penguinEvol3Eating
+          : penguinEvol4Eating;
+      case "unicorn":
+        return evolutionRank === 2
+          ? unicornEvol2Eating
+          : evolutionRank === 3
+          ? unicornEvol3Eating
+          : unicornEvol4Eating;
+      default:
+        return "";
+    }
+  };
+  
 
   const getEvolutionGif = (petType: string, evolutionRank: number): string => {
     if (tempGif) {
