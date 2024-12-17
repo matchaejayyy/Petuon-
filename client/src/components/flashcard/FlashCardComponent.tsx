@@ -8,6 +8,7 @@ import axios from "axios";
 import Modal from "../modal";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import sleepingPenguin from "../../assets/sleeping_penguin2.gif"
 
 const token = localStorage.getItem('token');
 
@@ -305,7 +306,7 @@ const FlashcardComponent: React.FC = () => {
             {decks.length === 0 && !loadDecks ? (
               <div className="flex flex-col items-center mt-4 ml-[3rem]">
                 <img
-                  src="src/assets/sleeping_penguin2.gif"
+                  src={sleepingPenguin}
                   alt="No decks available"
                   className="h-[15rem] w-[15rem]"
                 />

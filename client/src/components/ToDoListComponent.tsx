@@ -20,6 +20,7 @@ import { useToDoList } from "../hooks/useToDoList";
 
 // Dashboard page (compact) and ToDolist page (default) display
 import { ToDoListProps } from "../types/ToDoListTypes";
+import sleepingPenguin from "../assets/sleeping_penguin2.gif"
 import React from "react";
 
 const ToDoListComponent: React.FC<ToDoListProps> = ({
@@ -565,7 +566,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             ) : display.length === 0 ? (
               <>
                 <img
-                  src="src\assets\sleeping_penguin2.gif"
+                  src={sleepingPenguin}
                   alt="No tasks available"
                   className="mx-auto mt-[12rem] h-[10rem] w-[10rem]"
                 />
@@ -805,7 +806,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             filterTasks.length === 0 && (
               <>
                 <img
-                  src="src\assets\sleeping_penguin2.gif"
+                  src={sleepingPenguin}
                   alt="No tasks available"
                   className="mx-auto mt-[2rem] h-[10rem] w-[10rem]"
                 />

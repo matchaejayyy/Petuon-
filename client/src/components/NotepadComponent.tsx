@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useNotepad } from "../hooks/useNotepad";
 import { motion } from "framer-motion";
 import parse from 'html-react-parser';
+import sleepingPenguin from "../assets/sleeping_penguin2.gif"
 
 const NotepadComponent: React.FC = () => {
     const [currentTitle, setCurrentTitle] = useState<string>("");
@@ -329,7 +330,7 @@ const NotepadComponent: React.FC = () => {
               ) : notes.length == 0  && filteredNotes.length == 0 && (
                 <div className="ml-5 mt-4 text-center">
                   <img
-                    src="src\assets\sleeping_penguin2.gif"
+                    src={sleepingPenguin}
                     alt="No notes available"
                     className="ml-[34rem] mt-[-13rem] h-[15rem] w-[15rem]"
                   />
