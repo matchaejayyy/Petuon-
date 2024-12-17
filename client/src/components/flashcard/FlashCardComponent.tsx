@@ -144,7 +144,7 @@ const FlashcardComponent: React.FC = () => {
         <div
           key={flashcard.unique_flashcard_id}
           style={{ fontFamily: '"Signika Negative", sans-serif' }}
-          className="relative flex flex-col w-full sm:w-[40rem] h-[15rem] bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-100 mx-auto"
+          className="relative flex flex-col w-full sm:w-[40rem] h-[15rem] md bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-100 mx-auto"
         >
           {/* Top Colored Section */}
           <div className="bg-[#354F52] h-[20%] w-full rounded-t-2xl  flex items-center justify-between px-4 relative">
@@ -304,7 +304,7 @@ const FlashcardComponent: React.FC = () => {
                 />
                 <p
                   style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                  className="mt-4 text-2xl text-gray-500"
+                  className="-mt-5 text-2xl text-gray-500"
                 >
                   No Decks Available
                 </p>
