@@ -8,11 +8,12 @@ import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import LogInOut from "../components/logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useToken } from "../hooks/UseToken";
 
 const LoginPage: React.FC<Props> = () => {
-  const [error] = useState<string | null>(null); // Track error message
+  const [loading, setLoading] = useState(false); // Track loading state
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const { setToken, fetchTokenFromDatabase } = useToken(); // Use the hook
 
   const {
     register,
@@ -21,6 +22,7 @@ const LoginPage: React.FC<Props> = () => {
   } = useForm<LoginFormsInputs>();
 
   const handleLogin = async (form: LoginFormsInputs) => {
+
     setLoading(true)
     try {
         const response = await axios.post("http://localhost:3002/login/userLogin", {
@@ -29,36 +31,42 @@ const LoginPage: React.FC<Props> = () => {
         });
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
+
           toast.success("Login successful! Redirecting to dashboard...");
           setTimeout(() => {
             navigate("/dashboard");
           }, 2000);
-        } 
+        } else {
+          toast.error("Failed to retrieve token. Please try again.");
+        }
+      } else {
+        toast.error("Login failed. User ID not returned.");
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Error connecting to the server.");
+        toast.error(error.response?.data?.message || "Error connecting to the server.");
       } else {
+
         alert("An unexpected error occurred.");
       } 
     } finally {
       setLoading(false)
+
     }
   };
 
-  
-
   return (
     <>
-     <ToastContainer
-        position="top-center" // This makes the toast appear at the top center
-        autoClose={3000} // Adjust the auto-close time if needed
-        hideProgressBar={false} // Show the progress bar
-        newestOnTop={true} // New toasts appear at the top of the stack
-        closeOnClick // Close on click
-        rtl={false} // Set to true for right-to-left layout
+      <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
         pauseOnFocusLoss
         draggable
       />
+
     {loading && (
       
       <LogInOut/>
@@ -130,16 +138,27 @@ const LoginPage: React.FC<Props> = () => {
                   <Link
                     to="/register"
                     className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+
                   >
-                    Sign up
-                  </Link>
-                </p>
-              </div>
-            </form>
+                    Log in
+                  </button>
+                </div>
+                <div className="flex items-center justify-center">
+                  <p className="text-sm font-light text-white">
+                    Don’t have an account yet?{" "}
+                    <Link
+                      to="/register"
+                      className="text-white font-medium hover:underline"
+                    >
+                      Sign up
+                    </Link>
+                  </p>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </>
   );
 };

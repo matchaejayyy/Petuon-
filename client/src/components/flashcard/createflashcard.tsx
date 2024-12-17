@@ -61,6 +61,7 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
               type="text"
               value={question}
               onChange={handleQuestionChange}
+              style={{ fontFamily: '"Signika Negative", sans-serif' }} 
               className="mt-2 p-4 rounded-lg border-2 border-[#ccc] focus:ring-2 focus:ring-[#52796F] focus:border-transparent bg-[#f0f4f1] placeholder-[#9b9b9b] text-[#354F52] transition-transform duration-200 hover:scale-105"
               placeholder="Enter your question"
             />
@@ -71,6 +72,7 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
               type="text"
               value={answer}
               onChange={handleAnswerChange}
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
               className="mt-2 p-4 rounded-lg border-2 border-[#ccc] focus:ring-2 focus:ring-[#52796F] focus:border-transparent bg-[#f0f4f1] placeholder-[#9b9b9b] text-[#354F52] transition-transform duration-200 hover:scale-105"
               placeholder="Enter the answer"
             />
@@ -81,7 +83,7 @@ export const CreateFlashcard: React.FC<CreateFlashcardProps> = ({ flashcards, se
         <div className="flex items-center justify-between">
           <button
             onClick={createFlashcard}
-            className="bg-[#52796F] text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center hover:bg-[#354F52] transition-transform duration-100 hover:scale-105 "
+            className="bg-[#354F52] text-white font-semibold py-2 px-4 rounded-lg shadow-lg flex items-center hover:bg-[#52796F] transition-transform duration-100 hover:scale-105 "
           >
             <ListPlus className="w-5 h-5 mr-2" />
             Add Flashcard
