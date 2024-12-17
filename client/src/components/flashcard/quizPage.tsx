@@ -148,7 +148,13 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
                 : "Loading..."}
             </h2>
           </div>
-
+          <button
+               onClick={() => setQuizState("review")}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+              >
+                Review
+            </button>
           <div className="mt-5 flex items-center space-x-2">
             <div
               className={`transition-transform ${
@@ -225,6 +231,13 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       ) : (
         // Regular quiz UI before it's finished
         <div className="flex flex-col items-center">
+          <button
+               onClick={() => setQuizState("fillBlanks")}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+              >
+                Start Quiz
+            </button>
           <div
             className="w-[800px] h-[400px] -mt-[29rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{
