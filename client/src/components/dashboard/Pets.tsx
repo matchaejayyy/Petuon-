@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
@@ -15,6 +16,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
   const [showCareMessageModal, setShowCareMessageModal] = useState(false); // New state for care message modal
   const [showCongratulatoryMessage, setShowCongratulatoryMessage] = useState("");
   const { pets, loading, error, fetchPets, setPets } = usePets(); // Ensure your hook supports updating pets state
+
 
   useEffect(() => {
     fetchPets();
@@ -125,7 +127,9 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
             >
               Feed Pet
             </button>
+
           </div>
+
 
           {showCongratulatoryMessage && (
             <div className="mt-4 text-center text-xl font-bold text-green-500">
