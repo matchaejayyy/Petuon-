@@ -150,7 +150,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
         setPets((prevPets) =>
           prevPets.map((pet) => (pet.pet_id === updatedPet.pet_id ? updatedPet : pet))
         );
-  
+        console.log(updatedPet)
         onPetUpdated(updatedPet);
       } catch (error) {
         console.error("Error updating pet data:", error);
@@ -355,7 +355,7 @@ const Pets: React.FC<PetsProps> = ({ onPetAdded, onPetUpdated }) => {
         <CareMessageModal
           onClose={() => {
             setShowCareMessageModal(false);
-            window.location.reload();
+            fetchPets();
           }}
         />
       )}
