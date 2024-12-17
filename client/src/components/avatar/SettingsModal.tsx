@@ -139,7 +139,9 @@ const SettingPageModal: React.FC<SettingPageModalProps> = ({ onClose, fetchUserD
 
 
   const handleEditClick = () => {
-    setIsEditing(true); // Switch to edit mode
+    setIsEditing(true);
+    setPassword(""); // Clear password field
+    setConfirmPassword(""); // Clear confirm password field if needed
   };
 
   const handleCancelEdit = () => {
@@ -160,134 +162,132 @@ if (afterLoading) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
 
-      <div className="w-[25rem] rounded-lg bg-white p-6 shadow-lg">
-
-        <h2 className="text-xl font-semibold text-gray-800">My Profile</h2>
-
-        <form className="mt-4" onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="username">
-              Username
-            </label>
-            {isEditing ? (
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUserName(e.target.value)} // Update username state
-                className="w-full rounded border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-                placeholder="Enter your username"
-              />
-            ) : (
-              <p className="text-gray-800">{username}</p>
-            )}
-          </div>
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="email">
-              Email
-            </label>
-            {isEditing ? (
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)} // Update email state
-                className="w-full rounded border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-                placeholder="Enter your email"
-              />
-            ) : (
-              <p className="text-gray-800">{email}</p>
-            )}
-          </div>
-          {emailMatchError && isEditing && (
-            <div className="text-red-500 text-sm mb-4">{emailMatchError}</div>
-          )}
-
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-600" htmlFor="password">
-              Password
-            </label>
-            {isEditing ? (
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={handlePasswordChange} // Update password state
-                className="w-full rounded border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-                placeholder="Enter your password"
-              />
-            ) : (
-              <p className="text-gray-800">********</p>
-            )}
-          </div>
-
-          {isEditing && confirmPW &&(
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-600" htmlFor="confirmPassword">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange} // Update confirmPassword state
-                className="w-full rounded border-gray-300 p-2 focus:border-blue-500 focus:ring focus:ring-blue-200"
-                placeholder="Confirm your password"
-              />
-            </div>
-          )}
-
-          {passwordMatchError && isEditing && (
-            <div className="text-red-500 text-sm mb-4">{passwordMatchError}</div>
-          )}
-          
+    <div className="w-[25rem] rounded-lg bg-white p-6 shadow-lg" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
+  
+      <h2 className="text-xl font-semibold text-[#354F52]">My Profile</h2>
+  
+      <form className="mt-4" onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600" htmlFor="username">
+            Username
+          </label>
           {isEditing ? (
-          <div className="flex">
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUserName(e.target.value)} // Update username state
+              className="w-full rounded border-gray-300 p-2 focus:border-[#354F52] focus:ring focus:ring-[#354F52] placeholder-[#354F52]"
+              placeholder="Enter your username"
+            />
+          ) : (
+            <p className="text-[#354F52]">{username}</p>
+          )}
+        </div>
+  
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600" htmlFor="email">
+            Email
+          </label>
+          {isEditing ? (
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Update email state
+              className="w-full rounded border-gray-300 p-2 focus:border-[#354F52] focus:ring focus:ring-[#354F52] placeholder-[#354F52]"
+              placeholder="Enter your email"
+            />
+          ) : (
+            <p className="text-[#354F52]">{email}</p>
+          )}
+        </div>
+        {emailMatchError && isEditing && (
+          <div className="text-red-500 text-sm mb-4">{emailMatchError}</div>
+        )}
+  
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-600" htmlFor="password">
+            Password
+          </label>
+          {isEditing ? (
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={handlePasswordChange} // Update password state
+              className="w-full rounded border-gray-300 p-2 focus:border-[#354F52] focus:ring focus:ring-[#354F52] placeholder-[#354F52]"
+              placeholder="Enter your password"
+            />
+          ) : (
+            <p className="text-[#354F52]">********</p>
+              )}
+            </div>
+      
+            {isEditing && confirmPW &&(
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-600" htmlFor="confirmPassword">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange} // Update confirmPassword state
+                  className="w-full rounded border-gray-300 p-2 focus:border-[#354F52] focus:ring focus:ring-[#354F52] placeholder-[#354F52]"
+                  placeholder="Confirm your password"
+                />
+              </div>
+            )}
+      
+            {passwordMatchError && isEditing && (
+              <div className="text-red-500 text-sm mb-4">{passwordMatchError}</div>
+            )}
+      
+            {isEditing ? (
+            <div className="flex justify-between">
             <button
               type="button"
-              className="rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+              className="rounded bg-[#354F52] px-4 py-2 text-white hover:bg-[#52796F] transition-all duration-300 ease-in-out"
               onClick={handleCancelEdit}
             >
-                  Cancel Edit
+              Cancel Edit
             </button>
             <button
-                  type="submit"
-                  className="mr-2 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                >
-                  Save Changes
-              </button>
-     
+              type="submit"
+              className="rounded bg-[#354F52] px-4 py-2 text-white hover:bg-[#52796F] transition-all duration-300 ease-in-out"
+            >
+              Save Changes
+            </button>
           </div>
-          ) : (
-            <>
-
-              <button
+              ) : (
+          <>
+            <button
               type="button"
-              className="mr-2 rounded bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300"
+              className="mr-2 rounded bg-[#354F52] px-4 py-2 text-white hover:bg-[#52796F] transition-all duration-300 ease-in-out"
               onClick={onClose}
-              >
-                Exit
-              </button>
-            </>
-          )}
-
-
-            {isEditing ? (
-              <>
-              </>
-            ) : (
-              <button
-                type="button"
-                className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-                onClick={handleEditClick}
-              >
-                Edit Profile
-              </button>
-            )}
-        </form>
-      </div>
+            >
+              Exit
+            </button>
+          </>
+        )}
+  
+        {isEditing ? (
+          <>
+          </>
+        ) : (
+          <button
+            type="button"
+            className="rounded bg-[#354F52] px-4 py-2 text-white hover:bg-[#52796F] transition-all duration-300 ease-in-out"
+            onClick={handleEditClick}
+          >
+            Edit Profile
+          </button>
+        )}
+      </form>
     </div>
+  </div>
+  
   );
 };
 }
