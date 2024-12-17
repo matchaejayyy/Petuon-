@@ -28,12 +28,8 @@ const LoginPage: React.FC<Props> = () => {
           user_password: form.user_password,
         });
         if (response.data.token) {
-          // Store JWT token in localStorage for persistent sessions
           localStorage.setItem("token", response.data.token);
-          // alert("Login successful! Redirecting to dashboard...");
           toast.success("Login successful! Redirecting to dashboard...");
-
-      // Redirect to the dashboard after showing the notification
           setTimeout(() => {
             navigate("/dashboard");
           }, 2000);
@@ -120,8 +116,10 @@ const LoginPage: React.FC<Props> = () => {
               </div>
               <div className="flex items-center justify-center">
                 <button
+                  disabled={loading}
                   type="submit"
-                  className="justify-center rounded-3xl bg-[#719191] px-8 py-2 font-bold text-white hover:bg-gray-700"
+                  className={`justify-center rounded-3xl px-8 py-2 font-bold text-white 
+                    ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#719191] hover:bg-gray-700"}`}
                 >
                   Log in
                 </button>
