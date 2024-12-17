@@ -91,7 +91,7 @@ const FlashcardComponent: React.FC = () => {
     }
   };
   const [currentIndex, setCurrentIndex] = useState(0);
-  const visibleDecksCount = 4; // Define the number of decks to be visible at a time
+  const visibleDecksCount = 3; // Define the number of decks to be visible at a time
   const [highlightIndex, setHighlightIndex] = useState(0); // Define highlightIndex state
 
   const totalGroups = Math.ceil(decks.length / visibleDecksCount); // Total number of groups
@@ -312,7 +312,7 @@ const FlashcardComponent: React.FC = () => {
             ) : (
               <>
                 {/* Visible Decks */}
-                <ul className="flex items-center justify-center transition-all duration-700 ease-in-out -mt-5 ml-[5rem]">
+                <ul className="flex items-center justify-center transition-all duration-700 ease-in-out -mt-8 ml-[5rem]">
                   {getVisibleDecks().map((deck, index) => {
                     const isHighlighted = highlightIndex === index;  // Check if the deck is currently highlighted
                     let scaleClass = isHighlighted ? "scale-110 opacity-100" : "scale-90 opacity-60";
@@ -320,10 +320,10 @@ const FlashcardComponent: React.FC = () => {
                     let bgColorClass = isHighlighted ? "bg-[#4F6F72]" : "bg-[#A4B7B5]";
 
                     return (
-                      <li key={deck.deck_id} className="w-[300px] flex-shrink-0 relative transition-all ease-in-out duration-500">
+                      <li key={deck.deck_id} className="w-[350px] flex-shrink-0 relative transition-all ease-in-out duration-500">
                         <div
                           onClick={() => handleSelect(deck)} // Select deck when clicked
-                          className={`shadow-lg rounded-3xl w-[260px] h-[350px] cursor-pointer transition-all transform ${scaleClass} ${zIndexClass} relative hover:opacity-100 hover:shadow-xl ease-in-out duration-300`}
+                          className={`shadow-lg rounded-3xl w-[290px] h-[350px] cursor-pointer transition-all transform ${scaleClass} ${zIndexClass} relative hover:opacity-100 hover:shadow-xl ease-in-out duration-300`}
                         >
                           {/* Edit and Delete buttons */}
                           <div className="absolute top-2 right-2 flex space-x-2 z-20">
@@ -368,7 +368,7 @@ const FlashcardComponent: React.FC = () => {
                   })}
                 </ul>
                 {/* Navigation Buttons Below */}
-                <div className="mt-8 flex justify-center items-center space-x-5 ml-[3rem]">
+                <div className="mt-12 flex justify-center items-center space-x-5 ml-[3.5rem]">
                   {/* Left Button */}
                   <button
                     onClick={handlePrev}
@@ -384,7 +384,7 @@ const FlashcardComponent: React.FC = () => {
                       {decks.length > 0 && (
                       <button
                         onClick={() => handleSelect(getVisibleDecks()[highlightIndex])}
-                        className="px-6 py-2 text-white bg-[#354F52] rounded-full transition-all duration-300 transform hover:scale-110"
+                        className="px-10 py-3 text-white bg-[#354F52] rounded-full transition-all duration-300 transform hover:scale-110"
                       >
                         {getVisibleDecks()[highlightIndex].title.length > 8
                         ? getVisibleDecks()[highlightIndex].title.slice(0, 8).toUpperCase() + "..."
