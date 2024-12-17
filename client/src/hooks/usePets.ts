@@ -4,22 +4,23 @@ import { Pet } from "../types/PetTypes"; // Assuming a Pet interface exists
 
 export const usePets = () => {
   const [pets, setPets] = useState<Pet[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); // To track loading state
+  const [afterLoading, setAfterLoading] = useState<boolean>(false); // To track loading state
   const [error, setError] = useState<string>(""); // To track error messages
   const token = localStorage.getItem("token");
+  const [hasPet, setHasPet] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Fetch Pets
   const fetchPets = async () => {
-    setLoading(true); // Start loading
     setError(""); // Clear previous errors
-
+    setHasPet(true)
+    setLoading(true)
     try {
       const response = await axios.get("http://localhost:3002/pets/getPets", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response)
       // Assuming the response data is an array of pet objects
       const petsWithDateTime: Pet[] = response.data.map((pet: any) => ({
         pet_id: pet.pet_id, // Assuming pet_id exists in response
@@ -32,17 +33,16 @@ export const usePets = () => {
         created_date: pet.created_date || new Date().toISOString().split("T")[0], // Default current date if not available
         created_time: pet.created_time || new Date().toTimeString().split(" ")[0], // Default current time if not available
       }));
-
-      console.log("Mapped pets:", petsWithDateTime); // Optional: log the mapped pets to check the data structure
-
       // Set the fetched data into state
       setPets(petsWithDateTime);
-
+      setHasPet(response.data.length == 1);
     } catch (error: any) {
       console.error("Error fetching pets:", error);
       setError("Failed to fetch pets. Please try again later.");
+      setHasPet(false)
     } finally {
-      setLoading(false); // End loading
+      setLoading(false)
+      setAfterLoading(true); // End loading
     }
   };
 
@@ -123,6 +123,23 @@ export const usePets = () => {
     }
   };
 
+  const updatePet = async (updatedPet: Pet) => {
+    await axios.patch(
+      `http://localhost:3002/pets/updatePet/${updatedPet.pet_id}`,
+      {
+        pet_currency: updatedPet.pet_currency,
+        pet_progress_bar: updatedPet.pet_progress_bar,
+        pet_evolution_rank: updatedPet.pet_evolution_rank,  // Ensure evolution rank is updated
+        updated_date: new Date(),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  }
+
   return {
     fetchPets,
     addPet,
@@ -130,7 +147,10 @@ export const usePets = () => {
     setPets,
     savePet,
     deletePet,
-    loading,
+    afterLoading,
+    updatePet,
+    hasPet,
     error, // Return loading and error states
+    loading
   };
 };

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useFlashcardHooks } from "../../hooks/UseFlashcard";
 import { CreateFlashcard } from "./createflashcard";
 import { QuizFlashcard } from "./quizPage";
-import { Minus, FilePenLine } from "lucide-react";
+import { FolderPlus, BookmarkMinus, Minus, FilePenLine } from "lucide-react";
 import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
@@ -90,28 +90,60 @@ const FlashcardComponent: React.FC = () => {
       }
     }
   };
-  
 
   const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
     return (
-      <div
-      className="-mt-[3rem] p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-y-5 max-h-[260px] overflow-x-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-500"
-      id="flashcards-container"
-    >
-      {flashcards.map((flashcard, index) => (
-        <div
-          key={flashcard.unique_flashcard_id}
-          style={{ fontFamily: '"Signika Negative", sans-serif' }}
-          className="relative flex flex-col w-full sm:w-[40rem] h-[15rem] bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-100 mx-auto"
-        >
-          {/* Top Colored Section */}
-          <div className="bg-[#354F52] h-[20%] w-full rounded-t-2xl  flex items-center justify-between px-4 relative">
-            {/* Flashcard Index */}
-            <span className="text-white text-lg font-semibold">{index + 1}</span>
-    
+      <div className="-mt-[2.5rem] p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-y-5 max-h-[250px] overflow-x-auto scrollbar-thin ">
+        {flashcards.map((flashcard) => (
+          <div
+            key={flashcard.unique_flashcard_id}
+            className="relative flex flex-col w-[40rem] h-[10rem] bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transform hover:scale-100 transition mx-auto"
+          >
+            {/* Question Card */}
+            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mb-4 text-center">
+              {editingQuestion === flashcard.unique_flashcard_id ? (
+                <input
+                  type="text"
+                  defaultValue={flashcard.question}
+                  onBlur={(e) => handleSaveQuestion(flashcard.unique_flashcard_id, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, flashcard.unique_flashcard_id, e.currentTarget.value, "question")}
+                  className="w-full p-2 border rounded-lg"
+                  autoFocus
+                />
+              ) : (
+                <p
+                  className="font-semibold text-[#354F52] break-words cursor-pointer"
+                  onClick={() => handleEditQuestion(flashcard.unique_flashcard_id)}
+                >
+                  {flashcard.question}
+                </p>
+              )}
+            </div>
+
+            {/* Answer Card (Hidden by default) */}
+            <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mt-4 text-center text-[#52796F]">
+              {editingAnswer === flashcard.unique_flashcard_id ? (
+                <textarea
+                  defaultValue={flashcard.answer}
+                  onBlur={(e) => handleSaveAnswer(flashcard.unique_flashcard_id, e.target.value)}
+                  onKeyDown={(e) => handleKeyDown(e, flashcard.unique_flashcard_id, e.currentTarget.value, "answer")}
+                  className="w-full p-2 border rounded-lg"
+                  autoFocus
+                  aria-label="Edit answer"
+                />
+              ) : (
+                <p
+                  className="cursor-pointer"
+                  onClick={() => handleEditAnswer(flashcard.unique_flashcard_id)}
+                >
+                  {flashcard.answer}
+                </p>
+              )}
+            </div>
+
             {/* Delete Button */}
             <button
-              className="flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
+              className="absolute top-4 right-4 flex items-center justify-center transform transition-transform duration-200 hover:scale-125"
               onClick={() => {
                 if (flashcard.unique_flashcard_id) {
                   deleteFlashcard(flashcard.unique_flashcard_id);
@@ -120,41 +152,15 @@ const FlashcardComponent: React.FC = () => {
                 }
               }}
             >
-              <Minus className="text-red-500 w-8 h-8" />
+              <Minus className="text-red-500 mt-[-.5rem] w-8 h-8" />
             </button>
-          </div>
-    
-          {/* Main Content */}
-          <div className="flex flex-col w-full items-start p-4 -mt-1 gap-4">
-            {/* Question Field */}
-            <div className="flex flex-col w-full">
-              <label className="text-[#354F52] text-sm ml-1 mb-1">Question</label>
-              <input
-                type="text"
-                className="bg-gray-200 text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
-                value={flashcard.question}
-                readOnly
-                placeholder="QUESTION"
-              />
-            </div>
 
-            {/* Answer Field */}
-            <div className="flex flex-col w-full">
-              <label className="text-[#354F52] text-sm ml-1 mb-1">Answer</label>
-              <input
-                type="text"
-                className="bg-gray-200 text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
-                value={flashcard.answer}
-                readOnly
-                placeholder="ANSWER"
-              />
-            </div>
-          </div>
-          </div>
-        ))}
-      </div>
-        );
-      };
+    </div>
+  ))}
+</div>
+
+    );
+  };
   const colors = [
     "bg-[#FE9B72]",
     "bg-[#FFC973]",
@@ -165,23 +171,18 @@ const FlashcardComponent: React.FC = () => {
     <>
      <ToastContainer />
      {onFirstPage ? (
-        <div className="flex flex-col items-center mt-[-3rem] mr-[7rem] ">
-          <div className=" h-24 w-full mt-20 flex items-center "> 
-            <h1 style={{ fontFamily: '"Signika Negative", sans-serif'}} className="text-[#354F52] ml-[3.5rem] text-5xl absolute left-1/3 transform -translate-x-1/4 -mt-[8rem]">Decks of Flash Cards</h1>
+        <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
+          <div className=" h-24 w-full mt-20 flex items-center ">
+            <h1 className="text-[#354F52] font-serif text-3xl ">Decks</h1>
             <button
-                onClick={() => setIsModalOpen(true)}
-                className="absolute right-[11rem] top-[6.5rem] flex items-center justify-center w-[10rem] h-[3rem] rounded-xl bg-[#354F52] hover:bg-[#52796F] transition duration-300"
-              >
-                {/* Text */}
-                <span
-                  className="text-white font-semibold"
-                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                >
-                  Create Deck
-                </span>
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg ml-10"
+            >
+              Create Deck
             </button>
+
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-              <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl font-bold mb-4">Create a New Deck</h2>
+              <h2 className="text-2xl font-bold mb-4">Create a New Deck</h2>
               <input
                 type="text"
                 value={deckTitle}
@@ -203,7 +204,7 @@ const FlashcardComponent: React.FC = () => {
                   }
                 }}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="w-full p-2 border border-[#354F52] rounded-md mb-4 focus:border-[#354F52]"
+                className="w-full p-2 border border-gray-300 rounded-md mb-4"
                 placeholder="Enter deck title"
               />
               <button
@@ -222,13 +223,13 @@ const FlashcardComponent: React.FC = () => {
                   setDeckTitle(''); // Clear input field
                   setIsModalOpen(false);
                 }}
-                className="flex items-center justify-center px-4 py-2 ml-[15.7rem]  bg-[#354F52]  rounded transition-transform duration-200 hover:scale-105 hover:text-[#52796F] hover:bg-[#657F83] ]"
-                >
-                  <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-lg text-white font-semibold">Create</span>
-                </button>
+                className="flex"
+              >
+                <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
+              </button>
             </Modal>
             <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-              <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl font-semibold mb-4">Edit Deck Title</h2>
+              <h2 className="text-2xl font-bold mb-4">Edit Deck Title</h2>
               <input
                 type="text"
                 value={deckTitle}
@@ -241,102 +242,80 @@ const FlashcardComponent: React.FC = () => {
                   }
                 }}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-               className="w-full p-2 border border-[#354F52] rounded-md mb-4 focus:border-[#354F52]"
+                className="w-full p-2 border border-gray-300 rounded-md mb-4"
                 placeholder="Enter new deck title"
               />
               <button
-              onClick={async () => {
-                // Update deck title and refresh deck list
-                await handleUpdateDeckTitle();
-                setDeckTitle(''); // Clear input field
-              }}
-              className="flex items-center justify-center px-4 py-2 ml-[16.7rem]  bg-[#354F52]  rounded transition-transform duration-200 hover:scale-105 hover:text-[#52796F] hover:bg-[#657F83] ]"
-                >
-                  <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-lg text-white font-semibold">Save</span>
-            </button>
+                onClick={async () => {
+                  // Update deck title and refresh deck list
+                  await handleUpdateDeckTitle();
+                  setDeckTitle(''); // Clear input field
+                }}
+                className="flex"
+              >
+                <FolderPlus className="w-10 h-10 ml-[1rem] text-[#354F52] transform transition-transform duration-200 hover:scale-125 hover:text-[#52796F]" />
+              </button>
             </Modal>
           </div>
-          <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-4rem] ">
-            <ul  className="w-[94vw] grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[500px] overflow-y-auto overflow-x-hidden p-2 [&::-webkit-scrollbar]:w-2">
+          <div className="w-[94vw] flex items-center justify-center relative ml-[1.5rem] mt-[-1.5rem] ">
+            <ul className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 ml-7 max-h-[540px] overflow-y-auto p-2 [&::-webkit-scrollbar]:w-2">
               {/* Loading State */}
                 {loadDecks ? (
                   <p className="text-2xl text-gray-500 text-center col-span-full">
                     Fetching cards...
                   </p>
                 ) : Object.keys(decks).length === 0 ? (
-                  <div className="flex flex-col items-center justify-center mt-[16rem] text-center">
-                  <img
-                    src="src\assets\sleeping_penguin2.gif"
-                    alt="No notes available"
-                    className="ml-[66rem] mt-[-13rem] h-[15rem] w-[15rem] "
-                  />
                   <p
+                    className="text-2xl text-gray-500 text-center col-span-full"
                     style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                   className="text-2xl text-gray-500 -mr-[66rem] -mt-[1.5rem]"
                   >
                     No decks saved yet. Create one to get started!
                   </p>
-                </div>
                 ) : null}
 
                 {/* Render Decks */}
-            {!loadDecks && Object.keys(decks).length > 0 && (
-              decks.map((deck, index) => {
-                const assignedColor = colors[index % colors.length];
+                {!loadDecks && Object.keys(decks).length > 0 && (
+                  decks.map((deck, index) => {
+                    const assignedColor = colors[index % colors.length];
 
-                return (
-                  <li key={deck.title} className="w-full ml-[3rem] ">
-                    <div
-                      onClick={() => { loadDeck(deck.deck_id); }}
-                      className="shadow-lg rounded-3xl w-[18rem] flex flex-col cursor-pointer transform transition-transform duration-200 hover:scale-105 relative"
-                    >
-                      {/* Top Colored Section */}
-                      <div
-                        className={`${assignedColor} rounded-t-3xl h-[4.5rem] w-full p-4 flex justify-between items-center relative`}
-                      >
-                        {/* Container for Buttons positioned at the top right */}
-                        <div className="absolute top-1 right-0 flex space-x-[-0.2rem] p-2">
-                          {/* Edit Button */}
+                    return (
+                      <li key={deck.title} className="w-full ml-[3rem]">
+                        <div
+                          onClick={() => { loadDeck(deck.deck_id); }}
+                          className={`${assignedColor} shadow-lg rounded-3xl h-[15rem] w-[18rem] p-4 flex flex-col justify-between cursor-pointer transform transition-transform duration-200 hover:scale-105 relative`}
+                        >
+                          <h1
+                            className="text-2xl font-bold uppercase text-center flex items-center justify-center h-full w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                            style={{
+                              fontFamily: '"Signika Negative", sans-serif',
+                            }}
+                          >
+                            {deck.title}
+                          </h1>
                           <button
-                            className="h-8 w-8 rounded-full flex items-center justify-center"
+                            className="absolute top-3 right-12 h-8 w-8 rounded-full flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
                               setIsEditModalOpen(true);
                               setDeckId(deck.deck_id);
                             }}
                           >
-                            <FilePenLine className="w-5 h-5 transform text-[#354F52] transition-transform duration-200 hover:scale-125" />
+                            <FilePenLine className="w-5 h-5 transform transition-transform duration-200 hover:scale-125" />
                           </button>
-
-                          {/* Delete Button */}
                           <button
-                            className="h-8 w-8 rounded-full flex items-center justify-center"
+                            className="absolute bottom-3 right-3 h-8 w-8 rounded-full flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
                               deleteDeck(deck.deck_id);
                             }}
                           >
-                            <Minus className="text-red-800 w-8 h-8 transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
+                            <BookmarkMinus className="text-red-800 w-5 h-5 mb-[23rem] transform transition-transform duration-200 hover:scale-125 hover:text-red-900" />
                           </button>
                         </div>
-                      </div>
-
-                      {/* Bottom White Section */}
-                      <div className="bg-white rounded-b-3xl p-4 flex justify-center items-center h-[10rem]">
-                        <h1
-                          className="text-2xl text-[#354F52] font-bold uppercase text-center overflow-hidden text-ellipsis whitespace-nowrap"
-                          style={{
-                            fontFamily: '"Signika Negative", sans-serif',
-                          }}
-                        >
-                          {deck.title}
-                        </h1>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })
-            )}
+                      </li>
+                    );
+                  })
+                )}
             </ul>
           </div>
           <div className="fixed top-[6rem] right-[3.9rem]">
@@ -345,27 +324,21 @@ const FlashcardComponent: React.FC = () => {
       ) : isReviewing ? (
         <div>
           <div className="flex">
-          <div className="flex items-center p-4 w-[13.5rem] h-[3rem] rounded-2xl">
-          <div
-              className="flex items-center bg-[#354F52] text-white text-xl font-bold px-8 py-3 w-[20em] -ml-[3rem] rounded-r-md shadow-lg"
-              style={{
-                fontFamily: '"Signika Negative", sans-serif',
-                clipPath: "polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%)",
-              }}
-            >
-              
-              <h1 className="ml-2 uppercase">
-                {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9
+          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="-ml-[0.1rem] mt-[0.2rem]  text-xl text-white  uppercase">
+                Deck:
+                </h1>
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-xl text-white  uppercase">
+                {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9 
                   ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
-            </div>
               </div>
             <div className="flex justify-center items-center">
               <button
                 onClick={() => setIsReviewing(false)}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-               className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/4 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[4rem] -ml-[13.5rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
                 >
                 Return to deck
                 </button>
@@ -381,51 +354,32 @@ const FlashcardComponent: React.FC = () => {
       ) : (
         <div>
           <div className="flex">
-          <div className="flex items-center p-4 w-[13.5rem] h-[3rem] rounded-2xl">
-          <div
-              className="flex items-center bg-[#354F52] text-white text-xl font-bold px-8 py-3 w-[20rem] -ml-[3rem] rounded-r-md shadow-lg"
-              style={{
-                fontFamily: '"Signika Negative", sans-serif',
-                clipPath: "polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%)",
-              }}
-            >
-             
-              <h1 className="ml-2 uppercase">
-                {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9
+          <div className="flex items-center bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl">
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }}  className="-ml-[0.1rem] mt-[0.2rem]  text-xl text-white  uppercase">
+                Deck:
+                </h1>
+                <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="ml-1 mt-[0.2rem] mr-96 font-serif text-xl text-white  uppercase">
+                {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9 
                   ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
-            </div>
               <div>
                 <button
                 onClick={() => {setIsReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-               className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/4 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+                className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[10rem] -ml-[33.95rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
                 >
                 Review Deck
                 </button>
               </div>
               <div>
-              <div>
-              
-               <button
-                onClick={() => { setOnFirstPage(true); console.log("Clicked Review"); }}
-                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[6rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              >
+              <button
+                onClick={() => {setOnFirstPage(true); console.log("Clicked Review");}}
+                style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-white text-2xl bg-[#354F52] p-4 w-[13.5rem] h-[3rem] rounded-2xl m-10 mt-[17.5rem] -ml-[33.95rem] shadow-lg transform transition-transform duration-200 hover:bg-[#52796F] hover:scale-110 flex items-center justify-center"
+                >
                 Back
               </button>
-
-                </div>
               </div>
-              <button
-               //  onClick={handleStartNewQuiz}
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
-              >
-                Start Quiz
-              </button>
- 
             </div>
           </div>
           <CreateFlashcard
