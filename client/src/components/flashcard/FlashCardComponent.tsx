@@ -359,7 +359,7 @@ const FlashcardComponent: React.FC = () => {
                           {/* Bottom White Section */}
                           <div className="h-[65%] bg-white rounded-b-3xl p-4 flex justify-center items-center">
                             <h1 className="text-xl text-[#354F52] font-bold uppercase text-center" style={{ fontFamily: '"Signika Negative", sans-serif' }}>
-                              {deck.title}
+                              {deck.title.length > 17 ? deck.title.slice(0, 17) + "..." : deck.title}
                             </h1>
                           </div>
                         </div>
