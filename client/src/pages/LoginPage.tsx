@@ -65,9 +65,11 @@ const LoginPage: React.FC<Props> = () => {
     )}
    
     <section  
-      className="flex h-screen items-center justify-center"
+      className="flex h-screen items-center justify-center       sm:bg-[url('src/assets/Bg_sm.png')] 
+      md:bg-[url('src/assets/Bg_md.png')] 
+      lg:bg-[url('src/assets/Bg_lg.png')] 
+      xl:bg-[url('src/assets/LoginBG.png')]"
       style={{
-        backgroundImage: `url(${LoginBG})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -75,7 +77,7 @@ const LoginPage: React.FC<Props> = () => {
       
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20">
         <div
-          className="w-full rounded-lg shadow md:mb-20 sm:max-w-lg xl:p-0"
+          className="w-full rounded-lg shadow lg:-mr-[0.1rem] md:mt-16 md:mr-20 sm:max-w-lg xl:p-0"
           style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
         >
           <div className="p-10 space-y-6 md:space-y-8 sm:p-12">

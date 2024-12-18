@@ -74,7 +74,7 @@ const RegisterPage: React.FC = () => {
         backgroundPosition: "center",
       }}
     >
-      <div className="mx-auto mr-20 flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+      <div className="mx-auto mr-44 flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
         <div
           className="w-full rounded-lg shadow sm:max-w-lg md:mb-20 xl:p-0"
           style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
