@@ -21,6 +21,8 @@ export const usePets = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      
+      localStorage.setItem("pet_id", response.data[0].pet_id); // fetch pet id and store in local storage
       // Assuming the response data is an array of pet objects
       const petsWithDateTime: Pet[] = response.data.map((pet: any) => ({
         pet_id: pet.pet_id, // Assuming pet_id exists in response
