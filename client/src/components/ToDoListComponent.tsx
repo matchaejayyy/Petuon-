@@ -486,6 +486,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             <form
               onSubmit={handleAddTask}
               className="
+                transition-all duration-500 ease-in-out
                 fixed top-40 w-[90%] h-[10%] max-w-[84rem] rounded-lg  
               bg-white pb-4 pt-4 text-black shadow-md 
                 sm:left-9 sm:top-40 
@@ -510,13 +511,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
               <input
                 className="
-                  ml-2 w-[70%] translate-y-[-5px] transform overflow-hidden 
+                  absolute ml-2 w-[70%] translate-y-[-5px] transform overflow-hidden 
                   text-ellipsis bg-transparent text-sm text-black outline-none 
-                  text-[0.8rem]
-                  sm:w-[40%] sm:text-base 
-                  md:w-[46%] md:text-lg 
-                  lg:w-[55%] lg:text-lg
-                  xl:w-[60%] xl:text-xl
+                  text-[0.8rem] top-[2.1rem]
+                  sm:w-[40%] sm:text-base sm:top-[1.6rem]
+                  md:w-[46%] md:text-lg md:top-[1.6rem]
+                  lg:w-[55%] lg:text-lg lg:top-[1.7rem]
+                  xl:w-[60%] xl:text-xl xl:top-[1.7rem]
                 "
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
                 type="text "
@@ -613,26 +614,52 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
           </div>
 
           <div
-            className={`my-3 mb-0 ml-8 mt-[-15px] flex space-x-2 font-normal`}
+            className={` flex space-x-2 font-normal`}
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
           >
             {loading ? (
-              <h1 className="mt-[10.5rem] text-center text-2xl text-gray-500">
-                Fetching tasks...
-              </h1>
+                <div className="flex flex-col items-center justify-center h-screen">
+                <h1  className="absolute  text-gray-500
+                   transition-all duration-500 ease-in-out
+                    w-[54%] text-lg
+                    left-[40%] 
+                    sm:left-[45%] sm-text2xl 
+                    md:left-[45%] md:text-2xl
+                    lg:left-[38%] lg:text-3xl
+                    xl:left-[40%] 
+                  ">
+                  Fetching tasks...
+                </h1>
+              </div>
             ) : display.length === 0 ? (
-              <>
+              <div className="flex flex-col justify-center h-screen">
                 <img
                   src={sleepingPenguin}
                   alt="No tasks available"
-                  className="mx-auto mt-[12rem] h-[10rem] w-[10rem]"
+                  className="absolute h-32 w-32 
+                    transition-all duration-500 ease-in-out
+                    top-[48%]
+                    left-[40%] 
+                    sm:left-[39%] sm:top-[50%]
+                    md:left-[47%] md:top-[50%]
+                    lg:left-[40%] lg:top-[45%]
+                    xl:left-[41%] xl:top-[45%]
+                  "
                 />
                 <h1
-                  className={`fixed mt-[21rem] text-center text-2xl text-gray-500 ${taskPos}`}
+                  className="absolute  text-gray-500
+                   transition-all duration-500 ease-in-out
+                    w-[54%] text-lg
+                    left-[35%] 
+                    sm:left-[35%] sm-text2xl 
+                    md:left-[40%] md:text-2xl
+                    lg:left-[32%] lg:text-3xl
+                    xl:left-[35%] 
+                  "
                 >
                   {taskMessage}
                 </h1>
-              </>
+              </div>
             ) : null}
 
             <div
