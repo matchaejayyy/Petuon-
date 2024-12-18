@@ -8,6 +8,10 @@ import nikImage from "../assets/teamPicture/nik.png";
 import paulImage from "../assets/teamPicture/paul.png";
 import { useNavigate } from "react-router-dom";
 import {ContactForm} from "../components/Contactform";
+import notefeatureImage from "../assets/features/notefeature.png";
+import flashcardImage from "../assets/features/flashcardfeature.png"
+import petfeatureImage from "../assets/features/petfeature.png"
+import todolistImage from "../assets/features/tofolistfeature.png"
 
 
 const LandingPage: React.FC = () => {
@@ -15,7 +19,6 @@ const LandingPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<"landing" | "about" | "team" |"contact">(
     "landing"
   );
-
   
   // Scroll animation logic using Intersection Observer
   const observer = useRef<IntersectionObserver | null>(null);
@@ -210,159 +213,178 @@ const LandingPage: React.FC = () => {
         </section>
       )}
 
-{/* Team page content */}
-{currentPage === "team" && (
-  <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
-    <h1
-      style={{ fontFamily: '"Signika Negative", sans-serif' }}
-      className="mb-8 mt-24 text-5xl text-[#274d4d] font-bold text-center"
-    >
-      Our Team
-    </h1>
-    
-    <div className="flex flex-col gap-12">
-      {/* First Row */}
-      <div className="flex flex-wrap justify-center gap-6">
-        {[
-          {
-            name: "Elmor John Cortez",
-            role: "Development Team",
-            image: ejImage,
-            description: "Elmor is a front-end specialist with a passion for creating smooth user experiences.",
-          },
-          {
-            name: "Dainz Andrei Trasadas",
-            role: "Scrum Master",
-            image: dainzImage,
-            description: "Dainz keeps the team organized and ensures we meet our sprint goals.",
-          },
-          {
-            name: "Nelissa Tuden",
-            role: "PO / Development Team",
-            image: nelImage,
-            description: "Nelissa focuses on back-end development, ensuring our app is fast and secure.",
-          },
-        ].map((member) => (
-          <div
-            key={member.name}
-            className="group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transition-all duration-500 ease-in-out transform hover:scale-105"
-          >
-            <div className="w-full h-64 overflow-hidden rounded-2xl mb-4 relative">
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
-              />
-            </div>
-            <h3
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="text-lg text-[#3e6969] font-semibold mt-4"
-            >
-              {member.name}
-            </h3>
-            <p
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="italic text-gray-600"
-            >
-              {member.role}
-            </p>
-            <div className="absolute bottom-0 left-0 w-full h-0 bg-black bg-opacity-80 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-500 ease-in-out transform group-hover:translate-y-0 group-hover:scale-105 group-hover:shadow-lg">
-              <p className="text-white p-4 text-lg">{member.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Second Row */}
-      <div className="flex flex-wrap justify-center gap-6">
-        {[
-          {
-            name: "Floyd Matthew Torrechilla",
-            role: "Development Team",
-            image: floydImage,
-            description: "Floyd specializes in database management and optimizing app performance.",
-          },
-          {
-            name: "Nicholae Sara",
-            role: "Development Team",
-            image: nikImage,
-            description: "Nicholae is a versatile developer who contributes to both front-end and back-end tasks.",
-          },
-          {
-            name: "Les Paul Capanas",
-            role: "Development Team",
-            image: paulImage,
-            description: "This member specializes in UI/UX design, ensuring the app looks modern and is user-friendly.",
-          },
-        ].map((member) => (
-          <div
-            key={member.name}
-            className="group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transition-all duration-500 ease-in-out transform hover:scale-105"
-          >
-            <div className="w-full h-64 overflow-hidden rounded-2xl mb-4 relative">
-              <img
-                src={member.image}
-                alt={member.name}
-                className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
-              />
-            </div>
-            <h3
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="text-lg font-semibold mt-4"
+      {/* Team page content */}
+      {currentPage === "team" && (
+      <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
+      <h1
+        style={{ fontFamily: '"Signika Negative", sans-serif' }}
+        className="mb-8 mt-24 text-5xl text-[#274d4d] font-bold text-center"
+      >
+        Our Team
+      </h1>
+      
+      <div className="flex flex-col gap-12">
+        {/* First Row */}
+        <div className="flex flex-wrap justify-center gap-6">
+          {[
+            {
+              name: "Elmor John Cortez",
+              role: "Development Team",
+              image: ejImage,
+              description:
+                "Elmor is a front-end specialist with a passion for creating smooth user experiences.",
+            },
+            {
+              name: "Dainz Andrei Trasadas",
+              role: "Scrum Master",
+              image: dainzImage,
+              description:
+                "Dainz keeps the team organized and ensures we meet our sprint goals.",
+            },
+            {
+              name: "Nelissa Tuden",
+              role: "PO / Development Team",
+              image: nelImage,
+              description:
+                "Nelissa focuses on back-end development, ensuring our app is fast and secure.",
+            },
+
+          ].map((member) => (
+            <div
+              key={member.name}
+              className="mr-8 group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transform transition-transform duration-200 hover:scale-105  hover:text-white hover:bg-[#719191] hover:shadow-lg"
             >
-              {member.name}
-            </h3>
-            <p
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="italic text-gray-600"
-            >
-              {member.role}
-            </p>
-            <div className="absolute bottom-0 left-0 w-full h-0 bg-black bg-opacity-80 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-500 ease-in-out transform group-hover:translate-y-0 group-hover:scale-105 group-hover:shadow-lg">
-              <p className="text-white p-4 text-lg">{member.description}</p>
+              <div className="w-full h-64 overflow-hidden rounded-2xl mb-4">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <h3
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="text-lg text-[#3e6969] font-semibold mt-4"
+              >
+                {member.name}
+              </h3>
+              <p
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="italic text-gray-600"
+              >
+                {member.role}
+              </p>
+              <div className="absolute bottom-0 left-0 w-full h-0 bg-white bg-opacity-100 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-300 ease-in-out">
+                <p
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  className="text-[#3e6969] p-4 text-lg"
+                >
+                  {member.description}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+    
+        {/* Second Row */}
+        <div className="flex flex-wrap justify-center gap-6">
+          {[
+            {
+              name: "Floyd Matthew Torrechilla",
+              role: "Development Team",
+              image: floydImage,
+              description:
+                "Floyd specializes in database management and optimizing app performance.",
+            },
+            {
+              name: "Nicholae Sara",
+              role: "Development Team",
+              image: nikImage,
+              description:
+                "Nicholae is a versatile developer who contributes to both front-end and back-end tasks.",
+            },
+            {
+              name: "Les Paul Capanas",
+              role: "Development Team",
+              image: paulImage,
+              description:
+                "This member specializes in UI/UX design, ensuring the app looks modern and is user-friendly.",
+            },
+          ].map((member) => (
+            <div
+              key={member.name}
+              className="mr-8 group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transform transition-transform duration-200 hover:scale-105  hover:text-white hover:bg-[#719191] hover:shadow-lg"
+            >
+              <div className="w-full h-64 overflow-hidden rounded-2xl mb-4">
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <h3
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="text-lg text-[#3e6969] font-semibold mt-4"
+              >
+                {member.name}
+              </h3>
+              <p
+                style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                className="italic text-gray-600"
+              >
+                {member.role}
+              </p>
+              <div className="absolute bottom-0 left-0 w-full h-0 bg-white bg-opacity-100 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-300 ease-in-out">
+                <p
+                  style={{ fontFamily: '"Signika Negative", sans-serif' }}
+                  className="text-[#3e6969] p-4 text-lg"
+                >
+                  {member.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  </section>
-)}
+    </section>
+  )}
+
 
       {/* Features Section at the bottom of the Home Page */}
       {currentPage === "landing" && (
         <section className="bg-white px-6 py-12">
           <div className="mx-auto max-w-6xl">
-            <h3 className="mb-12 text-[#274d4d] text-center text-3xl font-bold">Features</h3>
+            <h3 className="mb-12 text-[#274d4d] text-center text-7xl font-bold">Features</h3>
 
             {/* Pets Feature */}
-            <div className="flex flex-col md:flex-row items-center mb-8">
-              <div className="w-full md:w-1/2 h-48 rounded-lg bg-gray-100"></div>
-              <div className="ml-0 mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-                <h4 className="text-xl font-semibold">Pets</h4>
+            <div className="flex flex-col md:flex-row items-center mb-[10rem]">
+            <div  className="w-[40rem] md:max-w-[50rem] h-[200px] md:h-[300px] rounded-lg bg-contain" style={{ backgroundImage: `url(${petfeatureImage})` }}></div>
+              <div className="ml-[4rem] mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+                <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl font-bold text-[#274d4d] ml-[12rem]">Pets</h4>
               </div>
             </div>
 
             {/* Todo-list Feature */}
-            <div className="flex flex-col md:flex-row-reverse items-center mb-8">
-              <div className="w-full md:w-1/2 h-48 rounded-lg bg-gray-100"></div>
-              <div className="mr-0 mt-4 text-center md:mr-6 md:mt-0 md:text-right">
-                <h4 className="text-xl font-semibold">Todo-list</h4>
+            <div className="flex flex-col md:flex-row-reverse items-center mb-[10rem]">
+            <div  className="w-[40rem] md:max-w-[50rem] h-[200px] md:h-[300px] rounded-lg bg-contain" style={{ backgroundImage: `url(${todolistImage})` }}></div>
+              <div className="mr-[4rem] mt-4 text-center md:mr-6 md:mt-0 md:text-right">
+                <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl font-bold text-[#274d4d] mr-[12rem]">Todo-list</h4>
               </div>
             </div>
 
             {/* Flashcard Feature */}
-            <div className="flex flex-col md:flex-row items-center mb-8">
-              <div className="w-full md:w-1/2 h-48 rounded-lg bg-gray-100"></div>
-              <div className="ml-0 mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-                <h4 className="text-xl font-semibold">Flashcard</h4>
+            <div className="flex flex-col md:flex-row items-center mb-[10rem]">
+            <div className="w-[40rem] md:max-w-[50rem] h-[200px] md:h-[300px] rounded-lg bg-contain" style={{ backgroundImage: `url(${flashcardImage})` }}></div>
+              <div className="ml-[4rem] mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+                <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }}className="text-5xl font-bold text-[#274d4d] ml-[12rem]">Flashcard</h4>
               </div>
             </div>
 
             {/* Notes Feature */}
             <div className="flex flex-col md:flex-row-reverse items-center">
-              <div className="w-full md:w-1/2 h-48 rounded-lg bg-gray-100"></div>
-              <div className="mr-0 mt-4 text-center md:mr-6 md:mt-0 md:text-right">
-                <h4 className="text-xl font-semibold">Notes</h4>
+            <div  className="w-[40rem] md:max-w-[50rem] h-[200px] md:h-[300px] rounded-lg bg-contain" style={{ backgroundImage: `url(${notefeatureImage})` }}></div>
+              <div className="mr-[4rem] mt-4 text-center md:mr-6 md:mt-0 md:text-right">
+                <h4 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl font-bold text-[#274d4d] mr-[12rem]">Notes</h4>
               </div>
             </div>
           </div>
