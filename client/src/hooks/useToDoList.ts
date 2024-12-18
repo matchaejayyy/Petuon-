@@ -26,7 +26,6 @@ export const useToDoList = () => {
       if (!token) {
         throw new Error('No token found');
       }
-      console.log(token)
       const response = await axios.get("http://localhost:3002/tasks/getTask",  
       {
         headers: {
@@ -34,7 +33,6 @@ export const useToDoList = () => {
         }
       });
       
-      console.log(response.data)
       const taskData = response.data.map(
         (task: {
           task_id: string;

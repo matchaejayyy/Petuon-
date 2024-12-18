@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { usePets } from "../../hooks/usePets"; // Import your custom hook for fetching pets
 import PetSelectionModal from "./PetSelectionModal";
@@ -139,6 +140,7 @@ const handleFeedPet = async (petData: any) => {
       updatedPet.pet_max_value += 50;
 
       setShowEvolutionCinematic(true); // Trigger evolution cinematic
+
     } else {
       updatedPet.pet_currency -= 100;
       updatedPet.pet_progress_bar = Math.min(updatedPet.pet_progress_bar + 10, 100);
@@ -369,6 +371,7 @@ const handleFeedPet = async (petData: any) => {
                 </>
               )}
             </div>
+
           </>
         ) : (
           <button
