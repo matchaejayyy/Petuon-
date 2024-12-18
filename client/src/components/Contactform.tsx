@@ -42,11 +42,12 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
 
   return (
     <div
-      className="flex justify-start ml-[30rem] p-4 rounded-2xl bg-[#719191] w-[35rem]"
+    className="flex justify-start ml-[30rem] p-3 rounded-2xl bg-[#719191] w-[32rem] shadow-lg"
     >
+  
       <form
         style={{ fontFamily: '"Signika Negative", sans-serif' }}
-        className="w-full text-white items-center justify-center flex flex-col"
+        className="w-full ml-7 text-white items-start justify-start flex flex-col"
         onSubmit={handleSubmit}
       >
         <div className="mb-4">
@@ -57,7 +58,7 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
             type="text"
             id="name"
             placeholder="Enter your name"
-            className="w-[30rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
+            className="w-[27rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -71,7 +72,7 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
             type="email"
             id="email"
             placeholder="Enter your email"
-            className="w-[30rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
+            className="w-[27rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -85,7 +86,7 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
             id="message"
             rows={6}
             placeholder="Write your message here..."
-            className="w-[30rem] px-16 py-2 rounded-lg border focus:ring-blue-500"
+            className="w-[27rem] px-16 py-2 rounded-lg border focus:ring-blue-500"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
@@ -93,11 +94,11 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
         </div>
         <button
           type="submit"
-          className="w-[15rem] px-4 py-2 rounded-2xl bg-[#6e8080] text-white hover:bg-[#0d6767]"
+          className="w-[11rem] ml-[8rem] -mt-3 px-4 py-2 rounded-2xl bg-[#cadada] text-[#485e5e] hover:bg-[#4e7074] hover:text-white transform transition-transform duration-200 hover:scale-105"
         >
           Submit
         </button>
-  
+
         {status === "success" && (
           <p className="mt-4 text-green-500">Your message was sent successfully!</p>
         )}

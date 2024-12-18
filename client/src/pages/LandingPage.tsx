@@ -210,133 +210,123 @@ const LandingPage: React.FC = () => {
         </section>
       )}
 
-
-      {/* Team page content */}
-      {currentPage === "team" && (
-      <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
-      <h1
-        style={{ fontFamily: '"Signika Negative", sans-serif' }}
-        className="mb-8 mt-24 text-5xl text-[#274d4d] font-bold text-center"
-      >
-        Our Team
-      </h1>
-      
-      <div className="flex flex-col gap-12">
-        {/* First Row */}
-        <div className="flex flex-wrap justify-center gap-6">
-          {[
-            {
-              name: "Elmor John Cortez",
-              role: "Development Team",
-              image: ejImage,
-              description:
-                "Elmor is a front-end specialist with a passion for creating smooth user experiences.",
-            },
-            {
-              name: "Dainz Andrei Trasadas",
-              role: "Scrum Master",
-              image: dainzImage,
-              description:
-                "Dainz keeps the team organized and ensures we meet our sprint goals.",
-            },
-            {
-              name: "Nelissa Tuden",
-              role: "PO / Development Team",
-              image: nelImage,
-              description:
-                "Nelissa focuses on back-end development, ensuring our app is fast and secure.",
-            },
-
-          ].map((member) => (
-            <div
-              key={member.name}
-              className="group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transition-all duration-300 ease-in-out"
-            >
-              <div className="w-full h-64 overflow-hidden rounded-2xl mb-4">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-lg text-[#3e6969] font-semibold mt-4"
-              >
-                {member.name}
-              </h3>
-              <p
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="italic text-gray-600"
-              >
-                {member.role}
-              </p>
-              <div className="absolute bottom-0 left-0 w-full h-0 bg-black bg-opacity-80 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-300 ease-in-out">
-                <p className="text-white p-4 text-lg">{member.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+{/* Team page content */}
+{currentPage === "team" && (
+  <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
+    <h1
+      style={{ fontFamily: '"Signika Negative", sans-serif' }}
+      className="mb-8 mt-24 text-5xl text-[#274d4d] font-bold text-center"
+    >
+      Our Team
+    </h1>
     
-        {/* Second Row */}
-        <div className="flex flex-wrap justify-center gap-6">
-          {[
-            {
-              name: "Floyd Matthew Torrechilla",
-              role: "Development Team",
-              image: floydImage,
-              description:
-                "Floyd specializes in database management and optimizing app performance.",
-            },
-            {
-              name: "Nicholae Sara",
-              role: "Development Team",
-              image: nikImage,
-              description:
-                "Nicholae is a versatile developer who contributes to both front-end and back-end tasks.",
-            },
-            {
-              name: "Les Paul Capanas",
-              role: "Development Team",
-              image: paulImage,
-              description:
-                "This member specializes in UI/UX design, ensuring the app looks modern and is user-friendly.",
-            },
-          ].map((member) => (
-            <div
-              key={member.name}
-              className="group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transition-all duration-300 ease-in-out"
-            >
-              <div className="w-full h-64 overflow-hidden rounded-2xl mb-4">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h3
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-lg font-semibold mt-4"
-              >
-                {member.name}
-              </h3>
-              <p
-                style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="italic text-gray-600"
-              >
-                {member.role}
-              </p>
-              <div className="absolute bottom-0 left-0 w-full h-0 bg-black bg-opacity-80 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-300 ease-in-out">
-                <p className="text-white p-4 text-lg">{member.description}</p>
-              </div>
+    <div className="flex flex-col gap-12">
+      {/* First Row */}
+      <div className="flex flex-wrap justify-center gap-6">
+        {[
+          {
+            name: "Elmor John Cortez",
+            role: "Development Team",
+            image: ejImage,
+            description: "Elmor is a front-end specialist with a passion for creating smooth user experiences.",
+          },
+          {
+            name: "Dainz Andrei Trasadas",
+            role: "Scrum Master",
+            image: dainzImage,
+            description: "Dainz keeps the team organized and ensures we meet our sprint goals.",
+          },
+          {
+            name: "Nelissa Tuden",
+            role: "PO / Development Team",
+            image: nelImage,
+            description: "Nelissa focuses on back-end development, ensuring our app is fast and secure.",
+          },
+        ].map((member) => (
+          <div
+            key={member.name}
+            className="group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transition-all duration-500 ease-in-out transform hover:scale-105"
+          >
+            <div className="w-full h-64 overflow-hidden rounded-2xl mb-4 relative">
+              <img
+                src={member.image}
+                alt={member.name}
+                className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
+              />
             </div>
-          ))}
-        </div>
+            <h3
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="text-lg text-[#3e6969] font-semibold mt-4"
+            >
+              {member.name}
+            </h3>
+            <p
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="italic text-gray-600"
+            >
+              {member.role}
+            </p>
+            <div className="absolute bottom-0 left-0 w-full h-0 bg-black bg-opacity-80 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-500 ease-in-out transform group-hover:translate-y-0 group-hover:scale-105 group-hover:shadow-lg">
+              <p className="text-white p-4 text-lg">{member.description}</p>
+            </div>
+          </div>
+        ))}
       </div>
-    </section>
-  
-  )}
 
+      {/* Second Row */}
+      <div className="flex flex-wrap justify-center gap-6">
+        {[
+          {
+            name: "Floyd Matthew Torrechilla",
+            role: "Development Team",
+            image: floydImage,
+            description: "Floyd specializes in database management and optimizing app performance.",
+          },
+          {
+            name: "Nicholae Sara",
+            role: "Development Team",
+            image: nikImage,
+            description: "Nicholae is a versatile developer who contributes to both front-end and back-end tasks.",
+          },
+          {
+            name: "Les Paul Capanas",
+            role: "Development Team",
+            image: paulImage,
+            description: "This member specializes in UI/UX design, ensuring the app looks modern and is user-friendly.",
+          },
+        ].map((member) => (
+          <div
+            key={member.name}
+            className="group relative flex flex-col items-center bg-gray-100 rounded-lg shadow-md p-4 w-64 overflow-hidden transition-all duration-500 ease-in-out transform hover:scale-105"
+          >
+            <div className="w-full h-64 overflow-hidden rounded-2xl mb-4 relative">
+              <img
+                src={member.image}
+                alt={member.name}
+                className="w-full h-full object-cover transition-transform duration-300 ease-in-out transform group-hover:scale-110"
+              />
+            </div>
+            <h3
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="text-lg font-semibold mt-4"
+            >
+              {member.name}
+            </h3>
+            <p
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="italic text-gray-600"
+            >
+              {member.role}
+            </p>
+            <div className="absolute bottom-0 left-0 w-full h-0 bg-black bg-opacity-80 opacity-0 group-hover:h-40 group-hover:opacity-100 transition-all duration-500 ease-in-out transform group-hover:translate-y-0 group-hover:scale-105 group-hover:shadow-lg">
+              <p className="text-white p-4 text-lg">{member.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
       {/* Features Section at the bottom of the Home Page */}
       {currentPage === "landing" && (
@@ -381,7 +371,7 @@ const LandingPage: React.FC = () => {
 
       {currentPage === "contact" && (
         <section id="contact-form" className="min-h-screen bg-cover bg-center bg-[url('/src/assets/contactformbg.png')] px-8 py-16">
-          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-3xl text-[#274d4d] font-bold text-center mb-6 mt-28 -ml-[7rem]">Contact Us</h2>
+          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-3xl text-[#274d4d] font-bold text-center mb-6 mt-20 -ml-[8rem]">Contact Us</h2>
           <ContactForm />
         </section>
       )}
