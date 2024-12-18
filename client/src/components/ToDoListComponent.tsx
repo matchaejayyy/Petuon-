@@ -451,61 +451,73 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
         <div
           className={`my-3 mb-0 ml-1 mt-[-4rem] flex space-x-2 font-serif font-bold text-[#354F52]`}
         >
-          <div>
-            <button
-              className={`rounded-md px-4 py-2 ${filterType === "default" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110"}`}
-              onClick={() => filteredTasks("default")}
-            >
-              Default
-            </button>
-
-            <button
-              className={`rounded-md px-4 py-2 ${filterType === "noDate" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
-              onClick={() => filteredTasks("noDate")}
-            >
-              NoDue
-            </button>
-
-            <button
-              className={`rounded-md px-4 py-2 ${filterType === "near" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
-              onClick={() => filteredTasks("near")}
-            >
-              Near
-            </button>
-
-            <button
-              className={`rounded-md px-4 py-2 ${filterType === "later" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
-              onClick={() => filteredTasks("later")}
-            >
-              Later
-            </button>
-
-            <button
-              className={`rounded-md px-4 py-2 ${filterType === "pastDue" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
-              onClick={() => filteredTasks("pastDue")}
-            >
-              PastDue
-            </button>
-
-            <button
-              className={`rounded-md px-4 py-2 ${filterType === "completed" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
-              onClick={() => filteredTasks("completed")}
-            >
-              Completed
-            </button>
+          <div className="
+            absolute flex-wrap
+          ">
+            {[
+              { type: "default", label: "Default" },
+              { type: "noDate", label: "NoDue" },
+              { type: "near", label: "Near" },
+              { type: "later", label: "Later" },
+              { type: "pastDue", label: "PastDue" },
+              { type: "completed", label: "Completed" },
+            ].map((button) => (
+              <button
+                key={button.type}
+                className={`
+                  rounded-md 
+                  px-4 py-2 text-xs     /* Default for very small screens (320px) */
+                  sm:px-4 sm:py-2 sm:text-sm /* Small screens ≥640px */
+                  md:px-6 md:py-3 md:text-base /* Medium screens ≥768px */
+                  lg:px-4 lg:py-1.5 lg:text-lg /* Large screens ≥1024px */
+                  xl:px-4 xl:py-1.5 xl:text-lg /* Extra large screens ≥1280px */
+                  ${
+                    filterType === button.type
+                      ? "bg-[#657F83] text-white font-serif font-bold"
+                      : "bg-none"
+                  } 
+                  hover:scale-110 transition-transform duration-300 ease-in-out
+                `}
+                onClick={() => filteredTasks(button.type)}
+                >
+                  {button.label}
+                </button>
+              ))}
             <form
               onSubmit={handleAddTask}
-              className="fixed left-[10rem] top-[10rem] w-[84rem] rounded-lg bg-white pb-3 pt-3 text-black shadow-md"
+              className="
+                fixed top-40 w-[90%] h-[10%] max-w-[84rem] rounded-lg  
+              bg-white pb-4 pt-4 text-black shadow-md 
+                sm:left-9 sm:top-40 
+                md:left-9 md:top-40 md:w-[93%] 
+                lg:left-40 lg:top-40 lg:w-[84%] 
+                xl:left-40 xl:top-40 xl:w-[90%] 
+              "
             >
               <button
                 type="submit"
-                className="ml-5 mt-2 transform text-2xl text-black transition-transform duration-300 hover:scale-110 active:scale-50"
+                className="
+                  ml-3 mt-[0.6rem] transform text-black transition-transform
+                  duration-300 hover:scale-110 active:scale-50
+                  sm:ml-4 sm:mt-1 sm:text-2xl
+                  md:ml-4 md:mt-1
+                  lg:ml-4 lg:mt-1
+                  xl:ml- xl:mt-2
+                "
               >
                 <SquarePlus size={25} color="#354f52" />
               </button>
 
               <input
-                className="ml-2 w-[46rem] translate-y-[-5px] transform overflow-hidden text-ellipsis bg-transparent text-lg text-black outline-none"
+                className="
+                  ml-2 w-[70%] translate-y-[-5px] transform overflow-hidden 
+                  text-ellipsis bg-transparent text-sm text-black outline-none 
+                  text-[0.8rem]
+                  sm:w-[40%] sm:text-base 
+                  md:w-[46%] md:text-lg 
+                  lg:w-[55%] lg:text-lg
+                  xl:w-[60%] xl:text-xl
+                "
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
                 type="text "
                 placeholder="Enter a task"
@@ -515,13 +527,27 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               />
 
               <label
-                className={`absolute right-[21rem] top-[1.4rem] text-[1rem] outline-none ${time === "--:-- --" ? "pointer-events-none select-none text-transparent" : ""}`}
+                className={`
+                  absolute right-[21rem] top-[1.4rem] outline-none ${time === "--:-- --" ? "pointer-events-none select-none text-transparent" : ""}
+                  right-[12.2rem] text-[0.7rem] top-[0.6rem] 
+                  sm:right-[14rem] sm:text-[0.8rem] sm:top-[1.5rem]
+                  md:right-[16.3rem] md:text-[0.8rem] md:top-[1.6rem]
+                  lg:right-[16.6rem] lg:text-[0.8rem] lg:top-[1.6rem]
+                  xl:right-[18rem] xl:text-[0.9rem] xl:top-[1.7rem]
+                  `}
               >
                 {displayTime}
               </label>
 
               <input
-                className="absolute right-[18.9rem] top-[1.4rem] w-[1.8rem] scale-125 transform bg-transparent text-[0.9rem] text-white outline-none transition-transform duration-200 hover:scale-150 active:scale-110"
+                className="
+                    absolute w-[1.8rem] transform bg-transparent  text-white outline-none transition-transform duration-200 hover:scale-110 sm:hover:scale-125 active:scale-110
+                    right-[10.7rem] top-[0.4rem] scale-75
+                    sm:right-[12.5em] sm:top-[1.4rem] sm:scale-95
+                    md:right-[14.6rem] md:top-[1.4rem] md:scale-100
+                    lg:right-[14.8rem] lg:top-[1.4rem] lg:scale-105
+                    xl:right-[16rem] xl:top-[1.4rem] xl:scale-110
+                  "
                 type="time"
                 value={time}
                 onChange={handleTimeChange}
@@ -530,19 +556,40 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               <button
                 type="button"
                 onClick={() => setTime("--:-- --")}
-                className="duration-400 absolute right-[17rem] top-[1.5rem] transform text-2xl transition-transform hover:scale-125 active:rotate-[-360deg]"
+                className="
+                    duration-400 absolute transform transition-transform hover:scale-110 sm:hover:scale-125 active:rotate-[-360deg]]
+                    right-[9.5rem] top-[0.5rem] scale-75
+                    sm:right-[11rem] sm:top-[1.5rem] sm:scale-95
+                    md:right-[13rem] md:top-[1.5rem] md:scale-100
+                    lg:right-[13rem] lg:top-[1.5rem] lg:scale-105
+                    xl:right-[14.3rem] xl:top-[1.5rem] xl:scale-110
+                  "
               >
                 <RotateCcw size={20} color="black" />
               </button>
 
               <label
-                className={`absolute right-[9rem] top-[1.4rem] text-[1rem] outline-none ${date === "mm/dd/yyyy" ? "pointer-events-none select-none text-transparent" : ""}`}
+                className={`
+                  absolute outline-none ${date === "mm/dd/yyyy" ? "pointer-events-none select-none text-transparent" : ""}
+                  right-[3.8rem] text-[0.7rem] top-[0.5rem] 
+                  sm:right-[5.3rem] sm:text-[0.8rem]  sm:top-[1.5rem] 
+                  md:right-[5.8rem] md:text-[0.8rem]  md:top-[1.5rem] 
+                  lg:right-[5.5rem] lg:text-[0.8rem] lg:top-[1.5rem]
+                  xl:right-[6rem] xl:text-[0.9rem] xl:top-[1.4rem]
+                  `}
               >
                 {date.split("-").reverse().join("-")}
               </label>
 
               <input
-                className="absolute right-[6.8rem] top-[1.2rem] w-[1.55rem] transform bg-transparent text-[1.2rem] outline-none transition-transform duration-200 hover:scale-125 active:scale-90"
+                className="
+                    absolute w-[1.55rem] transform bg-transparent text-[1.2rem] outline-none transition-transform duration-200 hover:scale-110 sm:hover:scale-125 active:scale-90
+                    right-[2.2rem] top-[0.2rem] scale-75
+                    sm:right-[3.5rem] sm:top-[1.2rem] sm:scale-95
+                    md:right-[3.5rem] md:top-[1.2rem] md:scale-95
+                    lg:right-[3.5rem] lg:top-[1.2rem] lg:scale-100
+                    xl:right-[4rem] xl:scale-110
+                  "
                 type="date"
                 value={date}
                 onChange={handleDateChange}
@@ -551,7 +598,14 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               <button
                 type="button"
                 onClick={() => setDate("mm/dd/yyyy")}
-                className="duration-400 absolute right-[5rem] top-[1.5rem] transform text-2xl transition-transform hover:scale-125 active:rotate-[-360deg]"
+                className="
+                  duration-400 absolute transform transition-transform hover:scale-110 sm:hover:scale-125 active:rotate-[-360deg]
+                  right-[1rem] top-[0.5rem] scale-75
+                  sm:right-[2rem] sm:top-[1.5rem] sm:scale-95
+                  md:right-[2rem] md:top-[1.5rem] md:scale-95
+                  lg:right-[2rem] lg:top-[1.5rem]  lg:scale-100
+                  xl:right-[2.5rem] xl:scale-110
+                "
               >
                 <RotateCcw size={20} color="black" />
               </button>
