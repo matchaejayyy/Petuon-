@@ -21,7 +21,7 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
     emailjs
       .send(
         "service_w7kv4vw", // Replace with your EmailJS Service ID
-        "template_ni26qtc", // Replace with your EmailJS Template ID
+        "template_36x541j", // Replace with your EmailJS Template ID
         templateParams,
         "8ziQfIImJeqyuF-oG" // Replace with your EmailJS Public Key
       )
@@ -41,69 +41,74 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
   };
 
   return (
-    <form
-      className="w-full items-center justify-center flex flex-col"
-      onSubmit={handleSubmit}
+    <div
+      className="flex justify-start ml-[30rem] p-4 rounded-2xl bg-[#719191] w-[35rem]"
     >
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-lg font-medium mb-2">
-          Name:
-        </label>
-        <input
-          type="text"
-          id="name"
-          placeholder="Enter your name"
-          className="w-full px-4 py-2 rounded-md border focus:ring-blue-500"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-4">
-        <label htmlFor="email" className="block text-lg font-medium mb-2">
-          Email:
-        </label>
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          className="w-full px-4 py-2 rounded-md border focus:ring-blue-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div className="mb-6">
-        <label htmlFor="message" className="block text-lg font-medium mb-2">
-          Message:
-        </label>
-        <textarea
-          id="message"
-          rows={6}
-          placeholder="Write your message here..."
-          className="w-full px-4 py-2 rounded-md border focus:ring-blue-500"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          required
-        ></textarea>
-      </div>
-      <button
-        type="submit"
-        className="w-full px-4 py-2 rounded-md bg-[#6e8080] text-white hover:bg-[#0d6767]"
+      <form
+        style={{ fontFamily: '"Signika Negative", sans-serif' }}
+        className="w-full text-white items-center justify-center flex flex-col"
+        onSubmit={handleSubmit}
       >
-        Submit
-      </button>
-
-      {status === "success" && (
-        <p className="mt-4 text-green-500">Your message was sent successfully!</p>
-      )}
-      {status === "error" && (
-        <p className="mt-4 text-red-500">
-          There was an error sending your message. Please try again.
-        </p>
-      )}
-    </form>
+        <div className="mb-4">
+          <label htmlFor="name" className="block text-lg font-medium mb-2">
+            Name:
+          </label>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter your name"
+            className="w-[30rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-lg font-medium mb-2">
+            Email:
+          </label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            className="w-[30rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-6">
+          <label htmlFor="message" className="block text-lg font-medium mb-2">
+            Message:
+          </label>
+          <textarea
+            id="message"
+            rows={6}
+            placeholder="Write your message here..."
+            className="w-[30rem] px-16 py-2 rounded-lg border focus:ring-blue-500"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            required
+          ></textarea>
+        </div>
+        <button
+          type="submit"
+          className="w-[15rem] px-4 py-2 rounded-2xl bg-[#6e8080] text-white hover:bg-[#0d6767]"
+        >
+          Submit
+        </button>
+  
+        {status === "success" && (
+          <p className="mt-4 text-green-500">Your message was sent successfully!</p>
+        )}
+        {status === "error" && (
+          <p className="mt-4 text-red-500">
+            There was an error sending your message. Please try again.
+          </p>
+        )}
+      </form>
+    </div>
   );
-};
+}
 
 export default ContactForm;

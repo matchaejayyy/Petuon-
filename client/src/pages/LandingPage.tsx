@@ -132,10 +132,10 @@ const LandingPage: React.FC = () => {
       {currentPage === "about" && (
         // About page content goes here
         <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
-          <h1 className="mb-6 text-5xl font-bold text-start mt-28">About</h1>
+          <h1 className="mb-6 text-[#274d4d] text-5xl font-bold text-start mt-28">About</h1>
           <p
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="text-lg max-w-lg leading-relaxed text-start"
+            className="text-lg text-[#345959] max-w-lg leading-relaxed text-start"
           >
             This website was created by Carmine's Team to help students plan
             their study schedules, track habits, and boost productivity with
@@ -216,7 +216,7 @@ const LandingPage: React.FC = () => {
       <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
       <h1
         style={{ fontFamily: '"Signika Negative", sans-serif' }}
-        className="mb-8 mt-24 text-5xl font-bold text-center"
+        className="mb-8 mt-24 text-5xl text-[#274d4d] font-bold text-center"
       >
         Our Team
       </h1>
@@ -261,7 +261,7 @@ const LandingPage: React.FC = () => {
               </div>
               <h3
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-lg font-semibold mt-4"
+                className="text-lg text-[#3e6969] font-semibold mt-4"
               >
                 {member.name}
               </h3>
@@ -342,7 +342,7 @@ const LandingPage: React.FC = () => {
       {currentPage === "landing" && (
         <section className="bg-white px-6 py-12">
           <div className="mx-auto max-w-6xl">
-            <h3 className="mb-12 text-center text-3xl font-bold">Features</h3>
+            <h3 className="mb-12 text-[#274d4d] text-center text-3xl font-bold">Features</h3>
 
             {/* Pets Feature */}
             <div className="flex flex-col md:flex-row items-center mb-8">
@@ -381,7 +381,7 @@ const LandingPage: React.FC = () => {
 
       {currentPage === "contact" && (
         <section id="contact-form" className="min-h-screen bg-cover bg-center bg-[url('/src/assets/contactformbg.png')] px-8 py-16">
-          <h2 className="text-3xl font-bold text-center mb-6 mt-28">Contact Us</h2>
+          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-3xl text-[#274d4d] font-bold text-center mb-6 mt-28 -ml-[7rem]">Contact Us</h2>
           <ContactForm />
         </section>
       )}
