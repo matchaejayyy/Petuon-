@@ -128,14 +128,14 @@ const FlashcardComponent: React.FC = () => {
   const FlashcardList: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
     return (
       <div
-      className="-mt-[3rem] p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-y-5 max-h-[260px] overflow-x-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-500"
+      className="-mt-[3rem] -mb-12 p-3 grid grid-cols-1 lg:grid-cols-2 gap-y-5 max-h-[260px] lg:max-h-[280px] xl:max-h-[248px] "
       id="flashcards-container"
     >
       {flashcards.map((flashcard, index) => (
         <div
           key={flashcard.unique_flashcard_id}
           style={{ fontFamily: '"Signika Negative", sans-serif' }}
-          className="relative flex flex-col w-full sm:w-[40rem] h-[15rem] md bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-100 mx-auto"
+          className="relative flex flex-col w-full sm:w-[40rem] lg:w-[98%] h-[15rem] md bg-white rounded-3xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-100 mx-auto"
         >
           {/* Top Colored Section */}
           <div className="bg-[#354F52] h-[20%] w-full rounded-t-2xl  flex items-center justify-between px-4 relative">
@@ -165,7 +165,7 @@ const FlashcardComponent: React.FC = () => {
                 {editingQuestion === flashcard.unique_flashcard_id ? (
                   <input
                     type="text"
-                    className="bg-white border-2 border-[#3498db] text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db]"
+                    className="bg-white border-2 border-[#3498db] text-[#354F52] p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3498db] w-[100%] xl:w-[3/4]"
                     defaultValue={flashcard.question}
                     onBlur={(e) => handleSaveQuestion(flashcard.unique_flashcard_id, e.target.value)}
                     onKeyDown={(e) => {
@@ -221,8 +221,9 @@ const FlashcardComponent: React.FC = () => {
  
   return (
     <>
-     {onFirstPage ? (
-        <div className="flex flex-col items-center mt-[-3rem] mr-[7rem] ">
+    <div className='overflow-y-auto'>
+    {onFirstPage ? (
+        <div className="flex flex-col items-center mt-[-3rem] mr-[7rem] overflow-y-scroll">
           <div className=" h-24 w-full mt-20 flex items-center "> 
             <h1 style={{ fontFamily: '"Signika Negative", sans-serif'}} className="text-[#354F52] ml-[3.5rem] text-5xl absolute left-1/3 transform -translate-x-1/4 -mt-[8rem]">Decks of Flash Cards</h1>
             <button
@@ -450,9 +451,9 @@ const FlashcardComponent: React.FC = () => {
       ) : isReviewing ? (
         <div>
           <div className="flex">
-          <div className="flex items-center p-4 w-[13.5rem] h-[3rem] rounded-2xl">
+          <div className="flex items-center p- w-[13.5rem] h-[3rem] rounded-2xl">
           <div
-              className="flex items-center bg-[#354F52] text-white text-xl font-bold px-8 py-3 w-[20em] -ml-[3rem] rounded-r-md shadow-lg"
+              className="flex items-center bg-[#354F52] text-white text-xl font-bold px-8 py-3 w-[20em] -ml-[3rem]  rounded-r-md shadow-lg"
               style={{
                 fontFamily: '"Signika Negative", sans-serif',
                 clipPath: "polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%)",
@@ -484,28 +485,30 @@ const FlashcardComponent: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div>
+        <div className='overflow-x-hidden'>
           <div className="flex">
-          <div className="flex items-center p-4 w-[13.5rem] h-[3rem] rounded-2xl">
+          <div className="flex items-center w-[13.5rem] h-[3rem] rounded-2xl">
+          <div className='bg-gray-100 lg:p-0 w-full h-16 flex z-10 fixed items-center m-0'>
           <div
-              className="flex items-center bg-[#354F52] text-white text-xl font-bold px-8 py-3 w-[20rem] -ml-[3rem] rounded-r-md shadow-lg"
+              className="flex fixed items-center bg-[#354F52] text-white text-xl font-bold px-8 py-3 w-39 md:w-[15rem] xl:w-[20rem] h-10 xl:h-15 -ml-[3rem] lg:-m-[2rem] rounded-r-md shadow-lg"
               style={{
                 fontFamily: '"Signika Negative", sans-serif',
                 clipPath: "polygon(0 0, 100% 0, 85% 50%, 100% 100%, 0 100%)",
               }}
             >
              
-              <h1 className="ml-2 uppercase">
+              <h1 className="ml-2 uppercase text-[18px]">
                 {decks.find(deck => deck.deck_id === deckId)!.title?.length > 9
                   ? decks.find(deck => deck.deck_id === deckId)?.title.slice(0, 9) + "..."
                   : decks.find(deck => deck.deck_id === deckId)?.title || "Untitled"}
               </h1>
             </div>
+          </div>
               <div>
                 <button
                 onClick={() => {setIsReviewing(true); setOnFirstPage(false);}}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-               className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/4 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+               className="text-white text-sm md:text-base xl:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20  xl:right-[7rem] top-1/5 xl:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
                 >
                 Review Deck
                 </button>
@@ -515,7 +518,7 @@ const FlashcardComponent: React.FC = () => {
               
                <button
                 onClick={() => { setOnFirstPage(true); console.log("Clicked Review"); }}
-                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+                className="text-white text-base md:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-[8rem] md:mr-[14rem] mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20 xl:right-[10rem] top-1/5 xl:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
               >
                 Back
@@ -542,6 +545,7 @@ const FlashcardComponent: React.FC = () => {
           )}
         </div>
       )}
+    </div>
     </>
   );
 };
