@@ -48,7 +48,6 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
   const [taskMessage, setTaskMessage] = useState<string>(
     "No active tasks available.",
   );
-  const [taskPos, setTaskPos] = useState<string>("left-[42rem]");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -216,7 +215,6 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
           (task) => task.dueAt.getTime() === 0 && !task.completed,
         );
         TasksMessage = "No tasks with no due date available.";
-        setTaskPos("left-[38.5rem]");
         break;
       case "near":
         FilteredTasks = tasksBackup
@@ -225,7 +223,6 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
           )
           .sort((a, b) => a.dueAt.getTime() - b.dueAt.getTime());
         TasksMessage = "No near tasks available.";
-        setTaskPos("left-[42rem]");
         break;
       case "later":
         FilteredTasks = tasksBackup
@@ -233,13 +230,11 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             (task) => task.dueAt.getTime() > now.getTime() && !task.completed,
           )
           .sort((a, b) => b.dueAt.getTime() - a.dueAt.getTime());
-        setTaskPos("left-[41rem]");
         TasksMessage = "No tasks available for later.";
         break;
       case "default":
         FilteredTasks = tasksBackup;
         TasksMessage = "No active tasks available.";
-        setTaskPos("left-[42rem]");
         break;
       case "pastDue":
         FilteredTasks = tasksBackup.filter(
@@ -249,17 +244,14 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             !task.completed,
         );
         TasksMessage = "No tasks past due.";
-        setTaskPos("left-[44rem]");
         break;
       case "completed":
         setAfterLoading(false);
         TasksMessage = "No tasks completed.";
-        setTaskPos("left-[43.5rem]");
         break;
       default:
         FilteredTasks = tasksBackup;
         TasksMessage = "No active tasks available.";
-        setTaskPos("left-[42rem]");
         break;
     }
 
@@ -449,7 +441,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     return (
       <>
         <div
-          className={`my-3 mb-0 ml-1 mt-[-4rem] flex space-x-2 font-serif font-bold text-[#354F52]`}
+          className={`my-3 mb-0 ml-1 mt-[-4rem] flex space-x-2 font-serif font-bold text-[#354F52] scroll-none overflow-hidden`}
         >
           <div className="
             absolute flex-wrap
@@ -466,11 +458,11 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                 key={button.type}
                 className={`
                   rounded-md 
-                  px-4 py-2 text-xs     /* Default for very small screens (320px) */
-                  sm:px-4 sm:py-2 sm:text-sm /* Small screens ≥640px */
-                  md:px-6 md:py-3 md:text-base /* Medium screens ≥768px */
-                  lg:px-4 lg:py-1.5 lg:text-lg /* Large screens ≥1024px */
-                  xl:px-4 xl:py-1.5 xl:text-lg /* Extra large screens ≥1280px */
+                  px-3 py-1 text-xs     
+                  sm:px-4 sm:py-2 sm:text-sm
+                  md:px-6 md:py-3 md:text-base 
+                  lg:px-4 lg:py-1.5 lg:text-lg 
+                  xl:px-4 xl:py-1.5 xl:text-lg 
                   ${
                     filterType === button.type
                       ? "bg-[#657F83] text-white font-serif font-bold"
@@ -487,12 +479,12 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               onSubmit={handleAddTask}
               className="
                 transition-all duration-500 ease-in-out
-                fixed top-40 w-[90%] h-[10%] max-w-[84rem] rounded-lg  
-              bg-white pb-4 pt-4 text-black shadow-md 
-                sm:left-9 sm:top-40 
-                md:left-9 md:top-40 md:w-[93%] 
-                lg:left-40 lg:top-40 lg:w-[84%] 
-                xl:left-40 xl:top-40 xl:w-[90%] 
+                fixed top-40 w-[90%] h-[7%] max-w-[84rem] rounded-lg  
+              bg-white pb-4 pt-4 text-black shadow-md  
+                sm:left-9 sm:top-40 sm:h-[8%]
+                md:left-9 md:top-40 md:w-[93%] md:h-[8%]
+                lg:left-40 lg:top-40 lg:w-[84%] lg:h-[8%]
+                xl:left-40 xl:top-40 xl:w-[90%] xl:h-[9%]
               "
             >
               <button
@@ -529,12 +521,12 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
               <label
                 className={`
-                  absolute right-[21rem] top-[1.4rem] outline-none ${time === "--:-- --" ? "pointer-events-none select-none text-transparent" : ""}
-                  right-[12.2rem] text-[0.7rem] top-[0.6rem] 
+                  absolute outline-none ${time === "--:-- --" ? "pointer-events-none select-none text-transparent" : ""}
+                  right-[12.3rem] text-[0.7rem] top-[0.7rem] 
                   sm:right-[14rem] sm:text-[0.8rem] sm:top-[1.5rem]
                   md:right-[16.3rem] md:text-[0.8rem] md:top-[1.6rem]
                   lg:right-[16.6rem] lg:text-[0.8rem] lg:top-[1.6rem]
-                  xl:right-[18rem] xl:text-[0.9rem] xl:top-[1.7rem]
+                  xl:right-[18rem] xl:text-[0.9rem] xl:top-[1.5rem]
                   `}
               >
                 {displayTime}
@@ -558,7 +550,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                 type="button"
                 onClick={() => setTime("--:-- --")}
                 className="
-                    duration-400 absolute transform transition-transform hover:scale-110 sm:hover:scale-125 active:rotate-[-360deg]]
+                    duration-400 absolute transform transition-transform hover:scale-110 sm:hover:scale-125 active:rotate-[-360deg]
                     right-[9.5rem] top-[0.5rem] scale-75
                     sm:right-[11rem] sm:top-[1.5rem] sm:scale-95
                     md:right-[13rem] md:top-[1.5rem] md:scale-100
@@ -572,7 +564,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               <label
                 className={`
                   absolute outline-none ${date === "mm/dd/yyyy" ? "pointer-events-none select-none text-transparent" : ""}
-                  right-[3.8rem] text-[0.7rem] top-[0.5rem] 
+                  right-[3.8rem] text-[0.7rem] top-[0.65rem] 
                   sm:right-[5.3rem] sm:text-[0.8rem]  sm:top-[1.5rem] 
                   md:right-[5.8rem] md:text-[0.8rem]  md:top-[1.5rem] 
                   lg:right-[5.5rem] lg:text-[0.8rem] lg:top-[1.5rem]
@@ -636,7 +628,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                 <img
                   src={sleepingPenguin}
                   alt="No tasks available"
-                  className="absolute h-32 w-32 
+                  className={`absolute h-32 w-32 
                     transition-all duration-500 ease-in-out
                     top-[48%]
                     left-[40%] 
@@ -644,18 +636,25 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     md:left-[47%] md:top-[50%]
                     lg:left-[40%] lg:top-[45%]
                     xl:left-[41%] xl:top-[45%]
-                  "
+                  `}
                 />
                 <h1
-                  className="absolute  text-gray-500
-                   transition-all duration-500 ease-in-out
+                  className={`absolute  text-gray-500
                     w-[54%] text-lg
-                    left-[35%] 
-                    sm:left-[35%] sm-text2xl 
-                    md:left-[40%] md:text-2xl
-                    lg:left-[32%] lg:text-3xl
-                    xl:left-[35%] 
-                  "
+                   
+                     ${
+                    filterType === "default"
+                      ? " left-[35%] sm:left-[30%] sm:text-xl md:left-[40%] md:text-2xl lg:left-[32%] lg:text-3xl xl:left-[35%]"
+                      : filterType === "noDate"
+                      ? " left-[28%] sm:left-[30%] sm:text-xl md:left-[35%] md:text-x2l lg:left-[28%] lg:text-3xl xl:left-[30%]"
+                      : filterType === "near"
+                      ? "left-[35%] sm:left-[35%] sm:text-xl md:left-[40%] md:text-2xl lg:left-[32%] lg:text-3xl xl:left-[35%]"
+                      : filterType === "later"
+                      ? "left-[32%] sm:left-[33%] sm:text-xl md:left-[38%] md:text-2xl lg:left-[31%] lg:text-3xl xl:left-[34%]"
+                      : filterType === "pastDue"
+                      ? "left-[38%] sm:left-[37%] sm:text-xl md:left-[44%] md:text-2xl lg:left-[37%] lg:text-3xl xl:left-[37%]"
+                      : "left-[36%] sm:left-[35%] sm:text-xl md:left-[42%] md:text-2xl lg:left-[34%] lg:text-3xl xl:left-[37%]"}
+                  `}
                 >
                   {taskMessage}
                 </h1>
@@ -663,7 +662,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             ) : null}
 
             <div
-              className={`fixed left-[10rem] top-[14rem] h-[28rem] w-[84.4rem] overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden`}
+              className={`absolute  left-[2.05rem] top-[14rem]  overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden
+                  w-[87%] h-[31rem]
+                  sm:w-[90.5%] sm:h-[31rem]
+                  md:w-[93.5%] md:h-[31.4rem]
+                  lg:w-[84%]
+                  xl:w-[88%] xl:h-[28rem]
+                `}
             >
             {sortedGroupedTasks.map(([dateKey, tasks]) => (
             <React.Fragment key={dateKey}>
@@ -698,8 +703,11 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }
-                    className={` mt-[-0.4rem] group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg 
-                      ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
+                    className={` 
+                        mt-[-0.4rem] group flex flex-col whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg 
+                        ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}
+                        sm:flex-row
+                      `}
                     style={{
                       backgroundColor: task.task_id === highlightedTaskId ? "rgba(144, 238, 144, 0.9)" :colors[index % colors.length],  
                       boxShadow: task.task_id === highlightedTaskId ? "0 0 10px 2px 0.8" : "none", 
@@ -846,7 +854,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     <button
                       disabled={isEditing && editIndex !== task.task_id}
                       onClick={() => handleDeleteTask(task.task_id)}
-                      className={`ml-[81.5rem] transform text-red-600 opacity-0 transition-transform duration-200 hover:scale-125 group-hover:opacity-100 active:scale-90${isEditing === true && editIndex === task.task_id ? "opacity-45" : ""}`}
+                      className={`transform text-red-600 opacity-0 transition-transform duration-200 hover:scale-125 group-hover:opacity-100 active:scale-90${isEditing === true && editIndex === task.task_id ? "opacity-45" : ""}
+                        ml-[92%]
+                        sm:ml-[94%]
+                        md:ml-[94%]
+                        lg:ml-[95%]
+                        xl:ml-[97%] 
+                      `}
                     >
                       <Trash2 size={20} />
                     </button>
