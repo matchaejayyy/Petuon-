@@ -441,7 +441,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     return (
       <>
         <div
-          className={`my-3 mb-0 ml-1 mt-[-4rem] flex space-x-2 font-serif font-bold text-[#354F52]`}
+          className={`my-3 mb-0 ml-1 mt-[-4rem] flex space-x-2 font-serif font-bold text-[#354F52] scroll-none overflow-hidden`}
         >
           <div className="
             absolute flex-wrap
@@ -458,7 +458,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                 key={button.type}
                 className={`
                   rounded-md 
-                  px-4 py-2 text-xs     
+                  px-3 py-1 text-xs     
                   sm:px-4 sm:py-2 sm:text-sm
                   md:px-6 md:py-3 md:text-base 
                   lg:px-4 lg:py-1.5 lg:text-lg 
@@ -479,12 +479,12 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               onSubmit={handleAddTask}
               className="
                 transition-all duration-500 ease-in-out
-                fixed top-40 w-[90%] h-[10%] max-w-[84rem] rounded-lg  
-              bg-white pb-4 pt-4 text-black shadow-md 
-                sm:left-9 sm:top-40
-                md:left-9 md:top-40 md:w-[93%] 
-                lg:left-40 lg:top-40 lg:w-[84%] 
-                xl:left-40 xl:top-40 xl:w-[90%] 
+                fixed top-40 w-[90%] h-[7%] max-w-[84rem] rounded-lg  
+              bg-white pb-4 pt-4 text-black shadow-md  
+                sm:left-9 sm:top-40 sm:h-[8%]
+                md:left-9 md:top-40 md:w-[93%] md:h-[8%]
+                lg:left-40 lg:top-40 lg:w-[84%] lg:h-[8%]
+                xl:left-40 xl:top-40 xl:w-[90%] xl:h-[9%]
               "
             >
               <button
@@ -662,7 +662,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
             ) : null}
 
             <div
-              className={`fixed left-[10rem] top-[14rem] h-[28rem] w-[84.4rem] overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden`}
+              className={`absolute  left-[2.05rem] top-[14rem]  overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden
+                  w-[87%] h-[31rem]
+                  sm:w-[90.5%] sm:h-[31rem]
+                  md:w-[93.5%] md:h-[31.4rem]
+                  lg:w-[84%]
+                  xl:w-[88%] xl:h-[28rem]
+                `}
             >
             {sortedGroupedTasks.map(([dateKey, tasks]) => (
             <React.Fragment key={dateKey}>
@@ -697,8 +703,11 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         ? { duration: 0.2, delay: index * delayPerItem }
                         : undefined
                     }
-                    className={` mt-[-0.4rem] group flex whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg 
-                      ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}`}
+                    className={` 
+                        mt-[-0.4rem] group flex flex-col whitespace-nowrap rounded-lg pb-4 pt-4 shadow-md transition-transform duration-1000 hover:shadow-lg 
+                        ${isAnimatingDropDown ? "translate-y-[-65px] transform opacity-100" : ""}
+                        sm:flex-row
+                      `}
                     style={{
                       backgroundColor: task.task_id === highlightedTaskId ? "rgba(144, 238, 144, 0.9)" :colors[index % colors.length],  
                       boxShadow: task.task_id === highlightedTaskId ? "0 0 10px 2px 0.8" : "none", 
@@ -845,7 +854,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     <button
                       disabled={isEditing && editIndex !== task.task_id}
                       onClick={() => handleDeleteTask(task.task_id)}
-                      className={`ml-[81.5rem] transform text-red-600 opacity-0 transition-transform duration-200 hover:scale-125 group-hover:opacity-100 active:scale-90${isEditing === true && editIndex === task.task_id ? "opacity-45" : ""}`}
+                      className={`transform text-red-600 opacity-0 transition-transform duration-200 hover:scale-125 group-hover:opacity-100 active:scale-90${isEditing === true && editIndex === task.task_id ? "opacity-45" : ""}
+                        ml-[92%]
+                        sm:ml-[94%]
+                        md:ml-[94%]
+                        lg:ml-[95%]
+                        xl:ml-[97%] 
+                      `}
                     >
                       <Trash2 size={20} />
                     </button>
