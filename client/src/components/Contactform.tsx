@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import emailjs from "@emailjs/browser";
 
-interface ContactFormProps {   onSubmit?: (data: { name: string; email: string; message: string }) => void;}
+interface ContactFormProps {
+  onSubmit?: (data: { name: string; email: string; message: string }) => void;
+}
 
 export const ContactForm: React.FC<ContactFormProps> = () => {
   const [name, setName] = useState("");
@@ -42,51 +44,50 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
 
   return (
     <div
-    className="flex justify-start ml-[30rem] p-3 rounded-2xl bg-[#719191] w-[32rem] shadow-lg"
+  className="flex justify-center items-center sm:items-start sm:justify-start sm:ml-[1rem] p-3 rounded-2xl bg-[#719191] w-[32rem] h-auto shadow-lg sm:w-[320px] sm:h-[930px]"
     >
-  
       <form
         style={{ fontFamily: '"Signika Negative", sans-serif' }}
-        className="w-full ml-7 text-white items-start justify-start flex flex-col"
+        className="w-full sm:w-[280px] sm:mt-6 text-white items-center justify-center flex flex-col"
         onSubmit={handleSubmit}
       >
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-lg font-medium mb-2">
+        <div className="mb-4 w-full">
+          <label htmlFor="name" className="block text-lg sm:text-base font-medium mb-2">
             Name:
           </label>
           <input
             type="text"
             id="name"
             placeholder="Enter your name"
-            className="w-[27rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-2xl border text-[#3a4848] focus:ring-blue-500"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-lg font-medium mb-2">
+        <div className="mb-4 w-full">
+          <label htmlFor="email" className="block text-lg sm:text-base font-medium mb-2">
             Email:
           </label>
           <input
             type="email"
             id="email"
             placeholder="Enter your email"
-            className="w-[27rem] px-16 py-2 rounded-2xl border focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-2xl border text-[#3a4848] focus:ring-blue-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
-        <div className="mb-6">
-          <label htmlFor="message" className="block text-lg font-medium mb-2">
+        <div className="mb-6 w-full">
+          <label htmlFor="message" className="block text-lg sm:text-base font-medium mb-2">
             Message:
           </label>
           <textarea
             id="message"
             rows={6}
             placeholder="Write your message here..."
-            className="w-[27rem] px-16 py-2 rounded-lg border text-black focus:ring-blue-500"
+            className="w-full px-4 py-2 rounded-lg border text-[#3a4848] focus:ring-blue-500"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
@@ -94,22 +95,25 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
         </div>
         <button
           type="submit"
-          className="w-[11rem] ml-[8rem] -mt-3 px-4 py-2 rounded-2xl bg-[#cadada] text-[#485e5e] hover:bg-[#4e7074] hover:text-white transform transition-transform duration-200 hover:scale-105"
+          className="w-[11rem] sm:w-[10rem] sm:py-1 px-4 py-2 rounded-2xl bg-[#cadada] text-[#485e5e] hover:bg-[#4e7074] hover:text-white transform transition-transform duration-200 hover:scale-105"
         >
           Submit
         </button>
 
         {status === "success" && (
-          <p className="mt-4 text-green-500">Your message was sent successfully!</p>
+          <p className="mt-4 sm:mt-2 text-green-500 text-center">
+            Your message was sent successfully!
+          </p>
         )}
         {status === "error" && (
-          <p className="mt-4 text-red-500">
+          <p className="mt-4 sm:mt-2 text-red-500 text-center">
             There was an error sending your message. Please try again.
           </p>
         )}
       </form>
     </div>
+
   );
-}
+};
 
 export default ContactForm;
