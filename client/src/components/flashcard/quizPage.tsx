@@ -137,9 +137,9 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       </style>
 
       {quizState === "fillBlanks" ? (
-        <div className="flex flex-col items-center -mt-[28rem]">
+        <div className="flex flex-col items-center  w-[100%]">
           <div
-            className="w-[800px] h-[400px] bg-white rounded-xl shadow-xl flex items-center justify-center text-center"
+            className="w-[100%] max-w-[800px] h-[400px] -mt-[10rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
           >
             <h2 className="text-3xl font-semibold text-[#354F52]">
@@ -151,7 +151,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           <button
                onClick={() => setQuizState("review")}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+                className="text-white text-sm md:text-base lg:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20  xl:right-[7rem] top-[4.5rem] lg:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
               >
                 Review
             </button>
@@ -187,11 +187,11 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
             </button>
           </div>
 
-          <div className="flex items-center justify-between w-auto mt-5">
-            <span className="bg-[#354F52] text-white p-2 rounded-lg">
-              {currentIndex + 1} / {tempFlashcards.length}
-            </span>
-          </div>
+          <div className="bg-[#354F52] rounded-lg p-2 mt-1.5 md:mt-[1.5rem]">
+              <span style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-2xl text-white font-medium mt-[2.5rem]">
+                {currentIndex + 1} / {tempFlashcards.length}
+              </span>
+            </div>
         </div>
 
       ) : isQuizComplete ? (
@@ -223,23 +223,23 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           <button
             onClick={handleStartNewQuiz}
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
+            className="text-white text-sm md:text-base xl:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute right-10 top-[8rem] xl:top-[16rem] shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
           >
             Start Quiz
           </button>
         </div>
       ) : (
         // Regular quiz UI before it's finished
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center w-[100%]">
           <button
                onClick={() => setQuizState("fillBlanks")}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-white text-xl bg-[#354F52] p-4 w-[10rem] h-[3rem] rounded-2xl m-10 mt-[2rem] absolute left-0 top-1/3 transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+                className="text-white text-md md:text-base lg:text-xl bg-[#354F52] md:p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20  xl:right-[7rem] top-[4.5rem] lg:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
               >
                 Start Quiz
             </button>
           <div
-            className="w-[800px] h-[400px] -mt-[29rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            className="w-[100%] max-w-[800px] h-[400px] -mt-[10rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{
               fontFamily: '"Signika Negative", sans-serif',
               transformStyle: 'preserve-3d',
@@ -266,7 +266,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           </div>
 
            {/* Navigation Controls */}
-           <div className="flex items-center justify-between w-[600px] mt-5">
+           <div className="flex items-center justify-between w-[250px] md:w-[600px] mt-5">
             <button
               onClick={handlePreviousFlashcard}
               className="scale-150 cursor-pointer transition-transform duration-300 hover:scale-175 active:scale-50 mt-[1rem]"
