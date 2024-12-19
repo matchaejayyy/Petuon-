@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ import "react-toastify/dist/ReactToastify.css";
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const {
     register,
@@ -52,7 +52,7 @@ const LoginPage: React.FC<Props> = () => {
     <>
      <ToastContainer
         position="top-center" // This makes the toast appear at the top center
-        autoClose={3000} // Adjust the auto-close time if needed
+        autoClose={2000} // Adjust the auto-close time if needed
         hideProgressBar={false} // Show the progress bar
         newestOnTop={true} // New toasts appear at the top of the stack
         closeOnClick // Close on click
@@ -128,7 +128,7 @@ const LoginPage: React.FC<Props> = () => {
                   Don’t have an account yet?{" "}
                   <Link
                     to="/register"
-                    className="text-primary-600 dark:text-primary-500 font-medium hover:underline"
+                    className="text-primary-600 text-white font-medium hover:underline"
                   >
                     Sign up
                   </Link>
