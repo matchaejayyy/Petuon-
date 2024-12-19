@@ -86,7 +86,7 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
             id="message"
             rows={6}
             placeholder="Write your message here..."
-            className="w-[27rem] px-16 py-2 rounded-lg border focus:ring-blue-500"
+            className="w-[27rem] px-16 py-2 rounded-lg border text-black focus:ring-blue-500"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
