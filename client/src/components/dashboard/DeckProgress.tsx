@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { boolean } from "yup";
 
 interface ProgressItem {
   title: string;

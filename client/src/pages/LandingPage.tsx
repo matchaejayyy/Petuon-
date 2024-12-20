@@ -35,7 +35,7 @@ const LandingPage: React.FC = () => {
   // Scroll animation logic using Intersection Observer
   const observer = useRef<IntersectionObserver | null>(null);
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const [isFeaturesVisible, setIsFeaturesVisible] = useState<boolean>(false);
+  const [, setIsFeaturesVisible] = useState<boolean>(false);
   const [hasExited, setHasExited] = useState<boolean>(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down'>('down');
 

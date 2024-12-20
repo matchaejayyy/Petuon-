@@ -15,7 +15,6 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const [showAnswer, setShowAnswer] = useState(false);
   const [quizState, setQuizState] = useState<"review" | "fillBlanks" | "finished">("review");
   const [userScore, setUserScore] = useState(0);
-  const [petCurrency, setPetCurrency] = useState(0); // New state variable
   const [attempts, setAttempts] = useState(3);
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
