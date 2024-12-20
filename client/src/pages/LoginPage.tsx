@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-object-type */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -13,10 +13,39 @@ import mdBG from '../assets/Bg_md.png';
 import lgBG from '../assets/Bg_lg.png';
 import LogInBG from '../assets/LogInBG.png';
 
+const getBackgroundImage = (width: number) => {
+  if (width >= 1280) return `url(${LogInBG})`;
+  if (width >= 1024) return `url(${lgBG})`;
+  if (width >= 640) return `url(${mdBG})`;
+  if (width >= 480) return `url(${smBG1})`;
+  return `url(${smBG})`;
+};
+
+
+
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState<string>(''); 
+
+  useEffect(() => {
+    const updateBackground = () => {
+      const width = window.innerWidth;
+      setBackgroundImage(getBackgroundImage(width));
+    };
+
+    // Set the background image when the component mounts
+    updateBackground();
+
+    // Update the background image when the window is resized
+    window.addEventListener('resize', updateBackground);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', updateBackground);
+    };
+  }, []);
 
   const {
     register,
@@ -50,14 +79,6 @@ const LoginPage: React.FC<Props> = () => {
     }
   };
 
-    const backgroundImage = {
-      base: smBG,
-      sm: smBG1,
-      md: mdBG,
-      lg: lgBG,
-      xl: LogInBG,
-    };
-  
 
   return (
     <>
@@ -76,9 +97,9 @@ const LoginPage: React.FC<Props> = () => {
       <LogInOut/>
     )}
    
-    <section  
-      className={`flex h-screen items-center justify-center bg-cover bg-center ${window.innerWidth < 640 ? 'bg-sm' : window.innerWidth < 1024 ? 'bg-md' : 'bg-lg'}`}
-      
+   <section
+         className="fixed  w-full h-full flex items-center justify-center bg-cover bg-center"
+      style={{ backgroundImage: backgroundImage }}
     >
       
       <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20 xl:-mt-20 xl:mr-[9rem]">

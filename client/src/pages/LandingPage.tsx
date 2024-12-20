@@ -9,11 +9,13 @@ import paulImage from "../assets/teamPicture/paul.png";
 import { useNavigate } from "react-router-dom";
 import {ContactForm} from "../components/Contactform";
 import notefeatureImage from "../assets/features/notefeature.png";
-import flashcardImage from "../assets/features/flashcardfeature.png"
-import petfeatureImage from "../assets/features/petfeature.png"
-import todolistImage from "../assets/features/tofolistfeature.png"
-import LogInOut from "../components/logInOutComponent";
+import flashcardImage from "../assets/features/flashcardfeature.png";
+import petfeatureImage from "../assets/features/petfeature.png";
+import todolistImage from "../assets/features/tofolistfeature.png";
+import landingPage from '../assets/landingpageLogo.png';
+import penguin from "../assets/landingpagePenguin.png";
 
+import LogInOut from "../components/logInOutComponent";
 
 
 const LandingPage: React.FC = () => {
@@ -98,7 +100,7 @@ const LandingPage: React.FC = () => {
 
   return (
     
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-x-hidden scrollbar-hidden fixed w-full h-full overflow-y-scroll min-h-screen">
       {isLoading && <LogInOut />}
     {/* Persistent Navigation Bar with Dynamic Background Color */}
     <header
@@ -109,7 +111,7 @@ const LandingPage: React.FC = () => {
     {/* Logo */}
     <div className="hidden xl:block">
       <img
-        src="/src/assets/landingpageLogo.png"
+        src={landingPage}
         alt="PETUON Logo"
         className="w-96 h-auto object-contain xl:h-28 xl:mt-10 xl:-m-7"
       />
@@ -184,7 +186,7 @@ const LandingPage: React.FC = () => {
 
       <motion.img
         key={currentPage} // Key based on currentPage to force re-render
-        src="/src/assets/landingpagePenguin.png"
+        src={penguin}
         alt="Study Buddy Penguin"
         className="w-50 h-auto md:h-4/6 md:w-4/6 md:ml-48 md:mt-6 lg:h-3/6 lg:w-2/5 lg:ml-96 xl:h-3/4 xl:w-1/3 xl:ml-auto xl:mr-0 xl:-mt-[160px]"
         initial={{ opacity: 0, x: 100 }} // Start off-screen and invisible
@@ -461,7 +463,7 @@ const LandingPage: React.FC = () => {
       )}
 
       {/* Footer */}
-      <footer className="bg-[#719191] py-4 text-white sm:w-[320px] sm:h-[930px] md:w-full md:h-24">
+      <footer className=" bg-[#719191]  py-4 text-white sm:w-[320px] sm:h-[930px] md:w-full md:h-24">
       <div className="mx-auto text-center sm:px-4 sm:py-20 md:px-3 md:py-5 xl:py-3 ">
         <p className="text-base sm:text-sm md:text-3xl ">&copy; 2024 PETUON. All rights reserved.</p>
       </div>

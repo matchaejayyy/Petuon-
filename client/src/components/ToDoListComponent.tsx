@@ -152,17 +152,17 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
       return;
     }
 
-    setIsAnimatingDropDown(true);
-    setTimeout(() => {
-      setIsAnimatingDropDown(false);
-    }, 10); // dropdown duration
+    // setIsAnimatingDropDown(true);
+    // setTimeout(() => {
+    //   setIsAnimatingDropDown(false);
+    // }, 10); // dropdown duration
 
-    if (lastTaskRef.current) {
-      lastTaskRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }
+    // if (lastTaskRef.current) {
+    //   lastTaskRef.current.scrollIntoView({
+    //     behavior: "smooth",
+    //     block: "end",
+    //   });
+    // }
 
     setTask(""); // resets the value of the Task
     setDate("mm/dd/yyyy"); // resets the value of the Date
@@ -479,11 +479,11 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               onSubmit={handleAddTask}
               className="
                 transition-all duration-500 ease-in-out
-                fixed top-40 w-[90%] h-[7%] max-w-[84rem] rounded-lg  
+                fixed top-40 w-[90%] h-[8%] max-w-[84rem] rounded-lg  
               bg-white pb-4 pt-4 text-black shadow-md  
-                sm:left-9 sm:top-40 sm:h-[8%]
-                md:left-9 md:top-40 md:w-[93%] md:h-[8%]
-                lg:left-40 lg:top-40 lg:w-[84%] lg:h-[8%]
+                sm:left-9 sm:top-40 sm:h-[9%]
+                md:left-9 md:top-40 md:w-[93%] md:h-[9%]
+                lg:left-40 lg:top-40 lg:w-[84%] lg:h-[9%]
                 xl:left-40 xl:top-40 xl:w-[90%] xl:h-[9%]
               "
             >
@@ -663,10 +663,10 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
             <div
               className={`absolute  left-[2.05rem] top-[14rem]  overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden
-                  w-[87%] h-[31rem]
-                  sm:w-[90.5%] sm:h-[31rem]
-                  md:w-[93.5%] md:h-[31.4rem]
-                  lg:w-[84%]
+                  w-[87%] h-[22.9rem]
+                  sm:w-[90.5%] sm:h-[22.8rem]
+                  md:w-[93.5%] md:h-[22.9rem]
+                  lg:w-[84%]  lg:h-[26rem]
                   xl:w-[88%] xl:h-[28rem]
                 `}
             >
@@ -735,7 +735,10 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                     {editIndex === task.task_id ? (
                       <div className="">
                         <input
-                          className="absolute left-[3rem] w-[46rem] overflow-hidden text-ellipsis bg-transparent opacity-45 outline-none"
+                          className="absolute left-[3rem]  overflow-hidden text-ellipsis bg-transparent opacity-45 outline-none
+                          md:w-[20rem]
+                          lg:w-[26rem]
+                          xl:w-[46rem]"
                           type="text"
                           value={editText}
                           onChange={handleTextEditChange}
@@ -743,7 +746,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         />
 
                         <label
-                          className={`absolute ml-[-0.1rem] translate-x-[53.7rem] translate-y-[0.1rem] text-[0.85rem] opacity-45 outline-none ${editTime === "--:-- --" ? "pointer-events-none select-none text-transparent" : ""}`}
+                          className={`absolute  ml-[-0.1rem]   translate-y-[0.1rem] text-[0.85rem] opacity-45 outline-none ${editTime === "--:-- --" ? "pointer-events-none select-none text-transparent" : ""}
+                            ml-[56%] mt-[0.5rem]  
+                          sm:ml-[50%] sm:mt-[0rem] sm:scale-100
+                          md:ml-[50%]
+                          lg:ml-[54%]
+                          xl:ml-[64%] 
+                          `}
                         >
                           {new Date(
                             new Date().toLocaleDateString() +
@@ -758,7 +767,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         </label>
 
                         <input
-                          className="absolute left-[56.9rem] mt-[-0.1rem] w-[1.9rem] scale-110 transform bg-transparent text-[0.9rem] opacity-45 outline-none transition-transform duration-200 hover:scale-125 active:scale-90"
+                          className="absolute  w-[1.9rem]  transform bg-transparent text-[0.9rem] opacity-45 outline-none transition-transform duration-200 hover:scale-125 active:scale-90
+                          ml-[70%] mt-[0.5rem] scale-75 
+                          sm:ml-[57%] sm:mt-[-0.1rem] sm:scale-110
+                          md:ml-[56%]
+                          lg:ml-[60%]
+                          xl:ml-[56.9rem] 
+                          "
                           type="time"
                           value={editTime}
                           onChange={handleTimeEditChange}
@@ -769,27 +784,53 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                           onClick={() => {
                             setEditTime("--:-- --");
                           }}
-                          className="duration-400 absolute left-[59rem] z-50 mt-[0.3rem] translate-y-[-0.3rem] transform text-[1.2rem] opacity-45 transition-transform hover:scale-125 active:rotate-[-360deg]"
+                          className="duration-400 absolute  z-50  translate-y-[-0.3rem] transform text-[1.2rem] opacity-45 transition-transform hover:scale-125 active:rotate-[-360deg]
+                          ml-[78%]  mt-[1rem] scale-75
+                          sm:ml-[62%] sm:mt-[0.3rem] sm:scale-100
+                          md:ml-[60%]
+                          lg:ml-[64%]
+                          xl:ml-[59rem]
+                          "
                         >
                           <RotateCcw size={20} />
                         </button>
 
                         <label
-                          className={`absolute left-[64.8rem] ml-[-0.1rem] mt-[-0.1rem] translate-y-[0.1rem] text-[0.9rem] opacity-45 ${editDate === "mm/dd/yyyy" ? "pointer-events-none select-none text-transparent" : ""}`}
+                          className={`absolute ml-[-0.1rem]  translate-y-[0.1rem] opacity-45 ${editDate === "mm/dd/yyyy" ? "pointer-events-none select-none text-transparent" : ""}
+                          text-[0.8rem]
+                          ml-[54%] mt-[-1rem]
+                          sm:ml-[68%] ml:text-[0.9rem] sm:mt-[-0.1rem]
+                          md:ml-[70%]
+                          lg:ml-[73%] 
+                          xl:ml-[78%] 
+                          `}
                         >
                           {editDate.split("-").reverse().join("/")}
                         </label>
 
                         <input
                           type="date"
-                          className="absolute right-[12.3rem] mt-[-0.2rem] w-[1.33rem] translate-y-[-0.1rem] transform bg-transparent text-[1.2rem] opacity-45 outline-none transition-transform duration-200 hover:scale-125 active:scale-90"
+                          className="absolute  w-[1.33rem] translate-y-[-0.1rem] transform bg-transparent text-[1.2rem] opacity-45 outline-none transition-transform duration-200 hover:scale-125 active:scale-90
+                          
+                          ml-[72%] mt-[-1rem] scale-75
+                          sm:ml-[79%]  sm:mt-[-0.2rem] sm:scale-100
+                          md:ml-[79%]
+                          lg:ml-[82%]
+                          xl:right-[12.3rem]
+                          "
                           value={editDate}
                           onChange={handleDateEditChange}
                         />
 
                         <button
                           type="button"
-                          className="duration-400 absolute left-[72.2rem] mt-[0.3rem] translate-y-[-0.3rem] transform text-[1.2rem] opacity-45 transition-transform hover:scale-125 active:rotate-[-360deg]"
+                          className="duration-400 absolute  translate-y-[-0.3rem] transform text-[1.2rem] opacity-45 transition-transform hover:scale-125 active:rotate-[-360deg]
+                          ml-[78%] mt-[-0.5rem] scale-75
+                          sm:ml-[82%] sm:mt-[0.3rem] sm:scale-100
+                          md:ml-[82%]
+                          lg:ml-[85%]
+                          xl:ml-[72rem]
+                          "
                           onClick={() => setEditDate("mm/dd/yyyy")}
                         >
                           <RotateCcw size={20} />
@@ -797,7 +838,13 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
                         <button
                           onClick={() => saveEditing(task.task_id, task.dueAt)}
-                          className="absolute right-[7rem] mt-[0rem] transform transition-transform duration-200 hover:scale-125 active:scale-90"
+                          className="absolute mt-[0rem] transform transition-transform duration-200 hover:scale-125 active:scale-90
+                          ml-[86%]
+                          sm:ml-[89%]
+                          md:ml-[87%]
+                          lg:ml-[90%]
+                          xl:ml-[77rem] 
+                          "
                         >
                           <Save size={20} />
                         </button>
@@ -809,13 +856,24 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         }
                         className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""} `}
                       >
-                        <span className="absolute left-[3rem] max-w-[46.3rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        <span className="absolute left-[3rem]  overflow-hidden text-ellipsis whitespace-nowrap
+                        w-[10rem]
+                        sm:w-[14rem]
+                        md:w-[20rem]
+                        lg:w-[28rem]
+                        xl:w-[46.3rem]
+                        ">
                           {task.text}
                         </span>
 
                         {task.dueAt.getTime() !== 0 && (
                           <span>
-                            <span className="absolute left-[53.6rem]">
+                            <span className="absolute
+                            left-[54%]  text-sm
+                            sm:left-[50%]  sm:text-base
+                            md:left-[50%]
+                            lg:left-[55%]
+                            xl:left-[53.6rem]">
                               {task.dueAt.toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
@@ -823,7 +881,12 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                               })}
                             </span>
 
-                            <span className="absolute left-[64.6rem]">
+                            <span className="absolute 
+                            left-[70%] text-sm
+                            sm:left-[70%] sm:text-base
+                            md:left-[70%]
+                            lg:left-[75%]
+                            xl:left-[64.6rem]">
                               {task.dueAt
                                 .toLocaleDateString([], {
                                   day: "2-digit",
