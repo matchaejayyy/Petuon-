@@ -84,7 +84,7 @@ const CalendarComponent: React.FC = () => {
   >
     <span>{format(currentMonth, "MMMM yyyy")}</span>
     {dropdownVisible && (
-      <div className="absolute left-1/2 z-10 mt-2 w-[90%] max-w-[800px] -translate-x-1/2 transform rounded-md bg-white bg-opacity-100 p-4 shadow-lg">
+      <div className="absolute left-1/2 z-10 mt-2 w-[120%] max-w-[800px] -translate-x-1/2 transform rounded-md bg-white bg-opacity-100 p-4 shadow-lg">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {/* Month Selection */}
           <div>
@@ -94,7 +94,7 @@ const CalendarComponent: React.FC = () => {
             >
               Select Month
             </h3>
-            <div className="mt-2 grid grid-cols-3 gap-2">
+            <div className="mt-2 grid grid-cols-2 gap-2">
               {[
                 "January",
                 "February",
