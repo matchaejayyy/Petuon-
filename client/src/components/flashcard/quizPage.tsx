@@ -103,7 +103,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       if (!token) throw new Error("No token found");
 
       const response = await axios.put(
-        `http://localhost:3002/cards/updateFlashcardProgress/${uniqueFlashcardId}`,
+        `${import.meta.env.VITE_API_URL}/cards/updateFlashcardProgress/${uniqueFlashcardId}`,
         { progress: true },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -123,7 +123,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       if (!token || !pet_id) throw new Error("No token or pet id found");
 
       const response = await axios.patch(
-        `http://localhost:3002/pets/updatePetCurrency`,
+        `${import.meta.env.VITE_API_URL}/pets/updatePetCurrency`,
         {
           pet_currency: amount,
           pet_id

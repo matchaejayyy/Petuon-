@@ -17,7 +17,7 @@ const DeckProgress: React.FC = () => {
   const fetchFlashcardsForDeck = async (deck_id: string) => {
    
     try {
-      const response = await axios.get(`http://localhost:3002/cards/getFlashcards`, {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/cards/getFlashcards`, {
         params: { deck_id },
       });
       return response.data;
@@ -29,7 +29,7 @@ const DeckProgress: React.FC = () => {
   const fetchDecks = async () => {
     setLoading(true)
     try {
-      const response = await axios.get("http://localhost:3002/cards/getDecks", {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/cards/getDecks`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
