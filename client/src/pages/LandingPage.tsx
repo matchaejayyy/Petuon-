@@ -14,7 +14,7 @@ import petfeatureImage from "../assets/features/petfeature.png";
 import todolistImage from "../assets/features/tofolistfeature.png";
 import landingPage from '../assets/landingpageLogo.png';
 import penguin from "../assets/landingpagePenguin.png";
-import landingPageBG from "../assets/landingPagebg2.png";
+import landingPageBG from "../assets/LandingPagebg2.png";
 import LogInOut from "../components/logInOutComponent";
 import contactForm from "../assets/contactformbg.png";
 
