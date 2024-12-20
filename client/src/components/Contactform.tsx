@@ -44,7 +44,7 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
 
   return (
     <div
-  className="flex justify-center items-center p-3  rounded-2xl bg-[#719191] w-[23rem] h-auto shadow-lg md:w-[30rem] md:h-[30rem] md:ml-40 "
+  className="flex justify-center items-center p-3  rounded-2xl bg-[#719191] w-[23rem] h-auto shadow-lg md:w-[30rem] md:h-[30rem] md:ml-40 xl:ml-96 "
     >
       <form
         style={{ fontFamily: '"Signika Negative", sans-serif' }}
