@@ -228,12 +228,7 @@ const NotepadComponent: React.FC = () => {
           >
             This Week
           </button>
-          <button
-            onClick={() => setFilter("This Month")}
-            className={`rounded-md px-4 py-2 ${filter === "This Month" ? "bg-[#657F83] font-serif font-bold text-white text-xs  left-[35%] sm:left-[30%] sm:text-xs md:left-[40%] md:text-sm lg:left-[32%] lg:text-xl xl:left-[35%]" : "bg-none"} hover:scale-110`}
-          >
-            This Month
-          </button>
+          
         </div>
       )}
 
@@ -331,7 +326,7 @@ const NotepadComponent: React.FC = () => {
             </h1>
           ) : notes.length == 0 && filteredNotes.length == 0 && (
             <div
-              className="absolute mt-[12rem] sm:mt-[10rem] md:mt-[5rem] xl:-ml-[2rem] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
+              className="absolute mt-[12rem] sm:mt-[10rem] md:mt-[5rem] xl:-ml-[4rem]  left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
               style={{ zIndex: 10 }}
             >
               <img
