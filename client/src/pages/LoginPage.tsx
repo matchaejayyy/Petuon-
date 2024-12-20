@@ -11,7 +11,7 @@ import smBG from '../assets/Bg_sm.png';
 import smBG1 from '../assets/Bg_sm1.png';
 import mdBG from '../assets/Bg_md.png';
 import lgBG from '../assets/Bg_lg.png';
-import LogInBG from '../assets/LogInBG.png';
+import LogInBG from '../assets/LoginBg.png';
 
 const getBackgroundImage = (width: number) => {
   if (width >= 1280) return `url(${LogInBG})`;
