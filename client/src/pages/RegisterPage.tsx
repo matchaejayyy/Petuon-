@@ -74,15 +74,16 @@ const RegisterPage: React.FC = () => {
     backgroundPosition: "center",
   }}
 >
-  <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 lg:py-0 md:mr-[5rem] lg:mr-[10rem] xl:mr-[10rem]  ">
+  <div className="mx-auto flex flex-col items-center justify-center px-6 py-8 lg:py-0 md:mr-[5rem] lg:mr-[3rem] xl:mr-[3rem]  ">
     <div
       className="w-full rounded-lg shadow md:max-w-md lg:max-w-lg xl:max-w-2xl "
       style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
     >
       <div className="space-y-6 p-6 sm:p-8 md:space-y-8 lg:p-12">
-        <h1 className="text-center text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl">
+        <h1 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-center text-2xl font-bold leading-tight tracking-tight text-white md:text-3xl">
           Create your account
         </h1>
+        <p style={{ fontFamily: '"Signika Negative", sans-serif' }} className=" text-md  text-white ">Ready to learn smarter? Set up your account and unlock a world of study support!</p>
         <form
           className="space-y-4 md:space-y-6"
           onSubmit={handleSubmit(handleRegister)}
@@ -90,6 +91,7 @@ const RegisterPage: React.FC = () => {
           <div>
             <label
               htmlFor="email"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }} 
               className="mb-2 block text-sm font-medium text-white"
             >
               Email
@@ -97,6 +99,7 @@ const RegisterPage: React.FC = () => {
             <input
               type="text"
               id="email"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }} 
               className="w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm focus:border-primary-600 focus:ring-primary-600"
               placeholder="Email"
               {...register("user_email")}
@@ -108,6 +111,7 @@ const RegisterPage: React.FC = () => {
           <div>
             <label
               htmlFor="username"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
               className="mb-2 block text-sm font-medium text-white"
             >
               Username
@@ -115,6 +119,7 @@ const RegisterPage: React.FC = () => {
             <input
               type="text"
               id="username"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
               className="w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm focus:border-primary-600 focus:ring-primary-600"
               placeholder="Username"
               {...register("user_name")}
@@ -126,6 +131,7 @@ const RegisterPage: React.FC = () => {
           <div>
             <label
               htmlFor="password"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
               className="mb-2 block text-sm font-medium text-white"
             >
               Password
@@ -134,6 +140,7 @@ const RegisterPage: React.FC = () => {
               type="password"
               id="password"
               placeholder="••••••••"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
               className="w-full rounded-lg bg-[#719191] p-2.5 text-white sm:text-sm focus:border-primary-600 focus:ring-primary-600"
               {...register("user_password")}
             />
@@ -144,6 +151,7 @@ const RegisterPage: React.FC = () => {
           <div className="flex items-center justify-center">
             <button
               type="submit"
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
               className="w-full rounded-3xl bg-[#719191] px-6 py-2 text-white font-bold hover:bg-gray-700 md:w-auto md:px-8"
             >
               Sign Up
@@ -151,7 +159,7 @@ const RegisterPage: React.FC = () => {
           </div>
         </form>
         <div className="mt-4 flex items-center justify-center">
-          <p className="text-sm font-light text-white">
+          <p style={{ fontFamily: '"Signika Negative", sans-serif' }}className="text-sm font-light text-white">
             Already have an account?{" "}
             <span
               className="text-primary-600 cursor-pointer font-medium hover:underline"
