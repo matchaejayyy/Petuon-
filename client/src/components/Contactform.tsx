@@ -44,11 +44,11 @@ export const ContactForm: React.FC<ContactFormProps> = () => {
 
   return (
     <div
-  className="flex justify-center items-center sm:items-start sm:justify-start sm:ml-[1rem] p-3 rounded-2xl bg-[#719191] w-[32rem] h-auto shadow-lg sm:w-[320px] sm:h-[930px]"
+  className="flex justify-center items-center p-3  rounded-2xl bg-[#719191] w-[23rem] h-auto shadow-lg md:w-[30rem] md:h-[30rem] md:ml-40 "
     >
       <form
         style={{ fontFamily: '"Signika Negative", sans-serif' }}
-        className="w-full sm:w-[280px] sm:mt-6 text-white items-center justify-center flex flex-col"
+        className="w-full sm:w-[280px] md:w-[390px] sm:mt-6 text-white items-center justify-center flex flex-col"
         onSubmit={handleSubmit}
       >
         <div className="mb-4 w-full">
