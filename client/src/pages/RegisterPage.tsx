@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-/* eslint-disable @typescript-eslint/no-empty-object-type */
+import React, { useState } from "react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -7,8 +6,11 @@ import LoginBG from "../assets/LoginBg.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { supabase } from '../SupabaseClient'; // Adjust the path as needed
-import { RegisterFormsInputs} from "../types/RegisterTypes";
+import { RegisterFormsInputs } from "../types/RegisterTypes";
 import { v4 as uuidv4 } from "uuid";
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
+import LogInOut from "../components/logInOutComponent"; // Import the LogInOut component
 
 const validation = Yup.object().shape({
   user_email: Yup.string().email("Invalid email").required("Email is required"),
@@ -20,16 +22,12 @@ const validation = Yup.object().shape({
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<RegisterFormsInputs>({ resolver: yupResolver(validation)});
+  const [loading, setLoading] = useState(false); // State for loading indicator
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormsInputs>({ resolver: yupResolver(validation) });
 
-  
   const handleRegister = async (form: RegisterFormsInputs) => {
+    setLoading(true); // Show loading indicator
     try {
-      
       // Construct the payload
       const formData = {
         user_password: form.user_password,
@@ -37,11 +35,11 @@ const RegisterPage: React.FC = () => {
         user_email: form.user_email,
         user_name: form.user_name,
       };
-    
-      const response = await axios.post("http://localhost:3002/register/registerUser", formData)
+
+      const response = await axios.post("http://localhost:3002/register/registerUser", formData);
       // Handle successful backend registration
-      alert(response.data.message); // This will show the success message from the backend
-  
+      toast.success(response.data.message); // Show success message with toast
+
       // Then, register the user with Supabase
       const { error } = await supabase.auth.signUp({
         email: form.user_email,
@@ -49,22 +47,23 @@ const RegisterPage: React.FC = () => {
       });
 
       if (error) {
-        alert(`Supabase Error: ${error.message}`);
+        toast.error(`Supabase Error: ${error.message}`); // Show error message with toast
       } else {
-        alert("Registration successful! Please check your email to confirm.");
+        toast.success("Registration successful! Please check your email to confirm.");
         navigate("/login"); // Redirect to the login page after successful registration
       }
-    } catch (error) {
-      // Handle error from the backend API
-      if (error) {
-        alert(`Error: ${error}`);
+    } catch (error: any) {
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error); // Show specific error message from the backend
       } else {
-        console.error("Error registering user:", error);
-        alert("An error occurred. Please try again.");
+        toast.error("An unexpected error occurred. Please try again."); // Show generic error message
       }
+      console.error("Error registering user:", error);
+    } finally {
+      setLoading(false); // Hide loading indicator
     }
   };
-  
+
   return (
     <section
   className="flex h-screen items-center justify-center"
