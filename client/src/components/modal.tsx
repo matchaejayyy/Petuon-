@@ -15,7 +15,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
       onClick={onClose} // Close modal when clicking outside
     >
       <div
-        className="bg-white p-6 rounded-lg shadow-lg w-96"
+        className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-96"
         onClick={(e) => e.stopPropagation()} // Prevent click from propagating to the overlay
       >
         <button
