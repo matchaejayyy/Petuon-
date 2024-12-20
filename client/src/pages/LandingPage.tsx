@@ -14,9 +14,9 @@ import petfeatureImage from "../assets/features/petfeature.png";
 import todolistImage from "../assets/features/tofolistfeature.png";
 import landingPage from '../assets/landingpageLogo.png';
 import penguin from "../assets/landingpagePenguin.png";
-
+import landingPageBG from "../assets/landingPagebg2.png";
 import LogInOut from "../components/logInOutComponent";
-
+import contactForm from "../assets/contactformbg.png";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -316,7 +316,8 @@ const LandingPage: React.FC = () => {
 
       {/* Team page content */}
       {currentPage === "team" && (
-      <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 bg-[url('/src/assets/landingPagebg2.png')]">
+      <section className={` bg-cover bg-center px-8 py-16 text-gray-800`}  
+      style={{ backgroundImage: `url(${landingPageBG})` }}>
       <h1
         style={{ fontFamily: '"Signika Negative", sans-serif' }}
         className="mb-8 mt-24 text-5xl text-[#274d4d] font-bold text-center xl:mt-40"
@@ -456,7 +457,8 @@ const LandingPage: React.FC = () => {
 
 
       {currentPage === "contact" && (
-        <section id="contact-form" className="min-h-screen bg-cover bg-center bg-[url('/src/assets/contactformbg.png')] px-8 py-16">
+        <section id="contact-form" className=" bg-cover bg-center px-8 py-16" 
+        style={{ backgroundImage: `url(${contactForm})` }}>
           <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#274d4d] font-bold text-center mb-6 mt-20 -ml-[8rem] sm:-text-xl md:ml-2 lg:-ml-32 xl:mt-40 xl:mr-48">Contact Us</h2>
           <ContactForm />
         </section>
