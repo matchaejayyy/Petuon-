@@ -27,6 +27,7 @@ const LoginPage: React.FC<Props> = () => {
           user_name: form.user_name,
           user_password: form.user_password,
         });
+      
         if (response.data.token) {
           localStorage.setItem("token", response.data.token);
           toast.success("Login successful! Redirecting to dashboard...");

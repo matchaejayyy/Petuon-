@@ -206,31 +206,31 @@ const NotepadComponent: React.FC = () => {
         <div className="my-3 mb-0 mt-[-15px] flex space-x-2 font-serif font-bold text-[#354F52]">
           <button
             onClick={() => setFilter("All")}
-            className={`rounded-md px-4 py-2 ${filter === "All" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
+            className={`rounded-md px-4 py-2 ${filter === "All" ? "bg-[#657F83] font-serif font-bold text-white text-xs  left-[35%] sm:left-[30%] sm:text-xs md:left-[40%] md:text-sm lg:left-[32%] lg:text-xl xl:left-[35%]" : "bg-none"} hover:scale-110`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("Today")}
-            className={`rounded-md px-4 py-2 ${filter === "Today" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
+            className={`rounded-md px-4 py-2 ${filter === "Today" ? "bg-[#657F83] font-serif font-bold text-white text-xs  left-[35%] sm:left-[30%] sm:text-xs md:left-[40%] md:text-sm lg:left-[32%] lg:text-xl xl:left-[35%]" : "bg-none"} hover:scale-110`}
           >
             Today
           </button>
           <button
             onClick={() => setFilter("Yesterday")}
-            className={`rounded-md px-4 py-2 ${filter === "Yesterday" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
+            className={`rounded-md px-4 py-2 ${filter === "Yesterday" ? "bg-[#657F83] font-serif font-bold text-white text-xs  left-[35%] sm:left-[30%] sm:text-xs md:left-[40%] md:text-sm lg:left-[32%] lg:text-xl xl:left-[35%]" : "bg-none"} hover:scale-110`}
           >
             Yesterday
           </button>
           <button
             onClick={() => setFilter("This Week")}
-            className={`rounded-md px-4 py-2 ${filter === "This Week" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
+            className={`rounded-md px-4 py-2 ${filter === "This Week" ? "bg-[#657F83] font-serif font-bold text-white text-xs  left-[35%] sm:left-[30%] sm:text-xs md:left-[40%] md:text-sm lg:left-[32%] lg:text-xl xl:left-[35%]" : "bg-none"} hover:scale-110`}
           >
             This Week
           </button>
           <button
             onClick={() => setFilter("This Month")}
-            className={`rounded-md px-4 py-2 ${filter === "This Month" ? "bg-[#657F83] font-serif font-bold text-white" : "bg-none"} hover:scale-110`}
+            className={`rounded-md px-4 py-2 ${filter === "This Month" ? "bg-[#657F83] font-serif font-bold text-white text-xs  left-[35%] sm:left-[30%] sm:text-xs md:left-[40%] md:text-sm lg:left-[32%] lg:text-xl xl:left-[35%]" : "bg-none"} hover:scale-110`}
           >
             This Month
           </button>
@@ -331,21 +331,22 @@ const NotepadComponent: React.FC = () => {
             </h1>
           ) : notes.length == 0 && filteredNotes.length == 0 && (
             <div
-              className="absolute left-1/2 -ml-12 mt-5 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
+              className="absolute mt-[12rem] sm:mt-[10rem] md:mt-[5rem] xl:-ml-[2rem] left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center justify-center pointer-events-none"
               style={{ zIndex: 10 }}
             >
               <img
                 src={sleepingPenguin}
-                alt="No notes available"
-                className="h-[15rem] w-[15rem]"
+                alt="No tasks available"
+                className={`h-52 w-52 transition-all duration-500 ease-in-out`}
               />
               <p
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="-mt-5 text-2xl text-gray-500"
+                className="-mt-5 text-lg text-gray-500 sm:text-2xl md:text-2xl lg:text-2xl xl:text-2xl"
               >
                 No notes available.
               </p>
             </div>
+
           )}
             {filteredNotes.map((note, index) => (
               <motion.div
