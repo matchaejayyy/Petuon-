@@ -479,7 +479,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               onSubmit={handleAddTask}
               className="
                 transition-all duration-500 ease-in-out
-                fixed top-40 w-[90%] h-[8%] max-w-[84rem] rounded-lg  
+                fixed top-40 w-[90%] h-[6%] max-w-[84rem] rounded-lg  
               bg-white pb-4 pt-4 text-black shadow-md  
                 sm:left-9 sm:top-40 sm:h-[9%]
                 md:left-9 md:top-40 md:w-[93%] md:h-[9%]
@@ -490,7 +490,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
               <button
                 type="submit"
                 className="
-                  ml-3 mt-[0.6rem] transform text-black transition-transform
+                  ml-3 mt-[0.4rem] transform text-black transition-transform
                   duration-300 hover:scale-110 active:scale-50
                   sm:ml-4 sm:mt-1 sm:text-2xl
                   md:ml-4 md:mt-1
@@ -505,7 +505,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                 className="
                   absolute ml-2 w-[70%] translate-y-[-5px] transform overflow-hidden 
                   text-ellipsis bg-transparent text-sm text-black outline-none 
-                  text-[0.8rem] top-[2.1rem]
+                  text-[0.8rem] top-[2rem]
                   sm:w-[40%] sm:text-base sm:top-[1.6rem]
                   md:w-[46%] md:text-lg md:top-[1.6rem]
                   lg:w-[55%] lg:text-lg lg:top-[1.7rem]
@@ -663,7 +663,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
 
             <div
               className={`absolute  left-[2.05rem] top-[14rem]  overflow-auto rounded-lg [&::-webkit-scrollbar]:w-2 overflow-x-hidden
-                  w-[87%] h-[22.9rem]
+                  w-[87%] h-[33.5rem]
                   sm:w-[90.5%] sm:h-[22.8rem]
                   md:w-[93.5%] md:h-[22.9rem]
                   lg:w-[84%]  lg:h-[26rem]
@@ -857,7 +857,7 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         className={`${task.dueAt.getTime() !== 0 && task.dueAt.getTime() < new Date().getTime() ? "text-red-800" : ""} `}
                       >
                         <span className="absolute left-[3rem]  overflow-hidden text-ellipsis whitespace-nowrap
-                        w-[10rem]
+                        w-[18rem]
                         sm:w-[14rem]
                         md:w-[20rem]
                         lg:w-[28rem]
@@ -869,8 +869,8 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                         {task.dueAt.getTime() !== 0 && (
                           <span>
                             <span className="absolute
-                            left-[54%]  text-sm
-                            sm:left-[50%]  sm:text-base
+                            left-[50%]  text-[0.8rem] mt-[-0.8rem]
+                            sm:left-[50%]  sm:text-base sm:mt-[0rem]
                             md:left-[50%]
                             lg:left-[55%]
                             xl:left-[53.6rem]">
@@ -882,8 +882,8 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
                             </span>
 
                             <span className="absolute 
-                            left-[70%] text-sm
-                            sm:left-[70%] sm:text-base
+                            left-[70%] text-[0.8rem] mt-[-0.8rem]
+                            sm:left-[70%] sm:text-base sm:mt-[0rem]
                             md:left-[70%]
                             lg:left-[75%]
                             xl:left-[64.6rem]">

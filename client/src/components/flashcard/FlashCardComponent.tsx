@@ -230,15 +230,15 @@ const FlashcardComponent: React.FC = () => {
  
   return (
     <>
-    <div className='overflow-y-auto overflow-x-hidden'>
+    <div className='overflow-y-auto overflow-x-hidden h-[78%] scrollbar-hidden'>
     {onFirstPage ? (
-        <div className="flex flex-col items-center mt-[-3rem] mr-[6rem] ">
+        <div className=" flex flex-col items-center mt-[-5rem] mr-[6rem] scrollbar-hidden">
           <div className=" w-full mt-20 flex items-center ">
-            <h1 className="text-[#354F52] font-serif text-3xl absolute top-[5rem] lg:top-[7rem]">Decks</h1>
+            <h1 className="text-[#354F52] font-serif text-3xl absolute top-[6rem] lg:top-[7rem]">Decks</h1>
             <button
               onClick={() => setIsModalOpen(true)}
               style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="text-white text-sm md:text-base xl:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20 xl:right-[5.5rem] top-[6rem] md:top-1/5 lg:top-[8rem] xl:top-[5.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+              className="text-white text-sm md:text-base xl:text-xl mt-5 bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20  xl:mt-[2rem] z-10 absolute -right-9 lg:right-20 xl:right-[5.5rem] top-[6rem] md:top-1/5 lg:top-[8rem] xl:top-[5.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
             >
               Create Deck
             </button>
@@ -321,28 +321,8 @@ const FlashcardComponent: React.FC = () => {
           </div>
           <div className="w-[100vw] flex items-center justify-center relative md:ml-[2.5rem] xl:ml-0 mt-[-1.5rem] overflow-y-auto pt-0">
             <ul className="mt-24 w-full lg:w-[80%] xl:w-[90%] ml-[3rem] xl:ml-[7rem] pl-5 md:pr-10 lg:pr-5 xl:pr-10 md:pl-2 xl:pl-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-x-1 lg:gap-x-2 xl:gap-x-0 max-h-[540px] overflow-y-scroll overflow-x-hidden p-2 pb-14 [&::-webkit-scrollbar]:w-0">
-              {/* Loading State */}
-              {loadDecks ? (
-                <p className="text-2xl text-gray-500 text-center col-span-full">
-                  Fetching cards...
-                </p>
-              ) : Object.keys(decks).length === 0 ? (
-                <div className="flex flex-col items-center justify-center w-full h-[350px] absolute top-5 left-0">
-                  <img
-                    src={sleepingPenguin}
-                    alt="No tasks available"
-                    className="h-full z-100"
-                  />
-                  <h1
-                    className="text-gray-500 text-lg sm:text-xl md:text-2xl lg:text-3xl text-center"
-                    style={{
-                      fontFamily: '"Signika Negative", sans-serif',
-                    }}
-                  >
-                    No Decks
-                  </h1>
-                </div>
-              ) : null}
+             
+              
 
 
               {/* Render Decks */}

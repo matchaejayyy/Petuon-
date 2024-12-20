@@ -11,7 +11,12 @@ const FlashCardPage = () => {
     <>  
          
         <WhiteContainer >
-            <h1 style={{ fontFamily: '"Crimson Pro", serif' }} className="text-[1.5rem] lg:text-[3rem]  text-[#354F52] ftracking-normal mb-1 xl:mb-4 ml-1 mt-2 xl:mt-7">Flashcards</h1>
+            <h1
+            style={{ fontFamily: '"Crimson Pro", serif' }}
+            className="ftracking-normal mb-4 mt-7 text-[3rem] text-[#354F52]"
+            >
+                Flashcard
+            </h1>
             <FlashcardComponent/>
             <Avatar/>
             <ToastContainer
