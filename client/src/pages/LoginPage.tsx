@@ -2,12 +2,16 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import LoginBG from "../assets/LoginBg.png";
 import axios from "axios";
 import { LoginFormsInputs, Props } from "../types/LoginTypes";
 import LogInOut from "../components/logInOutComponent";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import smBG from '../assets/Bg_sm.png';
+import smBG1 from '../assets/Bg_sm1.png';
+import mdBG from '../assets/Bg_md.png';
+import lgBG from '../assets/Bg_lg.png';
+import LogInBG from '../assets/LogInBG.png';
 
 const LoginPage: React.FC<Props> = () => {
   const [error] = useState<string | null>(null); // Track error message
@@ -46,6 +50,13 @@ const LoginPage: React.FC<Props> = () => {
     }
   };
 
+    const backgroundImage = {
+      base: smBG,
+      sm: smBG1,
+      md: mdBG,
+      lg: lgBG,
+      xl: LogInBG,
+    };
   
 
   return (
@@ -66,16 +77,8 @@ const LoginPage: React.FC<Props> = () => {
     )}
    
     <section  
-      className="flex h-screen items-center justify-center      
-      bg-[url('src/assets/Bg_sm.png')] 
-      sm:bg-[url('src/assets/Bg_sm1.png')] 
-      md:bg-[url('src/assets/Bg_md.png')] 
-      lg:bg-[url('src/assets/Bg_lg.png')] 
-      xl:bg-[url('src/assets/LoginBG.png')]"
-      style={{
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+      className={`flex h-screen items-center justify-center bg-cover bg-center ${window.innerWidth < 640 ? 'bg-sm' : window.innerWidth < 1024 ? 'bg-md' : 'bg-lg'}`}
+      
     >
       
       <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20 xl:-mt-20 xl:mr-[9rem]">
