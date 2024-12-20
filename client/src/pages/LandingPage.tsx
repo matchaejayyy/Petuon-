@@ -87,57 +87,196 @@ const LandingPage: React.FC = () => {
   }, [hasExited, currentPage]); // Added currentPage as dependency
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col ">
     {/* Persistent Navigation Bar with Dynamic Background Color */}
     <header
-      className={`absolute left-0 top-0 z-10 flex sm:w-320px sm:h-20 items-center justify-between px-8 py-4 mx-auto ${
+      className={`absolute flex w-full items-center justify-between ${
         currentPage === "landing" ? "bg-transparent" : "bg-[#719191]"
-      } sm:w-[30px] sm:h-[80px]`}
+      }`}
     >
       {/* Logo */}
-      <div className="flex items-center">
-        <img
+      {/* <div className=" items-center sm:block hidden">
+      <img
           src="/src/assets/landingpageLogo.png"
           alt="PETUON Logo"
           className="w-32 mt-11 h-auto object-contain sm:mt-2 sm:w-[120px] sm:h-[40px]"
         />
-      </div>
+      </div> */}
+
         {/* Navigation Links */}
-        <nav className="mr-10 flex space-x-12 -mt-3 sm:w-[320px] sm:h-[930px]">
-          <a
-            onClick={() => setCurrentPage("landing")}
-            className="text-2xl sm:text-xl text-white hover:underline cursor-pointer"
-          >
-            Home
-          </a>
-          <a
-            onClick={() => setCurrentPage("about")}
-            className="text-2xl sm:text-xl text-white hover:underline cursor-pointer"
-          >
-            About
-          </a>
-          <a
-            onClick={() => setCurrentPage("team")}
-            className="text-2xl sm:text-xl text-white hover:underline cursor-pointer"
-          >
-            Team
-          </a>
-          <a
-            onClick={() => setCurrentPage("contact")}
-            className="text-2xl sm:text-xl  text-white hover:underline cursor-pointer "
-          >
-          Contact Us
+        <nav className="p-6 flex space-x-12">
+        <a
+          onClick={() => setCurrentPage("landing")}
+          className="text-lg text-white hover:underline cursor-pointer"
+        >
+          Home
         </a>
-        </nav>
+        <a
+          onClick={() => setCurrentPage("about")}
+          className="text-lg text-white hover:underline cursor-pointer"
+        >
+          About
+        </a>
+        <a
+          onClick={() => setCurrentPage("team")}
+          className="text-lg text-white hover:underline cursor-pointer"
+        >
+          Team
+        </a>
+        <a
+          onClick={() => setCurrentPage("contact")}
+          className="text-lg  text-white hover:underline cursor-pointer"
+        >
+          Contacts
+        </a>
+      </nav>
       </header>
+
+      {currentPage === "landing" && (
+      <section
+        ref={observeRef} // Attach the observer to this section
+        className="flex h-screen flex-col items-start justify-center bg-[url('/src/assets/landingpagebg.png')] bg-cover bg-center text-white"
+      >
+        
+        {/* Text Content */}
+        <motion.div
+        key={currentPage} // Key based on currentPage to force re-render
+        className="w-full p-2 mt-12 flex flex-col items-center justify-center"
+        initial={{ opacity: 0, x: -100 }} // Start off-screen and invisible
+        animate={{
+          opacity: isVisible ? 1 : 0, // Fade in when in view
+          x: isVisible ? 0 : -100, // Slide in when in view
+          y: scrollDirection === 'down' ? 20 : 0, // Move down slightly when scrolling
+        }}
+        exit={{
+          opacity: hasExited ? 0 : 1, // Fade out on exit
+          x: hasExited ? 100 : 0, // Slide out when exiting
+        }}
+        transition={{ duration: 2 }} // Smooth transition for animations
+      >
+        <h2 className="mb-1 text-2xl text-center font-bold">
+          Your Student Study Buddy
+        </h2>
+        <p className="mb-6 text-center text-xl">
+          This web app helps students be more <br />
+          productive by implementing study tools.
+        </p>
+        <button
+          onClick={() => navigate("/login")}
+          className="rounded-3xl border-2 border-white bg-[#6e8080] px-2 py-1 font-semibold text-white shadow-md hover:bg-[#0d6767] "
+        >
+          Get Started
+        </button>
+      </motion.div>
+
+      <motion.img
+        key={currentPage} // Key based on currentPage to force re-render
+        src="/src/assets/landingpagePenguin.png"
+        alt="Study Buddy Penguin"
+        className=" w-50 h-auto"
+        initial={{ opacity: 0, x: 100 }} // Start off-screen and invisible
+        animate={{
+          opacity: isVisible ? 1 : 0, // Fade in when in view
+          x: isVisible ? 0 : 100, // Slide in when in view
+          y: scrollDirection === 'down' ? 20 : 0, // Move down slightly when scrolling
+        }}
+        exit={{
+          opacity: hasExited ? 0 : 1, // Fade out on exit
+          x: hasExited ? -100 : 0, // Slide out when exiting
+        }}
+        transition={{ duration: 2 }} // Smooth transition for animations
+      />
+        </section>
+      )}
+
+      {/* Features Section at the bottom of the Home Page */}
+      {currentPage === "landing" && (
+      <section className="bg-gradient-to-b from-[#698386] to-white px-6 py-12">
+      <div className="mx-auto max-w-6xl">
+        <h3 className="mb-12 text-[#274d4d] text-center text-5xl font-bold">Features</h3>
+    
+        {/* Pets Feature */}
+        <div className="flex flex-col md:flex-row items-center mb-[10rem] animate-fadeIn">
+        <div className="group">
+          <div
+            className="w-[19rem] md:w-[40rem] h-[145px] md:h-[245px] sm:w-[60rem] sm:h-[930px] rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
+            style={{ backgroundImage: `url(${petfeatureImage})` }}
+          ></div>
+        </div>
+        <div className="ml-[4rem] mt-4 text-center md:ml-6 md:mt-0 md:text-left sm:ml-[8rem]">
+          <h4
+            style={{ fontFamily: '"Signika Negative", sans-serif' }}
+            className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
+          >
+            Pets
+          </h4>
+        </div>
+      </div>
+    
+        {/* Todo-list Feature */}
+        <div className="flex flex-col md:flex-row-reverse items-center mb-[10rem] animate-slideInRight">
+          <div className="group">
+            <div
+              className="w-[18rem] md:w-[40rem] h-[145px] md:h-[245px] sm:w-[60rem] sm:h-[930px]  rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
+              style={{ backgroundImage: `url(${todolistImage})` }}
+            ></div>
+          </div>
+          <div className="mr-[4rem] mt-4 text-center md:mr-6 md:mt-0 md:text-right">
+            <h4
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
+            >
+              Todo-list
+            </h4>
+          </div>
+        </div>
+    
+        {/* Flashcard Feature */}
+        <div className="flex flex-col md:flex-row items-center mb-[10rem] animate-fadeIn">
+          <div className="group">
+            <div
+              className="w-[20rem] md:w-[40rem] h-[150px] md:h-[245px] sm:w-[60rem] sm:h-[930px] rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
+              style={{ backgroundImage: `url(${flashcardImage})` }}
+            ></div>
+          </div>
+          <div className="ml-[4rem] mt-4 text-center md:ml-6 md:mt-0 md:text-left">
+            <h4
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
+            >
+              Flashcard
+            </h4>
+          </div>
+        </div>
+    
+        {/* Notes Feature */}
+        <div className="flex flex-col md:flex-row-reverse items-center animate-slideInRight">
+          <div className="group">
+            <div
+              className="w-[19rem] md:w-[40rem] h-[145px] md:h-[245px] sm:w-[60rem] sm:h-[930px] rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
+              style={{ backgroundImage: `url(${notefeatureImage})` }}
+            ></div>
+          </div>
+          <div className="mr-[4rem] mt-4 text-center md:mr-6 md:mt-0 md:text-right">
+            <h4
+              style={{ fontFamily: '"Signika Negative", sans-serif' }}
+              className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
+            >
+              Notes
+            </h4>
+          </div>
+        </div>
+      </div>
+    </section>
+    )}
 
       {currentPage === "about" && (
         // About page content goes here
-        <section className="min-h-screen bg-cover bg-center px-8 py-16 text-gray-800 sm:ml-12 md:ml-16 lg:ml-20 bg-[url('/src/assets/landingPagebg2.png')]">
-          <h1  style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mb-6 text-[#274d4d] text-5xl sm:text-9xl font-bold text-start mt-28 xl:ml-14">About</h1>
+        <section className="min-h-screen bg-cover bg-center text-gray-800 sm:ml-12 md:ml-16 lg:ml-20 bg-[url('/src/assets/landingPagebg2.png')]">
+          <h1  style={{ fontFamily: '"Signika Negative", sans-serif' }} className="mb-6 text-[#274d4d] text-5xl sm:text-9xl font-bold text-start mt-28 ">About</h1>
           <p
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="text-2xl text-[#345959] max-w-screen-md leading-relaxed text-start xl:ml-14 sm:ml-16 md:ml-20"
+            className="text-2xl text-[#345959] max-w-screen-md leading-relaxed text-start"
           >
             This website was created by Carmine's Team to help students plan
             their study schedules, track habits, and boost productivity with
@@ -156,61 +295,7 @@ const LandingPage: React.FC = () => {
       )}
 
       {/* Home page content */}
-      {currentPage === "landing" && (
-      <section
-        ref={observeRef} // Attach the observer to this section
-        className="relative flex h-screen flex-col items-start justify-center bg-[url('/src/assets/landingpagebg.png')] bg-cover bg-center text-white"
-      >
-        {/* Text Content */}
-        <motion.div
-        key={currentPage} // Key based on currentPage to force re-render
-        className="ml-8 p-4 sm:ml-12 md:ml-16 lg:ml-20"
-        initial={{ opacity: 0, x: -100 }} // Start off-screen and invisible
-        animate={{
-          opacity: isVisible ? 1 : 0, // Fade in when in view
-          x: isVisible ? 0 : -100, // Slide in when in view
-          y: scrollDirection === 'down' ? 20 : 0, // Move down slightly when scrolling
-        }}
-        exit={{
-          opacity: hasExited ? 0 : 1, // Fade out on exit
-          x: hasExited ? 100 : 0, // Slide out when exiting
-        }}
-        transition={{ duration: 2 }} // Smooth transition for animations
-      >
-        <h2 className="mb-4 text-5xl font-bold sm:text-5xl">
-          Your Student Study Buddy
-        </h2>
-        <p className="mb-6 text-lg sm:text-2xl">
-          This web app helps students be more <br />
-          productive by implementing study tools.
-        </p>
-        <button
-          onClick={() => navigate("/login")}
-          className="rounded-3xl border-2 border-white bg-[#6e8080] px-6 py-2 text-lg font-semibold text-white shadow-md hover:bg-[#0d6767] sm:px-3"
-        >
-          Get Started
-        </button>
-      </motion.div>
-
-      <motion.img
-        key={currentPage} // Key based on currentPage to force re-render
-        src="/src/assets/landingpagePenguin.png"
-        alt="Study Buddy Penguin"
-        className="sm:-bottom-32px w-70sm:right-160px h-auto relative object-contain p-4 sm:w-80 sm:bottom-40 sm:right-10"
-        initial={{ opacity: 0, x: 100 }} // Start off-screen and invisible
-        animate={{
-          opacity: isVisible ? 1 : 0, // Fade in when in view
-          x: isVisible ? 0 : 100, // Slide in when in view
-          y: scrollDirection === 'down' ? 20 : 0, // Move down slightly when scrolling
-        }}
-        exit={{
-          opacity: hasExited ? 0 : 1, // Fade out on exit
-          x: hasExited ? -100 : 0, // Slide out when exiting
-        }}
-        transition={{ duration: 2 }} // Smooth transition for animations
-      />
-        </section>
-      )}
+      
 
 
       {/* Team page content */}
@@ -351,91 +436,12 @@ const LandingPage: React.FC = () => {
   )}
 
 
-      {/* Features Section at the bottom of the Home Page */}
-      {currentPage === "landing" && (
-      <section className="bg-gradient-to-b from-[#698386] to-white px-6 py-12">
-      <div className="mx-auto max-w-6xl">
-        <h3 className="mb-12 text-[#274d4d] text-center text-7xl font-bold sm:text-5xl">Features</h3>
-    
-        {/* Pets Feature */}
-        <div className="flex flex-col md:flex-row items-center mb-[10rem] animate-fadeIn">
-        <div className="group">
-          <div
-            className="w-[19rem] md:w-[40rem] h-[145px] md:h-[245px] sm:w-[60rem] sm:h-[930px] rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
-            style={{ backgroundImage: `url(${petfeatureImage})` }}
-          ></div>
-        </div>
-        <div className="ml-[4rem] mt-4 text-center md:ml-6 md:mt-0 md:text-left sm:ml-[8rem]">
-          <h4
-            style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
-          >
-            Pets
-          </h4>
-        </div>
-      </div>
-    
-        {/* Todo-list Feature */}
-        <div className="flex flex-col md:flex-row-reverse items-center mb-[10rem] animate-slideInRight">
-          <div className="group">
-            <div
-              className="w-[18rem] md:w-[40rem] h-[145px] md:h-[245px] sm:w-[60rem] sm:h-[930px]  rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
-              style={{ backgroundImage: `url(${todolistImage})` }}
-            ></div>
-          </div>
-          <div className="mr-[4rem] mt-4 text-center md:mr-6 md:mt-0 md:text-right">
-            <h4
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
-            >
-              Todo-list
-            </h4>
-          </div>
-        </div>
-    
-        {/* Flashcard Feature */}
-        <div className="flex flex-col md:flex-row items-center mb-[10rem] animate-fadeIn">
-          <div className="group">
-            <div
-              className="w-[20rem] md:w-[40rem] h-[150px] md:h-[245px] sm:w-[60rem] sm:h-[930px] rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
-              style={{ backgroundImage: `url(${flashcardImage})` }}
-            ></div>
-          </div>
-          <div className="ml-[4rem] mt-4 text-center md:ml-6 md:mt-0 md:text-left">
-            <h4
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
-            >
-              Flashcard
-            </h4>
-          </div>
-        </div>
-    
-        {/* Notes Feature */}
-        <div className="flex flex-col md:flex-row-reverse items-center animate-slideInRight">
-          <div className="group">
-            <div
-              className="w-[19rem] md:w-[40rem] h-[145px] md:h-[245px] sm:w-[60rem] sm:h-[930px] rounded-lg bg-contain group-hover:scale-105 transition-transform duration-300"
-              style={{ backgroundImage: `url(${notefeatureImage})` }}
-            ></div>
-          </div>
-          <div className="mr-[4rem] mt-4 text-center md:mr-6 md:mt-0 md:text-right">
-            <h4
-              style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="text-5xl font-bold text-[#274d4d] xl:ml-[12rem] sm:ml-0 sm:text-4xl sm:-mr-4"
-            >
-              Notes
-            </h4>
-          </div>
-        </div>
-      </div>
-    </section>
-    )}
+      
 
 
       {currentPage === "contact" && (
         <section id="contact-form" className="min-h-screen bg-cover bg-center bg-[url('/src/assets/contactformbg.png')] px-8 py-16">
-          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#274d4d] font-bold text-center mb-6 mt-20 -ml-[9rem] sm:-text-xl">Contact Us</h2>
+          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#274d4d] font-bold text-center mb-6 mt-20 -ml-[9rem] sm:-text-xl">Contact</h2>
           <ContactForm />
         </section>
       )}
