@@ -70,6 +70,32 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     setTempFlashcards(shuffleArray(tempFlashcards));
     resetFlashcardState();
   };
+  const updatePetCurrency = async (amount: number) => {
+    try {
+      const token = localStorage.getItem("token");
+      const pet_id = localStorage.getItem("pet_id");
+      if (!token || !pet_id) throw new Error("No token or pet id found");
+      
+      const response = await axios.patch(
+        `${import.meta.env.VITE_API_URL}/pets/updatePetCurrency`,
+        {
+          pet_currency: amount,
+          pet_id
+         },
+        { headers:
+          {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      console.log(response)
+      if (response.status !== 200) {
+        console.error("Unexpected response status", response.status);
+      }
+    } catch (error) {
+      console.error("Failed to update pet currency", error);
+    }
+  };
 
   const handleCheckAnswer = async () => {
     const userAnswer = userInput.trim().toLowerCase();
@@ -117,38 +143,13 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
     }
   };
 
-  const updatePetCurrency = async (amount: number) => {
-    try {
-      const token = localStorage.getItem("token");
-      const pet_id = localStorage.getItem("pet_id");
-      if (!token || !pet_id) throw new Error("No token or pet id found");
-
-      const response = await axios.patch(
-        `${import.meta.env.VITE_API_URL}/pets/updatePetCurrency`,
-        {
-          pet_currency: amount,
-          pet_id
-         },
-        { headers:
-          {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      if (response.status !== 200) {
-        console.error("Unexpected response status", response.status);
-      }
-    } catch (error) {
-      console.error("Failed to update pet currency", error);
-    }
-  };
+ 
 
   const currentFlashcard = tempFlashcards[currentIndex];
   const isQuizComplete = quizState === "finished";
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-col items-center justify-center mt-[1rem]">
       <style>
         {`
           @keyframes shake {
@@ -166,7 +167,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       {quizState === "fillBlanks" ? (
         <div className="flex flex-col items-center  w-[100%]">
           <div
-            className="w-[100%] max-w-[800px] h-[400px] -mt-[10rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            className="w-[100%] max-w-[800px] h-[400px] lg:h-[350px] mt-[6rem] lg:mt-[0rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
           >
             <h2 className="text-3xl font-semibold text-[#354F52]">
@@ -175,16 +176,13 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
                 : "Loading..."}
             </h2>
           </div>
-            
-          <div className="mt-5 text-lg font-medium text-[#354F52]">
+          <div className="absolute mt-5 text-lg font-medium text-[#354F52]">
             Pet Currency: {petCurrency} 🐾
           </div>
-
-
           <button
                onClick={() => setQuizState("review")}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-                className="text-white text-sm md:text-base lg:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20  xl:right-[7rem] top-[4.5rem] lg:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+                className="text-white text-sm md:text-base lg:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-[4rem] xl:mt-[2rem] z-10 absolute -right-9 lg:right-20  xl:right-[7rem] top-[4.5rem] lg:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
               >
                 Review
             </button>
@@ -230,7 +228,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       ) : isQuizComplete ? (
         <div className="flex flex-col items-center">
           {/* Quiz Completion UI */}
-          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-5xl text-[#354F52] font-bold mb-4 -mt-[25rem]">
+          <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-3xl lg:text-5xl text-[#354F52] font-bold mb-4 -mt-[20rem]">
             FlashCard Complete! Well Done!
           </h2>
           <p
@@ -240,7 +238,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           Your Score: {userScore} / {tempFlashcards.length}
           </p>
           <button
-            onClick={() => { shuffleFlashcards(); setQuizState("fillBlanks"); }}
+            onClick={() => { shuffleFlashcards(); setQuizState("fillBlanks"); setUserScore(0);}}
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
             className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-10 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
           >
@@ -256,7 +254,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
           <button
             onClick={handleStartNewQuiz}
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
-            className="text-white text-sm md:text-base xl:text-xl bg-[#354F52] p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-10 md:mr-20 mt-0 xl:mt-[2rem] z-10 absolute right-10 top-[8rem] xl:top-[16rem] shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+            className="bg-[#354F52] text-white h-10 w-36 rounded-full mt-6 ml-[1rem] transform transition-transform duration-200 hover:scale-125 hover:text-white"
           >
             Start Quiz
           </button>

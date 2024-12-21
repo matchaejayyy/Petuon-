@@ -360,7 +360,7 @@ const FlashcardComponent: React.FC = () => {
               <button
                 onClick={() => setIsReviewing(false)}
                 style={{ fontFamily: '"Signika Negative", sans-serif' }}
-               className="text-white text-sm md:text-base lg:text-lg bg-[#354F52] xl:p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-[8rem] md:mr-[14rem] mt-0 xl:mt-[2rem] z-10 absolute -right-9 lg:right-20 xl:right-[10rem] top-[4.5rem] lg:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
+               className="text-white text-sm md:text-base lg:text-lg bg-[#354F52] xl:p-4 w-[5rem] md:w-[8rem] xl:w-[10rem] h-[3rem] rounded-2xl mr-[8rem] md:mr-[14rem] mt-[4rem] xl:mt-[2rem] z-10 absolute -right-9 lg:right-20 xl:right-[10rem] top-[4.5rem] lg:top-[6.5rem] transform -translate-y-1/2 shadow-lg hover:bg-[#52796F] hover:scale-105 flex items-center justify-center"
                 >
                 Return to deck
                 </button>
