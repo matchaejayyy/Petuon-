@@ -35,7 +35,7 @@ const FlashcardComponent: React.FC = () => {
     deleteDeck,
     deleteFlashcard,
     setDeckId,
-    handleUpdateDeckTitle
+    handleUpdateDeckTitle,
   } = useFlashcardHooks();
 
   const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
@@ -281,7 +281,7 @@ const FlashcardComponent: React.FC = () => {
 
 
               {/* Render Decks */}
-              {!loadDecks && Object.keys(decks).length > 0 &&
+              {!loadDecks && decks.length > 0 &&
                 decks.map((deck, index) => {
                   const assignedColor = colors[index % colors.length];
 
