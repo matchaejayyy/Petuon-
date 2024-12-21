@@ -15,6 +15,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
   const [showAnswer, setShowAnswer] = useState(false);
   const [quizState, setQuizState] = useState<"review" | "fillBlanks" | "finished">("review");
   const [userScore, setUserScore] = useState(0);
+  const [petCurrency, setPetCurrency] = useState(0); 
   const [attempts, setAttempts] = useState(3);
   const [answerStatus, setAnswerStatus] = useState<"correct" | "incorrect" | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -174,6 +175,11 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
                 : "Loading..."}
             </h2>
           </div>
+            
+          <div className="mt-5 text-lg font-medium text-[#354F52]">
+            Pet Currency: {petCurrency} 🐾
+          </div>
+
 
           <button
                onClick={() => setQuizState("review")}
