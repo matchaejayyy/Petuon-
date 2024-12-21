@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 //eggs
 import capybara from "../../assets/eggs/capibara_egg.png";
@@ -12,6 +11,7 @@ import unicorn from "../../assets/eggs/unicorn_egg.png";
 import { usePets } from "../../hooks/usePets";
 import { v4 as uuidv4 } from "uuid";
 import { Pet } from "../../types/PetTypes";
+import { useState } from "react";
 
 interface PetSelectionModalProps {
   onClose: () => void;

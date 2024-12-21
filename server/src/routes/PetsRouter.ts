@@ -124,7 +124,7 @@ router.patch("/updatePet/:pet_id", authenticateToken, async (req: Request, res: 
 
     const pet = petResult.rows[0];
     let newProgressBar = pet_progress_bar;
-    let newEvolutionRank = pet_evolution_rank || pet.pet_evolution_rank;  // Ensure it's updated
+    let newEvolutionRank = pet_evolution_rank || pet.pet_evolution_rank;  
     let newMaxValue = pet.pet_max_value;
 
     // Check if progress bar exceeds max value
@@ -132,14 +132,7 @@ router.patch("/updatePet/:pet_id", authenticateToken, async (req: Request, res: 
       newProgressBar = 0; // Reset progress bar
       newEvolutionRank += 1; // Increment evolution rank
 
-      // Adjust max value based on evolution rank
-      if (newEvolutionRank === 4) {
-        newMaxValue = 250; // Set max value for rank 4
-      } else if (newEvolutionRank === 3) {
-        newMaxValue = 200;
-      } else {
-        newMaxValue = 150;
-      }
+
 
       if (newEvolutionRank > 4) {
         return res.status(400).json({

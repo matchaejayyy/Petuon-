@@ -138,9 +138,6 @@ const handleFeedPet = async (petData: any) => {
     if (updatedPet.pet_progress_bar >= 100) {
       updatedPet.pet_progress_bar = 0; // Reset progress bar
       updatedPet.pet_evolution_rank += 1; // Update evolution rank here
-      
-      // Increase max value required to fill the progress bar by 50 after each evolution
-      updatedPet.pet_max_value += 50;
 
       setShowEvolutionCinematic(true); // Trigger evolution cinematic
     } else {
@@ -288,7 +285,7 @@ const handleFeedPet = async (petData: any) => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="flex justify-center items-center w-full h-full text-3xl">Loading...</div>;
   }
 
   if (error) {
@@ -317,7 +314,7 @@ const handleFeedPet = async (petData: any) => {
                   {petData.pet_name}
                 </h1>
                 <h2 className="text-sm mt-10 ml-2 text-green-800">
-                  {petData.pet_progress_bar}/{petData.pet_max_value}
+                  {petData.pet_progress_bar}/100
                 </h2>
               </div>
               <div className="flex items-center">
@@ -331,7 +328,7 @@ const handleFeedPet = async (petData: any) => {
                   ></div>
                 </div>
               </div>
-              <h2 className="text-lg font-bold">Phase: {petData.pet_evolution_rank}</h2>
+              <h2 className="text-xl font-bold text-primary-500 bg-primary-100 mt-1 rounded-3xl flex justify-center">Phase: {petData.pet_evolution_rank}</h2>
             </div>
             <div className="w-24 h-8 bg-shades-light rounded-xl ml-auto mt-5 flex justify-center items-center text-lg font-semibold">
               <img
