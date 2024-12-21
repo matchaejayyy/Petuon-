@@ -102,7 +102,7 @@ const LoginPage: React.FC<Props> = () => {
       style={{ backgroundImage: backgroundImage }}
     >
       
-      <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20 xl:-mt-20 xl:mr-[9rem]">
+      <div style={{ fontFamily: '"Signika Negative", sans-serif' }} className="  xl:w-[30%] flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 mr-20 xl:-mt-20 xl:mr-[12rem]">
         <div
           className="w-full rounded-lg shadow ml-20 lg:-mr-[0.1rem] md:mt-16 md:mr-20 sm:max-w-lg  xl:p-0"
           style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
