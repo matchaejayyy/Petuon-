@@ -40,7 +40,7 @@ router.post('/userLogin', async (req: Request, res: Response): Promise<void> => 
     const token = jwt.sign(
       { user_id: user.user_id, user_name: user.user_name },
       JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      { expiresIn: '12h' } // Token expires in 12 hour
     );
 
     // Respond with token and user info

@@ -165,9 +165,9 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
       </style>
 
       {quizState === "fillBlanks" ? (
-        <div className="flex flex-col items-center  w-[100%]">
+        <div className="flex flex-col items-center  w-[100%] mt-">
           <div
-            className="w-[100%] max-w-[800px] h-[400px] lg:h-[350px] mt-[6rem] lg:mt-[0rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            className="w-[100%] max-w-[800px] h-[400px]   lg:h-[350px] mt-[6rem] lg:mt-[0rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{ fontFamily: '"Signika Negative", sans-serif' }}
           >
             <h2 className="text-3xl font-semibold text-[#354F52]">
@@ -226,7 +226,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
             </div>
         </div>
       ) : isQuizComplete ? (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-[25rem]">
           {/* Quiz Completion UI */}
           <h2 style={{ fontFamily: '"Signika Negative", sans-serif' }} className="text-3xl lg:text-5xl text-[#354F52] font-bold mb-4 -mt-[20rem]">
             FlashCard Complete! Well Done!
@@ -270,7 +270,7 @@ export const QuizFlashcard: React.FC<quizFlashcardProps> = ({ setOnFirstPage, fl
                 Start Quiz
             </button>
           <div
-            className="w-[100%] max-w-[800px] h-[400px] -mt-[10rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
+            className="w-[100%] max-w-[800px] h-[400px] -mt-[0.5rem] bg-white rounded-xl shadow-xl flex items-center justify-center text-center cursor-pointer"
             style={{
               fontFamily: '"Signika Negative", sans-serif',
               transformStyle: 'preserve-3d',
