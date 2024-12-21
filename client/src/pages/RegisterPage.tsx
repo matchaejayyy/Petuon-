@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,19 @@ import { v4 as uuidv4 } from "uuid";
 import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
 import 'react-toastify/dist/ReactToastify.css'; // Import Toastify CSS
 import LogInOut from "../components/logInOutComponent"; // Import the LogInOut component
+import smBG from '../assets/Bg_sm.png';
+import smBG1 from '../assets/Bg_sm1.png';
+import mdBG from '../assets/Bg_md.png';
+import lgBG from '../assets/Bg_lg.png';
+import LogInBG from '../assets/LoginBg.png';
 
+const getBackgroundImage = (width: number) => {
+  if (width >= 1280) return `url(${LogInBG})`;
+  if (width >= 1024) return `url(${lgBG})`;
+  if (width >= 640) return `url(${mdBG})`;
+  if (width >= 480) return `url(${smBG1})`;
+  return `url(${smBG})`;
+};
 const validation = Yup.object().shape({
   user_email: Yup.string().email("Invalid email").required("Email is required"),
   user_name: Yup.string().required("Username is required"),
@@ -20,10 +32,30 @@ const validation = Yup.object().shape({
     .required("Password is required"),
 });
 
+
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false); // State for loading indicator
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormsInputs>({ resolver: yupResolver(validation) });
+  const [backgroundImage, setBackgroundImage] = useState<string>(''); 
+
+  useEffect(() => {
+      const updateBackground = () => {
+        const width = window.innerWidth;
+        setBackgroundImage(getBackgroundImage(width));
+      };
+  
+      // Set the background image when the component mounts
+      updateBackground();
+  
+      // Update the background image when the window is resized
+      window.addEventListener('resize', updateBackground);
+  
+      // Cleanup the event listener when the component unmounts
+      return () => {
+        window.removeEventListener('resize', updateBackground);
+      };
+    }, []);
 
   const handleRegister = async (form: RegisterFormsInputs) => {
     setLoading(true); // Show loading indicator
@@ -66,16 +98,12 @@ const RegisterPage: React.FC = () => {
 
   return (
     <section
-      className="flex h-screen items-center justify-center"
-      style={{
-        backgroundImage: `url(${LoginBG})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
+    className="fixed  w-full h-full flex items-center justify-center bg-cover bg-center"
+    style={{ backgroundImage: backgroundImage }}
     >
-      <div className="mx-auto mr-20 flex flex-col items-center justify-center px-6 py-8 md:h-screen lg:py-0">
+      <div className="mr-6 mx-6 sm:w-[50%] sm md:w-[45%] lg:w-[35%] xl:w-[30%] lg:mx-auto lg:mr-[10rem] mt-[5rem] ml flex flex-col items-center justify-center px-1 py-8 md:h-screen lg:py-0">
         <div
-          className="w-full rounded-lg shadow sm:max-w-lg md:mb-20 xl:p-0"
+          className="w-full rounded-lg shadow sm:w-full-lg md:mb-20 xl:p-0"
           style={{ backgroundColor: "rgba(88, 85, 85, 0.285)" }}
         >
           <div className="space-y-6 p-10 sm:p-12 md:space-y-8">

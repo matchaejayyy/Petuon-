@@ -941,10 +941,10 @@ const ToDoListComponent: React.FC<ToDoListProps> = ({
     
           <div className="mt-[0.8rem] border-b-2"></div>
     
-          {loading ? (
+          {!loading ? (
             <h1
               style={{ fontFamily: '"Signika Negative", sans-serif' }}
-              className="fixed left-[9rem] sm:left-[23rem] top-[15.5rem] text-center text-2xl text-gray-500"
+              className=" left-[9rem] sm:left-[23rem] mt-[7rem] text-center text-2xl text-gray-500"
             >
               Fetching tasks...
             </h1>
