@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-import LoginBG from "../assets/LoginBg.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { supabase } from '../SupabaseClient'; // Adjust the path as needed
