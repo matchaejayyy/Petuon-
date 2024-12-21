@@ -6,7 +6,7 @@ import { Minus, FilePenLine, FolderMinus } from "lucide-react";
 import { Flashcard } from "../../types/FlashCardTypes";
 import axios from "axios";
 import Modal from "../modal";
-
+import sleepingPenguin from "../../assets/sleeping_penguin2.gif"
 
 
 const token = localStorage.getItem('token');
@@ -36,6 +36,7 @@ const FlashcardComponent: React.FC = () => {
     deleteFlashcard,
     setDeckId,
     handleUpdateDeckTitle,
+    loading
   } = useFlashcardHooks();
 
   const [editingQuestion, setEditingQuestion] = useState<string | null>(null);
@@ -274,11 +275,45 @@ const FlashcardComponent: React.FC = () => {
             </button>
             </Modal>
           </div>
-          <div className="w-[100vw] flex items-center justify-center relative md:ml-[2.5rem] xl:ml-0 mt-[-1.5rem] overflow-y-auto pt-0">
-            <ul className="mt-24 w-full lg:w-[80%] xl:w-[90%] ml-[3rem] xl:ml-[7rem] pl-5 md:pr-10 lg:pr-5 xl:pr-10 md:pl-2 xl:pl-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-x-1 lg:gap-x-2 xl:gap-x-0 max-h-[540px] overflow-y-scroll overflow-x-hidden p-2 pb-14 [&::-webkit-scrollbar]:w-0">
+          <div className="w-[100vw] min-h-[400px] flex items-center justify-center relative md:ml-[2.5rem] xl:ml-0 mt-[-1.5rem] overflow-y-auto pt-0">
+          <ul className="mt-24 w-full lg:w-[80%] xl:w-[90%] ml-[3rem] xl:ml-[7rem] pl-5 md:pr-10 lg:pr-5 xl:pr-10 md:pl-2 xl:pl-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 md:gap-x-1 lg:gap-x-2 xl:gap-x-0 max-h-[540px] overflow-y-scroll overflow-x-hidden p-2 pb-14 [&::-webkit-scrollbar]:w-0">
              
               
+            {loading ? (
+              <div className="fixed flex flex-col items-center justify-center h-screen">
+              <h1  className="fixed  text-gray-500 
+                 transition-all duration-500 ease-in-out mt-[-40%]
+                  w-[50%] text-2xl
+                  left-[33%] 
+                  sm:left-[45%] sm-text2xl 
+                  md:left-[45%] md:text-2xl
+                  lg:left-[38%] lg:text-3xl
+                  xl:left-[47%] 
+                ">
+                Fetching Decks...
+              </h1>
+            </div>
+           
+            ) : decks.length == 0 && (
+            <div
+            className="flex flex-col items-center justify-center w-full h-[95%] absolute top-5 left-0">
 
+              <img
+                src={sleepingPenguin}
+                alt="No tasks available"
+                 className="h-[200px] ml-[5rem]"
+              />
+              <p
+                className="text-gray-500 text-lg sm:text-xl md:text-2xl lg:text-3xl text-center ml-[6rem]"
+                style={{
+                  fontFamily: '"Signika Negative", sans-serif',
+                }}
+              >
+                No Decks available.
+              </p>
+            </div>
+
+          )}
 
               {/* Render Decks */}
               {!loadDecks && decks.length > 0 &&

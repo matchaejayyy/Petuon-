@@ -16,13 +16,14 @@ export const useFlashcardHooks = () => {
   const [onFirstPage, setOnFirstPage] = useState<boolean>(true);
   const [deckTitle, setDeckTitle] = useState<string>("");
   const [deckId, setDeckId] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState<boolean>(false);
   const [loadCards, setLoadCards] = useState<boolean>(false);
   const [loadDecks, setLoadDecks] = useState<boolean>(false);
 
   // Fetch decks and flashcards on mount
   const fetchDecks = async () => {
     setLoadDecks(true)
+    setLoading(true)
     try {
       if (!token) throw new Error("No token found");
 
@@ -39,6 +40,7 @@ export const useFlashcardHooks = () => {
       console.error("Error fetching decks:", error);
     } finally {
       setLoadDecks(false)
+      setLoading(false)
     }
   };
 
@@ -223,7 +225,8 @@ export const useFlashcardHooks = () => {
     updateFlashcard,
     fetchDecks,
     openEditModal,
-    handleUpdateDeckTitle
+    handleUpdateDeckTitle,
+    loading
 
   };
 };
